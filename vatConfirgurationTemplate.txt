@@ -1,0 +1,19 @@
+// ===============================================================================
+// REQUIRED
+// ===============================================================================
+
+// Tabix directory (includes both tabix and bgzip)
+TABIX_DIR /path/to/tabix-0.2.3
+
+
+// ===============================================================================
+// OPTIONAL (required only for CGIs)
+// ===============================================================================
+
+// CGI base URL (where the CGIs are located)
+WEB_URL_CGI http://webserver.org/path
+
+// Path to the web data directory where the preprocessed files are stored
+WEB_DATA_DIR /path/to/public_html/path/to/VAT
+// URL to preprocessed files
+WEB_DATA_URL http://webserver.org/path/to/VAT
