@@ -1,7 +1,21 @@
-// Tabix directory
+// ===============================================================================
+// REQUIRED
+// ===============================================================================
+
+// Tabix directory (includes both tabix and bgzip)
 TABIX_DIR /net/gerstein/lh372/SOFT/tabix-0.2.3
 
-// CGI related variables
+
+
+// ===============================================================================
+// OPTIONAL (required only for CGIs)
+// ===============================================================================
+
+// CGI base URL (where the CGIs are located)
 WEB_URL_CGI http://dynamic.gersteinlab.org/people/lh372/dev
+
+// Path to the web data directory where the preprocessed files are stored
 WEB_DATA_DIR /home/lh372/public_html/VAT
+
+// URL to preprocessed files
 WEB_DATA_URL http://homes.gersteinlab.org/people/lh372/VAT
