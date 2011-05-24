@@ -16,8 +16,6 @@ int main (int argc, char *argv[])
   Interval *currInterval;
   SubInterval *currSubInterval;
   int h,i,j;
-  Array seqs;
-  Seq *currSeq,testSeq;
   int index;
   Stringa buffer;
   Array geneTranscriptEntries;
@@ -29,6 +27,7 @@ int main (int argc, char *argv[])
   int refLength,altLength;
   int offset;
   int overlap;
+  int totalOverlap;
   Array coordinates;
   VcfEntry *currVcfEntry;
   VcfGenotype *currVcfGenotype;
@@ -36,16 +35,11 @@ int main (int argc, char *argv[])
   Texta alternateAlleles;
   int flag1,flag2;
   
-  if (argc != 3) {
-    usage ("%s <annotation.interval> <annotation.fa>",argv[0]);
+  if (argc != 2) {
+    usage ("%s <annotation.interval>",argv[0]);
   }
   intervalFind_addIntervalsToSearchSpace (argv[1],0);
   geneTranscriptEntries = util_getGeneTranscriptEntries (intervalFind_getAllIntervals ());
-  seq_init ();
-  fasta_initFromFile (argv[2]);
-  seqs = fasta_readAllSequences (0);
-  fasta_deInit ();
-  arraySort (seqs,(ARRAYORDERF)util_sortSequencesByName); 
   buffer = stringCreate (100);
   disabledTranscripts = stringCreate (100);
   alterations = arrayCreate (100,Alteration);
@@ -55,7 +49,7 @@ int main (int argc, char *argv[])
   puts (vcf_writeMetaData ());
   puts (vcf_writeColumnHeaders ());
   while (currVcfEntry = vcf_nextEntry ()) {
-    if (vcf_isInvalidAlternateAllele (currVcfEntry)) {
+    if (vcf_isInvalidEntry (currVcfEntry)) {
       continue;
     }
     flag1 = 0;
@@ -75,47 +69,20 @@ int main (int argc, char *argv[])
       intervals = intervalFind_getOverlappingIntervals (currVcfEntry->chromosome,position,position + offset);
       for (i = 0; i < arrayMax (intervals); i++) {
         currInterval = arru (intervals,i,Interval*);
-        j = 0; 
-        while (j < arrayMax (currInterval->subIntervals)) {
+        totalOverlap = 0;
+        for (j = 0; j < arrayMax (currInterval->subIntervals); j++) {
           currSubInterval = arrp (currInterval->subIntervals,j,SubInterval);
           overlap = rangeIntersection (position,position + offset,currSubInterval->start,currSubInterval->end);
           if (overlap > 0) {
-            break;
+            totalOverlap += overlap;
           }
           j++;
         }
-        if (j == arrayMax (currInterval->subIntervals)) {
+        if (totalOverlap == 0) {
           continue;
         }
-       
-        stringPrintf (buffer,"%s|%s|%c|",currInterval->name,currInterval->chromosome,currInterval->strand);
-        for (j = 0; j < arrayMax (currInterval->subIntervals); j++) {
-          currSubInterval = arrp (currInterval->subIntervals,j,SubInterval);
-          stringAppendf (buffer,"%d|%d%s",currSubInterval->start,currSubInterval->end,j < arrayMax (currInterval->subIntervals) - 1 ? "|" : "");
-        }
-        testSeq.name = hlr_strdup (string (buffer));
-        if (!arrayFind (seqs,&testSeq,&index,(ARRAYORDERF)util_sortSequencesByName)) {
-          die ("Expected to find %s in seqs",string (buffer));
-        }
-        hlr_free (testSeq.name);
-        currSeq = arrp (seqs,index,Seq);
-        coordinates = util_getCoordinates (currInterval);
-        // arraySort (coordinates,(ARRAYORDERF)util_sortCoordinatesByChromosomeAndTranscriptPosition); Array is already sorted by definition
-    
-        stringClear (buffer);
-        for (j = 0; j < arrayMax (currInterval->subIntervals); j++) {
-          currSubInterval = arrp (currInterval->subIntervals,j,SubInterval);
-          overlap = rangeIntersection (position,position + offset,currSubInterval->start,currSubInterval->end);
-          if (overlap > 0) {
-            ;
-          }
-          else {
-            ;
-          }
-        }
-        util_destroyCoordinates (coordinates);
         currAlteration = arrayp (alterations,arrayMax (alterations),Alteration);
-        util_addAlteration (currAlteration,currInterval->name,"SV",currInterval,position);
+        util_addAlteration (currAlteration,currInterval->name,(totalOverlap % 3) == 0 ? "svNFS" : "svFS",currInterval,position);
       }
       if (arrayMax (alterations) == 0) {
         continue;
@@ -173,6 +140,7 @@ int main (int argc, char *argv[])
   vcf_deInit ();
   return 0;
 }
+
 
 
 
