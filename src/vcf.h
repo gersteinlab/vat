@@ -57,7 +57,7 @@ extern VcfEntry* vcf_nextEntry (void);
 extern Array vcf_parse (void);
 extern void vcf_freeEntries (Array vcfEntries);
 extern void vcf_deInit (void);
-extern int vcf_isInvalidAlternateAllele (VcfEntry *currEntry);
+extern int vcf_isInvalidEntry (VcfEntry *currEntry);
 extern int vcf_hasMultipleAlternateAlleles (VcfEntry *currEntry);
 extern Texta vcf_getAlternateAlleles (VcfEntry *currEntry);
 extern Texta vcf_getColumnHeaders (void);

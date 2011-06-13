@@ -34,6 +34,7 @@ typedef struct {
   char *type;
   int transcriptLength;
   int relativePosition;
+  int overlap;
   char *substitution;
 } Alteration;
 
@@ -53,7 +54,7 @@ extern void util_destroyCoordinates (Array coordinates);
 extern int util_getGenomicCoordinate (Array coordinates, int transcriptCoordinate, char* chromosome);
 extern int util_getTranscriptCoordinate (Array coordinates, int genomicCoordinate, char* chromosome);
 extern int util_sortAlterationsByGeneIdAndType (Alteration *a, Alteration *b);
-extern void util_addAlteration (Alteration *currAlteration, char *fullTranscriptName, char *type, Interval *currInterval, int position);
+extern void util_addAlteration (Alteration *currAlteration, char *fullTranscriptName, char *type, Interval *currInterval, int position, int overlap);
 extern void util_clearAlterations (Array alterations);
 extern void util_configInit (char *nameConfigFileEnvironmentVariable);
 extern char* util_getConfigValue (char *parameterName);
