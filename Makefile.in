@@ -173,7 +173,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 SUBDIRS = src
 ACLOCAL_AMFLAGS = -I m4
-EXTRA_DIST = m4 check.png processing.gif vatConfirguration.txt
+EXTRA_DIST = m4 check.png processing.gif vatConfirgurationTemplate.txt
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
