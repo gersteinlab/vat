@@ -41,7 +41,7 @@ int main (int argc, char *argv[])
   puts (vcf_writeMetaData ());
   puts (vcf_writeColumnHeaders ());
   while (currVcfEntry = vcf_nextEntry ()) {
-    if (vcf_isInvalidAlternateAllele (currVcfEntry)) {
+    if (vcf_isInvalidEntry (currVcfEntry)) {
       continue;
     }
     flag1 = 0;
@@ -59,7 +59,7 @@ int main (int argc, char *argv[])
         j = 0; 
         while (j < arrayMax (currInterval->subIntervals)) {
           currSubInterval = arrp (currInterval->subIntervals,j,SubInterval);
-          if (rangeIntersection (position,position + offset,currSubInterval->start,currSubInterval->end) > 0) {
+          if (currSubInterval->start <= position && (position + offset) < currSubInterval->end) {
             break;
           }
           j++;
@@ -67,7 +67,7 @@ int main (int argc, char *argv[])
         if (j == arrayMax (currInterval->subIntervals)) {
           continue;
         }
-        util_addAlteration (arrayp (alterations,arrayMax (alterations),Alteration),currInterval->name,argv[2],currInterval,position);
+        util_addAlteration (arrayp (alterations,arrayMax (alterations),Alteration),currInterval->name,argv[2],currInterval,position,0);
       }
       if (arrayMax (alterations) == 0) {
         continue;
@@ -79,14 +79,14 @@ int main (int argc, char *argv[])
         currAlteration = arrp (alterations,i,Alteration);
         stringAppendf (buffer,"%s%d:%s:%s:%c:%s",stringLen (buffer) == 0 ? "" : "|",h + 1,currAlteration->geneName,currAlteration->geneId,currAlteration->strand,currAlteration->type);
         stringClear (transcripts);
-        stringAppendf (transcripts,"%s:%s",currAlteration->transcriptName,currAlteration->transcriptId);
+        stringAppendf (transcripts,"%s:%s:%d_%d",currAlteration->transcriptName,currAlteration->transcriptId,currAlteration->transcriptLength,currAlteration->relativePosition);
         numTranscripts = 1;
         j = i + 1;
         while (j < arrayMax (alterations)) {
           nextAlteration = arrp (alterations,j,Alteration);
           if (strEqual (currAlteration->geneId,nextAlteration->geneId) && 
               strEqual (currAlteration->type,nextAlteration->type)) {
-            stringAppendf (transcripts,":%s:%s",nextAlteration->transcriptName,nextAlteration->transcriptId);
+            stringAppendf (transcripts,":%s:%s:%d_%d",nextAlteration->transcriptName,nextAlteration->transcriptId,nextAlteration->transcriptLength,nextAlteration->relativePosition);
             numTranscripts++;
           }
           else {
@@ -96,7 +96,7 @@ int main (int argc, char *argv[])
         }
         i = j;
         geneTranscriptIds = util_getTranscriptIdsForGeneId (geneTranscriptEntries,currAlteration->geneId);
-        stringAppendf (buffer,":%d/%d:%s:%s",numTranscripts,arrayMax (geneTranscriptIds),string (transcripts));
+        stringAppendf (buffer,":%d/%d:%s",numTranscripts,arrayMax (geneTranscriptIds),string (transcripts));
       }
       if (flag1 == 0) {
         printf ("%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s;VA=",

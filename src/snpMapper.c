@@ -128,7 +128,7 @@ int main (int argc, char *argv[])
   puts (vcf_writeMetaData ());
   puts (vcf_writeColumnHeaders ());
   while (currVcfEntry = vcf_nextEntry ()) {
-    if (vcf_isInvalidAlternateAllele (currVcfEntry)) {
+    if (vcf_isInvalidEntry (currVcfEntry)) {
       continue;
     }
     flag1 = 0;
@@ -147,7 +147,7 @@ int main (int argc, char *argv[])
         currInterval = arru (intervals,i,Interval*);
         if (detectSpliceJunctionAlterations (currInterval,position)) {
           util_addAlteration (arrayp (alterations,arrayMax (alterations),Alteration),
-                              currInterval->name,"spliceOverlap",currInterval,position);
+                              currInterval->name,"spliceOverlap",currInterval,position,0);
           continue;
         }
         j = 0; 
@@ -161,7 +161,7 @@ int main (int argc, char *argv[])
         if (j == arrayMax (currInterval->subIntervals)) {
           /*
           util_addAlteration (arrayp (alterations,arrayMax (alterations),Alteration),
-                              currInterval->name,"intronic",currInterval,position);
+                              currInterval->name,"intronic",currInterval,position,0);
           */
           continue;
         }
@@ -191,16 +191,16 @@ int main (int argc, char *argv[])
         numStopsBeforeSNP = countChars (proteinSequenceBeforeSNP,'*');
         numStopsAfterSNP = countChars (proteinSequenceAfterSNP,'*');
         if (numStopsAfterSNP > numStopsBeforeSNP) {
-          util_addAlteration (currAlteration,currInterval->name,"prematureStop",currInterval,position);
+          util_addAlteration (currAlteration,currInterval->name,"prematureStop",currInterval,position,0);
         }
         else if (numStopsAfterSNP < numStopsBeforeSNP) {
-          util_addAlteration (currAlteration,currInterval->name,"removedStop",currInterval,position);
+          util_addAlteration (currAlteration,currInterval->name,"removedStop",currInterval,position,0);
         }
         else if (strEqual (proteinSequenceBeforeSNP,proteinSequenceAfterSNP)) {
-          util_addAlteration (currAlteration,currInterval->name,"synonymous",currInterval,position);
+          util_addAlteration (currAlteration,currInterval->name,"synonymous",currInterval,position,0);
         }
         else if (!strEqual (proteinSequenceBeforeSNP,proteinSequenceAfterSNP)) {
-          util_addAlteration (currAlteration,currInterval->name,"nonsynonymous",currInterval,position);
+          util_addAlteration (currAlteration,currInterval->name,"nonsynonymous",currInterval,position,0);
         }
         addSubstitution (currAlteration,proteinSequenceBeforeSNP,proteinSequenceAfterSNP);
         hlr_free (proteinSequenceBeforeSNP);

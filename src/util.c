@@ -314,7 +314,7 @@ int util_sortAlterationsByGeneIdAndType (Alteration *a, Alteration *b)
 
 
 
-void util_addAlteration (Alteration *currAlteration, char *fullTranscriptName, char *type, Interval *currInterval, int position) 
+void util_addAlteration (Alteration *currAlteration, char *fullTranscriptName, char *type, Interval *currInterval, int position, int overlap) 
 {
   char *geneId,*transcriptId,*geneName,*transcriptName;
   static Stringa buffer = NULL;
@@ -333,6 +333,7 @@ void util_addAlteration (Alteration *currAlteration, char *fullTranscriptName, c
   currAlteration->strand = currInterval->strand;
   currAlteration->transcriptLength = intervalFind_getSize (currInterval);
   util_addRelativePosition (currAlteration,currInterval,position);
+  currAlteration->overlap = overlap;
   currAlteration->substitution = hlr_strdup ("");
 }
 

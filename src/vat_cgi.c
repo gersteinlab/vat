@@ -8,7 +8,7 @@
 
 
 
-static void geneSummary2json (char *dataSet, char *annotationSet)
+static void geneSummary2json (char *dataSet, char *annotationSet, char *type)
 {
   static Stringa buffer = NULL;
   LineStream ls;
@@ -35,8 +35,17 @@ static void geneSummary2json (char *dataSet, char *annotationSet)
       }
       printf ("\"%s\",",token);
     }
-    printf ("\"<a href=%s/vat_cgi?mode=showGene&dataSet=%s&annotationSet=%s&geneId=%s target=gene>Link</a>\"],\n",
-            util_getConfigValue ("WEB_URL_CGI"),dataSet,annotationSet,geneId);
+    if (strEqual (type,"coding")) {
+      printf ("\"<a href=%s/vat_cgi?mode=showGene&dataSet=%s&annotationSet=%s&geneId=%s target=gene>Link</a>\"],\n",
+              util_getConfigValue ("WEB_URL_CGI"),dataSet,annotationSet,geneId);
+    }
+    else if (strEqual (type,"nonCoding")) {
+      printf ("\"<a href=%s/vat_cgi?mode=showNonCoding&dataSet=%s&annotationSet=%s&geneId=%s target=gene>Link</a>\"],\n",
+              util_getConfigValue ("WEB_URL_CGI"),dataSet,annotationSet,geneId);
+    }
+    else {
+      die ("Unknown type: %s",type);
+    }
     wordIterDestroy (w);
   }
   puts ("],");
@@ -89,7 +98,7 @@ static void sampleSummary2json (char *dataSet)
 
 
 
-static void processData (char *dataSet, char *annotationSet)
+static void processData (char *dataSet, char *annotationSet, char *type)
 {
   puts ("<html>");
   puts ("<head>");
@@ -108,7 +117,7 @@ static void processData (char *dataSet, char *annotationSet)
   puts ("                                  \"iDisplayLength\": 25,");
   puts ("                                  \"bStateSave\": true,");
   puts ("                                  \"sPaginationType\": \"full_numbers\",");
-  geneSummary2json (dataSet,annotationSet);
+  geneSummary2json (dataSet,annotationSet,type);
   puts ("                             } );");
   puts ("                             $('#ex2').html ( '<table border=1 cellpadding=2 align=center id=sample class=display></table>' )");
   puts ("				$('#sample').dataTable( {");
@@ -173,7 +182,7 @@ static char* hyperlinkId (char *id)
 
 
 
-static void showGeneInformation (char *dataSet, char *annotationSet, char *geneId)
+static void showInformation (char *dataSet, char *annotationSet, char *geneId, char *type)
 {
   static Stringa buffer = NULL;
   Array vcfEntries;
@@ -274,11 +283,25 @@ static void showGeneInformation (char *dataSet, char *annotationSet, char *geneI
   puts ("</tbody>");
   puts ("</table>");
   puts ("<br><br><br>"); 
-  puts ("<h3><center>Graphical representation of genetic variants</center></h3>");
-  printf ("<center><img src=%s/%s/%s.png></center>\n",util_getConfigValue ("WEB_DATA_URL"),dataSet,geneId);
-  puts ("<br><br>");
-  printf ("<center><img src=%s/%s/legend.png></center>\n",util_getConfigValue ("WEB_DATA_URL"),dataSet);
-  puts ("<br><br><br>");
+
+  if (strEqual (type,"coding")) {
+    puts ("<h3><center>Graphical representation of genetic variants</center></h3>");
+    printf ("<center><img src=%s/%s/%s.png></center>\n",util_getConfigValue ("WEB_DATA_URL"),dataSet,geneId);
+    puts ("<br><br>");
+    printf ("<center><img src=%s/%s/legend.png></center>\n",util_getConfigValue ("WEB_DATA_URL"),dataSet);
+    puts ("<br><br><br>");
+
+  }
+  else if (strEqual (type,"nonCoding")) {
+    puts ("<h3><center>Graphical representation of the secondary structure</center></h3>");
+    printf ("<center><img src=%s/%s/%s_ref.svg></center>\n",util_getConfigValue ("WEB_DATA_URL"),dataSet,geneId);
+    puts ("<br><br>");
+    printf ("<center><img src=%s/%s/%s_alt.svg></center>\n",util_getConfigValue ("WEB_DATA_URL"),dataSet,geneId);
+    puts ("<br><br><br>");
+  }
+  else {
+    die ("Unknown type: %s",type);
+  }
   puts ("<h3><center>Detailed summary of variants</center></h3>");
   puts ("<table border=1 cellpadding=2 align=center width=95%>");
   puts ("<thead>");
@@ -366,6 +389,20 @@ static void showGeneInformation (char *dataSet, char *annotationSet, char *geneI
   puts ("</body>");
   puts ("</html>");
   fflush (stdout);  
+}
+
+
+
+static void showGeneInformation (char *dataSet, char *annotationSet, char *geneId)
+{
+  showInformation (dataSet,annotationSet,geneId,"coding");
+}
+
+
+
+static void showNonCodingInformation (char *dataSet, char *annotationSet, char *geneId)
+{
+  showInformation (dataSet,annotationSet,geneId,"nonCoding");
 }
 
 
@@ -498,10 +535,15 @@ int main (int argc, char *argv[])
   char *dataSet = NULL;
   char *geneId = NULL;
   char *annotationSet = NULL;
+  char *type = NULL;
   int index;
 
   cgiInit();
   cgiHeader("text/html");
+  puts ("Hello");
+  fflush (stdout);
+  return 0;
+
   util_configInit ("VAT_CONFIG_FILE");
   queryString = cgiGet2Post();
   if (queryString[0] == '\0') {
@@ -526,6 +568,9 @@ int main (int argc, char *argv[])
     else if (strEqual (iPtr,"geneId")) {
       strReplace (&geneId,vPtr);
     }
+    else if (strEqual (iPtr,"type")) {
+      strReplace (&type,vPtr);
+    }
     else if (strEqual (iPtr,"index")) {
       index = atoi (vPtr);
     }
@@ -534,10 +579,13 @@ int main (int argc, char *argv[])
     }
   }
   if (strEqual (mode,"process")) {
-    processData (dataSet,annotationSet);
+    processData (dataSet,annotationSet,type);
   }
   else if (strEqual (mode,"showGene")) {
     showGeneInformation (dataSet,annotationSet,geneId);
+  }
+  else if (strEqual (mode,"showNonCoding")) {
+    showNonCodingInformation (dataSet,annotationSet,geneId);
   }
   else if (strEqual (mode,"showGenotypes")) {
     showGenotypes (dataSet,geneId,index);

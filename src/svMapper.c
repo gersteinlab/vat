@@ -76,13 +76,12 @@ int main (int argc, char *argv[])
           if (overlap > 0) {
             totalOverlap += overlap;
           }
-          j++;
         }
         if (totalOverlap == 0) {
           continue;
         }
         currAlteration = arrayp (alterations,arrayMax (alterations),Alteration);
-        util_addAlteration (currAlteration,currInterval->name,(totalOverlap % 3) == 0 ? "svNFS" : "svFS",currInterval,position);
+        util_addAlteration (currAlteration,currInterval->name, "svOverlap",currInterval,position,totalOverlap);
       }
       if (arrayMax (alterations) == 0) {
         continue;
@@ -94,14 +93,14 @@ int main (int argc, char *argv[])
         currAlteration = arrp (alterations,i,Alteration);
         stringAppendf (buffer,"%s%d:%s:%s:%c:%s",stringLen (buffer) == 0 ? "" : ",",h + 1,currAlteration->geneName,currAlteration->geneId,currAlteration->strand,currAlteration->type);
         stringClear (disabledTranscripts);
-        stringAppendf (disabledTranscripts,"%s:%s:%d",currAlteration->transcriptName,currAlteration->transcriptId,currAlteration->transcriptLength);
+        stringAppendf (disabledTranscripts,"%s:%s:%d_%d",currAlteration->transcriptName,currAlteration->transcriptId,currAlteration->transcriptLength,currAlteration->overlap);
         numDisabledTranscripts = 1;
         j = i + 1;
         while (j < arrayMax (alterations)) {
           nextAlteration = arrp (alterations,j,Alteration);
           if (strEqual (currAlteration->geneId,nextAlteration->geneId) && 
               strEqual (currAlteration->type,nextAlteration->type)) {
-            stringAppendf (disabledTranscripts,":%s:%s:%d",nextAlteration->transcriptName,nextAlteration->transcriptId,nextAlteration->transcriptLength);
+            stringAppendf (disabledTranscripts,":%s:%s:%d_%d",nextAlteration->transcriptName,nextAlteration->transcriptId,nextAlteration->transcriptLength,currAlteration->overlap);
             numDisabledTranscripts++;
           }
           else {

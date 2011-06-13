@@ -98,7 +98,7 @@ int main (int argc, char *argv[])
   puts (vcf_writeMetaData ());
   puts (vcf_writeColumnHeaders ());
   while (currVcfEntry = vcf_nextEntry ()) {
-    if (vcf_isInvalidAlternateAllele (currVcfEntry)) {
+    if (vcf_isInvalidEntry (currVcfEntry)) {
       continue;
     }
     flag1 = 0;
@@ -144,39 +144,39 @@ int main (int argc, char *argv[])
         }
         currAlteration = arrayp (alterations,arrayMax (alterations),Alteration);
         if (numOverlaps > 1) {
-          util_addAlteration (currAlteration,currInterval->name,"multiExonHit",currInterval,position);
+          util_addAlteration (currAlteration,currInterval->name,"multiExonHit",currInterval,position,0);
           continue;
         }
         else if (numOverlaps == 1 && overlapMode == OVERLAP_SPLICE) {
-          util_addAlteration (currAlteration,currInterval->name,"spliceOverlap",currInterval,position);
+          util_addAlteration (currAlteration,currInterval->name,"spliceOverlap",currInterval,position,0);
           continue;
         }
         else if (numOverlaps == 1 && overlapMode == OVERLAP_START) {
-          util_addAlteration (currAlteration,currInterval->name,"startOverlap",currInterval,position);
+          util_addAlteration (currAlteration,currInterval->name,"startOverlap",currInterval,position,0);
           continue;
         }
         else if (numOverlaps == 1 && overlapMode == OVERLAP_END) {
-          util_addAlteration (currAlteration,currInterval->name,"endOverlap",currInterval,position);
+          util_addAlteration (currAlteration,currInterval->name,"endOverlap",currInterval,position,0);
           continue;
         }
         else if (numOverlaps == 1 && overlapMode == OVERLAP_FULLY_CONTAINED && altLength > refLength) {
           if ((sizeIndel % 3) == 0) {
-            util_addAlteration (currAlteration,currInterval->name,"insertionNFS",currInterval,position);
+            util_addAlteration (currAlteration,currInterval->name,"insertionNFS",currInterval,position,0);
           }
           else {
-            util_addAlteration (currAlteration,currInterval->name,"insertionFS",currInterval,position);
+            util_addAlteration (currAlteration,currInterval->name,"insertionFS",currInterval,position,0);
           }
         }
         else if (numOverlaps == 1 && overlapMode == OVERLAP_FULLY_CONTAINED && altLength < refLength) {
           if ((sizeIndel % 3) == 0) {
-            util_addAlteration (currAlteration,currInterval->name,"deletionNFS",currInterval,position);
+            util_addAlteration (currAlteration,currInterval->name,"deletionNFS",currInterval,position,0);
           }
           else {
-            util_addAlteration (currAlteration,currInterval->name,"deletionFS",currInterval,position);
+            util_addAlteration (currAlteration,currInterval->name,"deletionFS",currInterval,position,0);
           }
         }
         else if (numOverlaps == 1 && overlapMode == OVERLAP_FULLY_CONTAINED && altLength == refLength) {
-          util_addAlteration (currAlteration,currInterval->name,"substitution",currInterval,position);
+          util_addAlteration (currAlteration,currInterval->name,"substitution",currInterval,position,0);
         }
         else {
           die ("Unexpected type: %d %s %s %s",

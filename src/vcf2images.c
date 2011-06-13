@@ -27,7 +27,7 @@
 
 
 
-static char *types[] = {"spliceOverlap","synonymous","nonsynonymous","prematureStop","removedStop","insertionNFS","insertionFS","deletionNFS","deletionFS"};
+static char *types[] = {"spliceOverlap","synonymous","nonsynonymous","prematureStop","removedStop","insertionNFS","insertionFS","deletionNFS","deletionFS","svOverlap"};
 
 
 
@@ -39,7 +39,8 @@ typedef struct {
 
 
 typedef struct {
-  int pixel;
+  int pixelStart;
+  int pixelEnd;
   int color;
 } TickMark;
 
@@ -59,6 +60,7 @@ static Array generateColors (gdImagePtr im)
   array (colors,arrayMax (colors),int) = gdImageColorAllocate (im,0,0,255);
   array (colors,arrayMax (colors),int) = gdImageColorAllocate (im,0,0,128);
   array (colors,arrayMax (colors),int) = gdImageColorAllocate (im,160,32,240);
+  array (colors,arrayMax (colors),int) = gdImageColorAllocate (im,80,80,80);
   if (arrayMax (colors) != NUMELE (types)) {
     die ("Number of colors and types do not match!");
   }
@@ -275,13 +277,15 @@ static Array getTickMarks (Interval *currInterval, char *transcriptId, VcfGene *
         }
         if (strEqual (currVcfAnnotation->type,"spliceOverlap")) {
           currTickMark = arrayp (tickMarks,arrayMax (tickMarks),TickMark);
-          currTickMark->pixel = getSplicePixel (currInterval,currVcfEntry,imageCoordinates);
+          currTickMark->pixelStart = getSplicePixel (currInterval,currVcfEntry,imageCoordinates);
+          currTickMark->pixelEnd = currTickMark->pixelStart + WIDTH_TICK - 1;
           currTickMark->color = type2color (colors,currVcfAnnotation->type);
           continue;
         }
         if (strEqual (currVcfAnnotation->type,"multiExonHit") ||
             strEqual (currVcfAnnotation->type,"startOverlap") ||
-            strEqual (currVcfAnnotation->type,"endOverlap")) {
+            strEqual (currVcfAnnotation->type,"endOverlap") ||
+            strEqual (currVcfAnnotation->type,"svOverlap")) {
           continue;
         }
         array (transcriptVcfEntryPointers,arrayMax (transcriptVcfEntryPointers),VcfEntry*) = currVcfEntry;
@@ -302,8 +306,95 @@ static Array getTickMarks (Interval *currInterval, char *transcriptId, VcfGene *
       position = genomicPosition2pixel (imageCoordinates,currVcfEntry->position - 1);
       if (start <= position && position <= end) {
          currTickMark = arrayp (tickMarks,arrayMax (tickMarks),TickMark);
-         currTickMark->pixel = position;
+         currTickMark->pixelStart = position;
+         currTickMark->pixelEnd = currTickMark->pixelStart + WIDTH_TICK - 1;
          currTickMark->color = type2color (colors,textItem (types,j));
+      }
+    }
+  }
+  return tickMarks;
+}
+
+
+
+static Array getSVTickMarks (Interval *currInterval, char *transcriptId, VcfGene *currVcfGene, 
+                             Array imageCoordinates, Array colors)
+{
+  VcfEntry *currVcfEntry;
+  VcfAnnotation *currVcfAnnotation;
+  int i,j,k;
+  static Array transcriptVcfEntryPointers = NULL;
+  static Array tickMarks = NULL;
+  SubInterval *currSubInterval;
+  int start,end,position;
+  TickMark *currTickMark;
+  int count;
+  int sizeSV;
+
+  if (transcriptVcfEntryPointers == NULL) {
+    transcriptVcfEntryPointers = arrayCreate (100,VcfEntry*);
+  }
+  else {
+    arrayClear (transcriptVcfEntryPointers);
+  }
+  if (tickMarks == NULL) {
+    tickMarks = arrayCreate (100,TickMark);
+  }
+  else {
+    arrayClear (tickMarks); 
+  }
+  for (i = 0; i < arrayMax (currVcfGene->vcfEntries); i++) {
+    currVcfEntry = arru (currVcfGene->vcfEntries,i,VcfEntry*);
+    if (vcf_hasMultipleAlternateAlleles (currVcfEntry)) {
+      continue;
+    }
+    count = 0;
+    for (j = 0; j < arrayMax (currVcfEntry->annotations); j++) {
+      currVcfAnnotation = arrp (currVcfEntry->annotations,j,VcfAnnotation);
+      if (strEqual (currVcfGene->geneId,currVcfAnnotation->geneId)) {
+        k = 0; 
+        while (k < arrayMax (currVcfAnnotation->transcriptIds)) {
+          if (strEqual (textItem (currVcfAnnotation->transcriptIds,k),transcriptId)) {
+            break;
+          }
+          k++;
+        }
+        if (k == arrayMax (currVcfAnnotation->transcriptIds)) {
+          continue;
+        }
+        if (!strEqual (currVcfAnnotation->type,"svOverlap")) {
+          continue;
+        }
+        array (transcriptVcfEntryPointers,arrayMax (transcriptVcfEntryPointers),VcfEntry*) = currVcfEntry;
+        count++;
+      }
+    }
+    if (count > 1) {
+      warn ("More than one trancripts per event:\n%s",vcf_writeEntry (currVcfEntry));
+    }
+  }
+  for (i = 0; i < arrayMax (currInterval->subIntervals); i++) {
+    currSubInterval = arrp (currInterval->subIntervals,i,SubInterval);
+    start = genomicPosition2pixel (imageCoordinates,currSubInterval->start);
+    end = genomicPosition2pixel (imageCoordinates,currSubInterval->end - 1);
+    for (j = 0; j < arrayMax (transcriptVcfEntryPointers); j++) {
+      currVcfEntry = arru (transcriptVcfEntryPointers,j,VcfEntry*);
+      sizeSV = strlen (currVcfEntry->referenceAllele) - strlen (currVcfEntry->alternateAllele); // this is just for deletions
+      if (rangeIntersection (currSubInterval->start,currSubInterval->end,currVcfEntry->position,currVcfEntry->position + sizeSV) > 0) {
+         currTickMark = arrayp (tickMarks,arrayMax (tickMarks),TickMark);
+         if ((currVcfEntry->position - 1) < currSubInterval->start) {
+           currTickMark->pixelStart = start;
+         }
+         else {
+           currTickMark->pixelStart = genomicPosition2pixel (imageCoordinates,currVcfEntry->position - 1);
+         }
+         if ((currVcfEntry->position - 1 + sizeSV) < (currSubInterval->end - 1)) {
+           currTickMark->pixelEnd = genomicPosition2pixel (imageCoordinates,currVcfEntry->position - 1 + sizeSV);
+         }
+         else {
+           currTickMark->pixelEnd = end;
+         }
+         currTickMark->color = type2color (colors,"svOverlap");
       }
     }
   }
@@ -356,13 +447,23 @@ static void drawAnnotations (gdImagePtr im, VcfGene *currVcfGene, Array imageCoo
                               MARGIN_TOP + yCoordinate + SIZE_ANNOTATION,
                               baseColor);
     }
+    tickMarks = getSVTickMarks (currInterval,transcriptId,currVcfGene,imageCoordinates,colors);
+    for (j = 0; j < arrayMax (tickMarks); j++) {
+      currTickMark = arrp (tickMarks,j,TickMark);
+      gdImageFilledRectangle (im,
+                              MARGIN_LEFT + currTickMark->pixelStart,
+                              MARGIN_TOP + yCoordinate,
+                              MARGIN_LEFT + currTickMark->pixelEnd,
+                              MARGIN_TOP + yCoordinate + SIZE_ANNOTATION,
+                              currTickMark->color);
+    }
     tickMarks = getTickMarks (currInterval,transcriptId,currVcfGene,imageCoordinates,colors);
     for (j = 0; j < arrayMax (tickMarks); j++) {
       currTickMark = arrp (tickMarks,j,TickMark);
       gdImageFilledRectangle (im,
-                              MARGIN_LEFT + currTickMark->pixel,
+                              MARGIN_LEFT + currTickMark->pixelStart,
                               MARGIN_TOP + yCoordinate,
-                              MARGIN_LEFT + currTickMark->pixel + WIDTH_TICK - 1,
+                              MARGIN_LEFT + currTickMark->pixelEnd,
                               MARGIN_TOP + yCoordinate + SIZE_ANNOTATION,
                               currTickMark->color);
     }
@@ -388,7 +489,7 @@ static void generateLegend (char *path)
     pixels += (stringLen (buffer) * gdFontGetMediumBold ()->w);
   }
   im = gdImageCreate (pixels + 2 * LEGEND_MARGIN,3 * LEGEND_MARGIN + 2 * gdFontGetMediumBold ()->h);
-  gdImageColorAllocate (im,166,166,166);
+  gdImageColorAllocate (im,140,140,140);
   black = gdImageColorAllocate (im,0,0,0);
   colors = generateColors (im);
   stringPrintf (buffer,"LEGEND FOR VARIATION TYPES:");

@@ -288,9 +288,12 @@ Array vcf_parse (void)
 
 
 
-int vcf_isInvalidAlternateAllele (VcfEntry *currEntry) 
+int vcf_isInvalidEntry (VcfEntry *currEntry) 
 {
-  if (strchr (currEntry->alternateAllele,'.')) {
+  if (strchr (currEntry->alternateAllele,'.') || strchr (currEntry->alternateAllele,'<') || strchr (currEntry->alternateAllele,'>')) {
+    return 1;
+  }
+  if (strchr (currEntry->referenceAllele,'.') || strchr (currEntry->referenceAllele,'<') || strchr (currEntry->referenceAllele,'>')) {
     return 1;
   }
   return 0;
@@ -589,7 +592,8 @@ int vcf_getAllelesFromGenotype (char *genotype, int *allele1, int *allele2)
   strReplace (&copy,genotype);
   pos = strpbrk (copy,"|/");
   if (pos == NULL) {
-    die ("Unexpected genotype: %s",genotype);
+    warn ("Unexpected genotype: %s",genotype);
+    return 0;
   }
   *pos = '\0';
   *allele1 = atoi (copy);

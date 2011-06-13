@@ -10,7 +10,12 @@
 static char *headers[] = {"Number of synonymous SNPs","Number of nonsynonymous SNPs",
                           "Number of prematureStop SNPs","Number of removedStop SNPs",
                           "Number of splice overlaps","Number of frameshift indels",
-                          "Number of non-frameshift indels","Number of LOF variants"};
+                          "Number of non-frameshift indels",
+                          "Number of SV overlaps",
+                          "Number of LOF variants",
+                          "Number of non-coding variants"};
+
+
 static int printFlags[NUMELE (headers)];
 
 
@@ -106,10 +111,12 @@ int main (int argc, char *argv[])
         vcf_getCountsForVcfAnnotationType (currVcfGene,"deletionFS");
       currRow->values[6] = vcf_getCountsForVcfAnnotationType (currVcfGene,"insertionNFS") + \
         vcf_getCountsForVcfAnnotationType (currVcfGene,"deletionNFS");
-      currRow->values[7] = vcf_getCountsForVcfAnnotationType (currVcfGene,"insertionFS") + \
+      currRow->values[7] = vcf_getCountsForVcfAnnotationType (currVcfGene,"svOverlap");
+      currRow->values[8] = vcf_getCountsForVcfAnnotationType (currVcfGene,"insertionFS") + \
         vcf_getCountsForVcfAnnotationType (currVcfGene,"deletionFS") + \
         vcf_getCountsForVcfAnnotationType (currVcfGene,"spliceOverlap") + \
         vcf_getCountsForVcfAnnotationType (currVcfGene,"prematureStop");
+      currRow->values[9] = vcf_getCountsForVcfAnnotationType (currVcfGene,"ncVariant");
     }
     for (i = 0; i < arrayMax (vcfEntries); i++) {
       currVcfEntry = arrp (vcfEntries,i,VcfEntry);
@@ -153,11 +160,17 @@ int main (int argc, char *argv[])
                   strEqual (currVcfAnnotation->type,"deletionNFS")) {
                 currRow->values[6]++;
               }
+              if (strEqual (currVcfAnnotation->type,"svOverlap")) {
+                currRow->values[7]++;
+              }
               if (strEqual (currVcfAnnotation->type,"insertionFS")||
                   strEqual (currVcfAnnotation->type,"deletionFS") ||
                   strEqual (currVcfAnnotation->type,"prematureStop") ||
                   strEqual (currVcfAnnotation->type,"spliceOverlap")) {
-                currRow->values[7]++;
+                currRow->values[8]++;
+              }
+              if (strEqual (currVcfAnnotation->type,"ncVariant")) {
+                currRow->values[9]++;
               }
             }
           }
