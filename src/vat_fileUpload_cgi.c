@@ -136,6 +136,7 @@ int main (int argc, char *argv[])
                     util_getConfigValue ("WEB_DATA_DIR"),getpid (),util_getConfigValue ("WEB_DATA_DIR"),getpid ());
     }
     else {
+      fflush (stdout);
       stringPrintf (cmd,"%s/%s %s/%s.interval %s/%s.fa < %s/vat.%d.raw.vcf > %s/vat.%d.vcf",
                     util_getConfigValue ("WEB_DATA_DIR"),program,
                     util_getConfigValue ("WEB_DATA_DIR"),annotationFile,

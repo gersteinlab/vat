@@ -60,7 +60,7 @@ static Array generateColors (gdImagePtr im)
   array (colors,arrayMax (colors),int) = gdImageColorAllocate (im,0,0,255);
   array (colors,arrayMax (colors),int) = gdImageColorAllocate (im,0,0,128);
   array (colors,arrayMax (colors),int) = gdImageColorAllocate (im,160,32,240);
-  array (colors,arrayMax (colors),int) = gdImageColorAllocate (im,80,80,80);
+  array (colors,arrayMax (colors),int) = gdImageColorAllocate (im,205,133,65);
   if (arrayMax (colors) != NUMELE (types)) {
     die ("Number of colors and types do not match!");
   }

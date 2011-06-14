@@ -349,8 +349,8 @@ static void showInformation (char *dataSet, char *annotationSet, char *geneId, c
         puts ("<tr align=center>");
         printf ("<td>%s</td>\n",currVcfEntry->chromosome);
         printf ("<td>%d</td>\n",currVcfEntry->position);
-        printf ("<td>%s</td>\n",currVcfEntry->referenceAllele);
-        printf ("<td>%s</td>\n",currVcfEntry->alternateAllele);
+        printf ("<td>%s</td>\n",strlen (currVcfEntry->referenceAllele) > 50 ? "Length > 50 nucleotides" : currVcfEntry->referenceAllele);
+        printf ("<td>%s</td>\n",strlen (currVcfEntry->alternateAllele) > 50 ? "Length > 50 nucleotides" : currVcfEntry->alternateAllele); 
         printf ("<td>%s</td>\n",hyperlinkId (currVcfEntry->id));
         printf ("<td>%s</td>\n",currVcfAnnotation->type);
         printf ("<td>%s</td>\n",currVcfAnnotation->fraction);
