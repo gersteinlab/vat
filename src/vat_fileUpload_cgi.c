@@ -21,7 +21,8 @@ int main (int argc, char *argv[])
   Stringa cmd;
   char *program;
   char *annotationFile;
-  
+  char *vcfFile;
+
   cgiInit ();
   cgiHeader("text/html");
   util_configInit ("VAT_CONFIG_FILE");
@@ -32,27 +33,36 @@ int main (int argc, char *argv[])
     puts ("<title>VAT</title>\n");
     puts ("</head>");
     puts ("<body>");
+    puts ("<h4><center>[<a href=http://vat.gersteinlab.org>VAT Main Page</a>]</center></h4>");
     puts ("<h1>Variation Annotation Tool (VAT)</h1>");
     printf ("<form action=%s/vat_fileUpload_cgi?process method=post ENCTYPE=\"multipart/form-data\">\n",util_getConfigValue ("WEB_URL_CGI"));
     puts ("<br>");
-    puts ("VCF file upload:&nbsp;&nbsp;");
+    puts ("<b>VCF file upload</b> (Examples<sup>&Dagger;</sup>: [<a href=http://homes.gersteinlab.org/people/lh372/VAT/1000genomes_pilot_snps.sample.vcf>SNPs</a>] [<a href=http://homes.gersteinlab.org/people/lh372/VAT/1000genomes_pilot_indels.sample.vcf>Indels</a>] [<a href=http://homes.gersteinlab.org/people/lh372/VAT/1000genomes_pilot_svs.sample.vcf>SVs</a>]):&nbsp;&nbsp;");
     puts ("<input type=file name=upFile>");
     puts ("<br><br><br>");
-    puts ("Variant type:&nbsp;&nbsp;");
+    puts ("<b>Variant type</b>:&nbsp;&nbsp;");
     puts ("<select name=variantType>");
     puts ("<option value=snpMapper checked>SNPs</option>");
     puts ("<option value=indelMapper>Indels</option>");
+    puts ("<option value=svMapper>SVs</option>");
     puts ("</select>");
     puts ("<br><br><br>");
-    puts ("Annotation file:&nbsp;&nbsp;");
+    puts ("<b>Annotation file</b>:&nbsp;&nbsp;");
     puts ("<select name=annotationFile>");
     puts ("<option value=gencode3b>GENCODE (version 3b; hg18)</option>");
     puts ("<option value=gencode3c>GENCODE (version 3c; hg19)</option>");
+    puts ("<option value=gencode4>GENCODE (version 4; hg19)</option>");
+    puts ("<option value=gencode5>GENCODE (version 5; hg19)</option>");
+    puts ("<option value=gencode6>GENCODE (version 6; hg19)</option>");
+    puts ("<option value=gencode7>GENCODE (version 7; hg19)</option>");
     puts ("</select>");
     puts ("<br><br><br>");
     puts ("<input type=submit value=Submit>");
     puts ("<input type=reset value=Reset>");
     puts ("</form>");
+    puts ("<br><br><br><br><br><br><br>");
+    puts ("_________________<br>");
+    puts ("<fn><sup>&Dagger;</sup> - The example files were obtained from the <a href=http://www.1000genomes.org>1000 Genomes Pilot Project</a>. The genome coordinates are based on hg18.</fn>");
     puts ("</body>");
     puts ("</html>");
     fflush (stdout);  
@@ -76,22 +86,12 @@ int main (int argc, char *argv[])
     puts ("<h1>");
     printf ("Processing uploaded data <img src=%s/processing.gif id=processing>\n",util_getConfigValue ("WEB_DATA_URL"));
     puts ("</h1>");
-    puts ("<br><br><br>");
-    puts ("Step [1/6]: Writing file... ");
-    fflush (stdout);
-
-    stringPrintf (cmd,"mkdir %s/vat.%d",util_getConfigValue ("WEB_DATA_DIR"),getpid ());
-    hlr_system (string (cmd),0);
- 
-    stringPrintf (buffer,"%s/vat.%d.raw.vcf",util_getConfigValue ("WEB_DATA_DIR"),getpid ());
-    fp = fopen (string (buffer),"w");
-    if (fp == NULL) {
-      die ("Unable to open file: %s",string (buffer));
-    }
+  
+    vcfFile = NULL;
     cgiMpInit();  
     while (cgiMpNext (item,value,fileName,contentType)) {
       if (strEqual (string (item),"upFile")) {
-        fprintf (fp,"%s",string (value));
+        vcfFile = hlr_strdup (string (value));
       }
       else if (strEqual (string (item),"variantType")) {
         program = hlr_strdup (string (value));
@@ -104,6 +104,25 @@ int main (int argc, char *argv[])
       }
     }
     cgiMpDeinit ();
+
+    if (vcfFile[0] == '\0') {
+      puts ("<script type=\"text/javascript\" charset=\"utf-8\">"); 
+      puts ("document.getElementById(\"processing\").style.visibility = \"hidden\"");
+      puts ("</script>");
+      die ("No VCF file uploaded!");
+    }
+    puts ("<br><br><br>");
+    puts ("Step [1/6]: Writing file... ");
+    fflush (stdout);
+
+    stringPrintf (cmd,"mkdir %s/vat.%d",util_getConfigValue ("WEB_DATA_DIR"),getpid ());
+    hlr_system (string (cmd),0);
+    stringPrintf (buffer,"%s/vat.%d.raw.vcf",util_getConfigValue ("WEB_DATA_DIR"),getpid ());
+    fp = fopen (string (buffer),"w");
+    if (fp == NULL) {
+      die ("Unable to open file: %s",string (buffer));
+    }
+    fprintf (fp,"%s",vcfFile);
     fclose (fp);
 
     printf ("<img src=%s/check.png height=15 width=15><br><br><br>\n",util_getConfigValue ("WEB_DATA_URL"));
@@ -152,7 +171,7 @@ int main (int argc, char *argv[])
     hlr_system (string (cmd),0);
    
     printf ("<img src=%s/check.png height=15 width=15><br><br><br>\n",util_getConfigValue ("WEB_DATA_URL"));
-    printf ("[<a href=%s/vat_cgi?mode=process&dataSet=vat.%d&annotationSet=%s>View results</a>]\n",util_getConfigValue ("WEB_URL_CGI"),getpid (),annotationFile);
+    printf ("[<a href=%s/vat_cgi?mode=process&dataSet=vat.%d&annotationSet=%s&type=coding>View results</a>]\n",util_getConfigValue ("WEB_URL_CGI"),getpid (),annotationFile);
 
     puts ("<script type=\"text/javascript\" charset=\"utf-8\">"); 
     puts ("document.getElementById(\"processing\").style.visibility = \"hidden\"");
