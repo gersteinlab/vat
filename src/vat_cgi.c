@@ -242,7 +242,9 @@ static void showInformation (char *dataSet, char *annotationSet, char *geneId, c
   puts ("<center><b>");
   printf ("[<a href=http://genome.ucsc.edu/cgi-bin/hgTracks?clade=mammal&org=human&db=hg18&position=%s:%d-%d target=external>UCSC genome browser</a>]&nbsp;&nbsp;&nbsp;\n",currInterval->chromosome,start - 1000,end + 1000);
   printf ("[<a href=http://may2009.archive.ensembl.org/Homo_sapiens/Gene/Summary?g=%s target=external>Ensembl genome browser</a>]&nbsp;&nbsp;&nbsp;\n",geneId);
-  printf ("[<a href=http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s target=external>Gene Cards</a>]&nbsp;&nbsp;&nbsp;\n",currVcfGene->geneName);
+  if (strEqual (type,"coding")) {
+    printf ("[<a href=http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s target=external>Gene Cards</a>]&nbsp;&nbsp;&nbsp;\n",currVcfGene->geneName);
+  }
   puts ("</b></center>");
   puts ("<br><br><br>");
 
@@ -282,7 +284,7 @@ static void showInformation (char *dataSet, char *annotationSet, char *geneId, c
   }
   puts ("</tbody>");
   puts ("</table>");
-  puts ("<br><br><br>"); 
+  puts ("<br><br>"); 
 
   if (strEqual (type,"coding")) {
     puts ("<h3><center>Graphical representation of genetic variants</center></h3>");
@@ -290,14 +292,14 @@ static void showInformation (char *dataSet, char *annotationSet, char *geneId, c
     puts ("<br><br>");
     printf ("<center><img src=%s/%s/legend.png></center>\n",util_getConfigValue ("WEB_DATA_URL"),dataSet);
     puts ("<br><br><br>");
-
+    fflush (stdout);
   }
   else if (strEqual (type,"nonCoding")) {
     puts ("<h3><center>Graphical representation of the secondary structure</center></h3>");
-    printf ("<center><img src=%s/%s/%s_ref.svg></center>\n",util_getConfigValue ("WEB_DATA_URL"),dataSet,geneId);
-    puts ("<br><br>");
-    printf ("<center><img src=%s/%s/%s_alt.svg></center>\n",util_getConfigValue ("WEB_DATA_URL"),dataSet,geneId);
-    puts ("<br><br><br>");
+    puts ("<center><h4>Reference</center></h4>");
+    printf ("<center><embed src=%s/%s/%s_ref.svg height=450px width=1000px></center>\n",util_getConfigValue ("WEB_DATA_URL"),dataSet,geneId);
+    puts ("<center><h4>Variants</center></h4>");
+    printf ("<center><embed src=%s/%s/%s_alt.svg height=450px width=1000px></center>\n",util_getConfigValue ("WEB_DATA_URL"),dataSet,geneId);
   }
   else {
     die ("Unknown type: %s",type);
@@ -540,10 +542,6 @@ int main (int argc, char *argv[])
 
   cgiInit();
   cgiHeader("text/html");
-  puts ("Hello");
-  fflush (stdout);
-  return 0;
-
   util_configInit ("VAT_CONFIG_FILE");
   queryString = cgiGet2Post();
   if (queryString[0] == '\0') {
