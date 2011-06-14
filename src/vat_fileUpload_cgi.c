@@ -129,9 +129,19 @@ int main (int argc, char *argv[])
     puts ("Step [2/6]: Annotating variants... ");
     fflush (stdout);
 
-    stringPrintf (cmd,"%s/%s %s/%s.interval %s/%s.fa < %s/vat.%d.raw.vcf > %s/vat.%d.vcf",
-                  util_getConfigValue ("WEB_DATA_DIR"),program,util_getConfigValue ("WEB_DATA_DIR"),annotationFile,util_getConfigValue ("WEB_DATA_DIR"),annotationFile,
-                  util_getConfigValue ("WEB_DATA_DIR"),getpid (),util_getConfigValue ("WEB_DATA_DIR"),getpid ());
+    if (strEqual (program,"svMapper")) {
+      stringPrintf (cmd,"%s/%s %s/%s.interval < %s/vat.%d.raw.vcf > %s/vat.%d.vcf",
+                    util_getConfigValue ("WEB_DATA_DIR"),program,
+                    util_getConfigValue ("WEB_DATA_DIR"),annotationFile,
+                    util_getConfigValue ("WEB_DATA_DIR"),getpid (),util_getConfigValue ("WEB_DATA_DIR"),getpid ());
+    }
+    else {
+      stringPrintf (cmd,"%s/%s %s/%s.interval %s/%s.fa < %s/vat.%d.raw.vcf > %s/vat.%d.vcf",
+                    util_getConfigValue ("WEB_DATA_DIR"),program,
+                    util_getConfigValue ("WEB_DATA_DIR"),annotationFile,
+                    util_getConfigValue ("WEB_DATA_DIR"),annotationFile,
+                    util_getConfigValue ("WEB_DATA_DIR"),getpid (),util_getConfigValue ("WEB_DATA_DIR"),getpid ());
+    }
     hlr_system (string (cmd),0);
 
     printf ("<img src=%s/check.png height=15 width=15><br><br><br>\n",util_getConfigValue ("WEB_DATA_URL"));
