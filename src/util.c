@@ -10,9 +10,9 @@ void util_processTranscriptLine (char *transcriptLine, char **geneId, char **tra
 {
   Texta tokens;
 
-  tokens = textStrtokP (transcriptLine,"|");
+  tokens = textFieldtokP (transcriptLine,"|");
   if (arrayMax (tokens) != 4) {
-    die ("Unexpected interval name: %s\nRequire: geneId|transcriptId|geneName|transcriptName");
+    die ("Unexpected interval name: %s\nRequire: geneId|transcriptId|geneName|transcriptName",transcriptLine);
   }
   strReplace (geneId,textItem (tokens,0));
   strReplace (transcriptId,textItem (tokens,1));
