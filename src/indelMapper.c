@@ -17,7 +17,7 @@
 
 
 
-static void addSubstitution (Alteration *currAlteration, char* proteinSequenceBeforeIndel, char *proteinSequenceAfterIndel) 
+static void addSubstitution (Alteration *currAlteration, char* proteinSequenceBeforeIndel, char *proteinSequenceAfterIndel, int indelOffset) 
 {
   int lengthBefore,lengthAfter;
   static Stringa buffer = NULL;
@@ -36,13 +36,17 @@ static void addSubstitution (Alteration *currAlteration, char* proteinSequenceBe
       stringAppendf (buffer,"%c",proteinSequenceAfterIndel[index + i]);
     }
   }
-  if (lengthBefore > lengthAfter) {
+  else if (lengthBefore > lengthAfter) {
     stringPrintf (buffer,"%d_",index + 1);
     for (i = 0; i <= diff; i++) {
       stringAppendf (buffer,"%c",proteinSequenceBeforeIndel[index + i]);
     }
     stringAppendf (buffer,"->%c",proteinSequenceAfterIndel[index]);
   }
+  else {
+    stringPrintf (buffer,"%d_%s->",index,subString (proteinSequenceBeforeIndel,index - 1,index + (int)ceil ((double)indelOffset / 3)));
+    stringAppendf (buffer,"%s",subString (proteinSequenceAfterIndel,index - 1,index + (int)ceil ((double)indelOffset / 3)));
+  } 
   currAlteration->substitution = hlr_strdup (string (buffer));
 }
 
@@ -108,9 +112,6 @@ int main (int argc, char *argv[])
     for (h = 0; h < arrayMax (alternateAlleles); h++) {
       refLength = strlen (currVcfEntry->referenceAllele);
       altLength = strlen (textItem (alternateAlleles,h));
-      if (altLength == refLength) {
-        continue;
-      }
       sizeIndel = abs (refLength - altLength);
       indelOffset = MAX (refLength,altLength) - 1; 
       util_clearAlterations (alterations);
@@ -183,10 +184,11 @@ int main (int argc, char *argv[])
                currVcfEntry->position,currVcfEntry->chromosome,
                currVcfEntry->referenceAllele,currVcfEntry->alternateAllele);
         }
-        if ((sizeIndel % 3) != 0) {
+        if ((sizeIndel % 3) != 0 && altLength != refLength) { 
           continue;
         }
-        // Only run the remaining block of code if the indel is fully contained (insertion or deletion) AND does not cause a frameshift
+        // Only run the remaining block of code if the indel is fully contained (insertion or deletion) AND does not cause a frameshift OR
+        // if it is a substitution that is fully contained in the coding sequence
         stringPrintf (buffer,"%s|%s|%c|",currInterval->name,currInterval->chromosome,currInterval->strand);
         for (j = 0; j < arrayMax (currInterval->subIntervals); j++) {
           currSubInterval = arrp (currInterval->subIntervals,j,SubInterval);
@@ -217,7 +219,9 @@ int main (int argc, char *argv[])
               continue;
             }
             else {
-              die ("Unexpected event: altLength == refLength");
+              stringCat (buffer,textItem (alternateAlleles,h));
+              j = j + altLength;
+              continue;
             }
           }
           stringCatChar (buffer,sequenceBeforeIndel[j]);
@@ -226,11 +230,7 @@ int main (int argc, char *argv[])
         util_destroyCoordinates (coordinates);
         proteinSequenceBeforeIndel = hlr_strdup (util_translate (currInterval,sequenceBeforeIndel));
         proteinSequenceAfterIndel = hlr_strdup (util_translate (currInterval,string (buffer)));
-        if (overlapMode == OVERLAP_FULLY_CONTAINED && strlen (proteinSequenceBeforeIndel) == strlen (proteinSequenceAfterIndel) && sizeIndel >= 3) {
-          die ("Expected different size! %s, %d, %s, %s %s",currVcfEntry->chromosome,position,currVcfEntry->referenceAllele,textItem (alternateAlleles,h),currInterval->name);
-          continue;
-        }
-        addSubstitution (currAlteration,proteinSequenceBeforeIndel,proteinSequenceAfterIndel);
+        addSubstitution (currAlteration,proteinSequenceBeforeIndel,proteinSequenceAfterIndel,indelOffset);
         hlr_free (proteinSequenceBeforeIndel);
         hlr_free (proteinSequenceAfterIndel);
       }
