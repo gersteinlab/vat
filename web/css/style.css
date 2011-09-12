@@ -1,0 +1,9 @@
+body {font:12px Verdana,Arial,Helvetica, sans-serif; color:#2F4F4F; margin:50px 50px 50px 50px;}
+h1 {font-size:32px; font-weight:1200; color:#0E4C92;}
+h2 {font-size:24px; font-weight:1000; color:#0E4C92;}
+h3 {font-size:16px; font-weight:1000; color:#0E4C92;}
+h4 {font-size:12px; font-weight:1000; color:#0E4C92;}
+.note {font-style:italic}
+a       {color:#0000CD; text-decoration:none;}
+a:hover {color:#4B0082; text-decoration:none;}
+table {border-collapse:collapse; font-size:12px;}
