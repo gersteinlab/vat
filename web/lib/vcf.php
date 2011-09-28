@@ -18,7 +18,9 @@
  * @license    ???
  */
 
-require 'interval.php';
+require_once 'util.php';
+require_once 'vatutil.php';
+require_once 'intervalfind.php';
 
 
 /**
@@ -87,25 +89,32 @@ class VCFAnnotation {
 /**
  * Class representing a single entry in a VCF file
  * 
- * @property $chromosome
- * @property $position
- * @property $id
- * @property $reference_allele
- * @property $alternate_allele
- * @property $quality
- * @property $filter
- * @property $info
- * @property $genotype_format
- * @property array $genotypes
- * @property array $annotations
+ * @property int    $entity_id
+ * @property string $chromosome
+ * @property int    $position
+ * @property string $id
+ * @property string $reference_allele
+ * @property string $alternate_allele
+ * @property string $quality
+ * @property string $filter
+ * @property string $info
+ * @property string $genotype_format
+ * @property array  $genotypes
+ * @property array  $annotations
  * 
- * @method bool has_multiple_alternate_alleles()
- * @method bool is_invalid_entry()
- * @method get_allele_information()
+ * @static int $entries
+ * 
+ * @method bool  has_multiple_alternate_alleles()
+ * @method bool  is_invalid_entry()
+ * @method array get_allele_information()
+ * @method array get_alternative_alleles()
+ * 
+ * @static int compare()
  */
 
-class VCFEntry {
+class VCFEntry implements Comparable {
     
+    protected $_entity_id;
     protected $_chromosome;
     protected $_position;
     protected $_id;
@@ -118,11 +127,74 @@ class VCFEntry {
     protected $_genotypes = array();
     protected $_annotations = array();
     
+    /**
+     * Class variable containing number of entries created. This number is 
+     * updated whenever a new VCFEntry object is instantiated
+     * 
+     * @var int
+     */
+    public static $entries = 0;
+    
+    /**
+     * Class constructor
+     */
+    public function __construct($chromosome       = NULL,
+                                $position         = NULL,
+                                $id               = NULL,
+                                $reference_allele = NULL,
+                                $alternate_allele = NULL,
+                                $quality          = NULL,
+                                $filter           = NULL,
+                                $info             = NULL,
+                                $genotype_format  = NULL,
+                                $genotypes        = NULL,
+                                $annotations      = NULL)
+    {
+        $this->_entity_id        = self::$entries;
+        $this->_chromosome       = $chromosome;
+        $this->_position         = $position;
+        $this->_id               = $id;
+        $this->_reference_allele = $reference_allele;
+        $this->_alternate_allele = $alternate_allele;
+        $this->_quality          = $quality;
+        $this->_filter           = $filter;
+        $this->_info             = $info;
+        $this->_genotype_format  = $genotype_format;
+        $this->_genotypes        = $genotypes;
+        $this->_annotations      = $annotations;
+        
+        self::$entries++;
+    }
+    
+    
+    /**
+     * Comparison function compares the entity ID's of the tntries. Analog of
+     * sortVcfEntryPointers() function.
+     * 
+     * @param VCFEntry $a
+     * @param VCFEntry $b
+     * @return int
+     */
+    public static function compare(VCFEntry $a, VCFEntry $b)
+    {
+        return $a->entity_id - $b->entity_id;
+    }
+    
+    /**
+     * Returns true if entry has multiple alternate alleles, false otherwise.
+     * 
+     * @return bool
+     */
     public function has_multiple_alternate_alleles()
     {
         return (strpos($this->_alternate_allele, ',') !== FALSE);
     }
     
+    /**
+     * Returns whether entry is a valid entry
+     * 
+     * @return bool
+     */
     public function is_invalid_entry()
     {
         return (strpos($this->_alternate_allele, '.') !== FALSE || 
@@ -133,6 +205,131 @@ class VCFEntry {
                 strpos($this->_reference_allele, '>') !== FALSE);
     }
     
+    /**
+     * Getter special method
+     */
+    public function __get($key)
+    {
+        return $this->{'_'.$key};
+    }
+    
+    
+    /**
+     * Setter special method
+     */
+    public function __set($key, $value)
+    {
+        $this->{'_'.$key} = $value;
+    }
+    
+    
+    /**
+     * Returns an array containing the allele and total allele counts
+     *  
+     * @param string $group
+     * @param int $allele_number
+     * @return array($allele_count, $total_allele_count)
+     */
+    public function get_allele_information($group, $allele_number)
+    {
+        $allele_count = 0;
+        $total_allele_count = 0;
+        
+        foreach ($this->_genotypes as $curr_vcf_genotype)
+        {
+            if ($curr_vcf_genotype->group != $group)
+                continue;
+            
+            $total_allele_count += 2;
+            list($allele1, $allele2) = VCF::get_alleles_from_genotype($curr_vcf_genotype->genotype);
+            
+            if ($allele1 !== FALSE && $allele2 != FALSE)
+            {
+                if ($allele1 == $allele_number)
+                {
+                    $allele_count++;
+                }
+                if ($allele2 == $allele_number)
+                {
+                    $allele_count++;
+                }
+            }
+        }
+        
+        return array($allele_count, $total_allele_count);
+    }
+    
+    /**
+     * Returns array of alternate alleles
+     * 
+     * @return array
+     */
+    public function get_alternative_alleles()
+    {
+        $tokens = array();
+        
+        if (!$this->has_multiple_alternate_alleles())
+        {
+            array_push($tokens, $this->_alternative_allele);
+        }
+        else 
+        {
+            $copy = $this->_alternative_allele;
+            $aa_tokens = explode($copy, ',');
+            array_merge($tokens, $aa_tokens);
+        }
+        
+        return $tokens;
+    }
+}
+
+/**
+ * VCFGene class
+ * 
+ * @property string $gene_id
+ * @property string $gene_name
+ * @property array $tanscripts
+ * @property array $vcf_entries
+ * 
+ * @method int get_counts_for_vcf_annotation_type()
+ */
+
+class VCFGene {
+    
+    protected $_gene_id;
+    protected $_gene_name;
+    protected $_transcripts = array();
+    protected $_vcf_entries = array();
+    
+    public function __construct($gene_id     = NULL, 
+                                $gene_name   = NULL, 
+                                $transcripts = NULL, 
+                                $vcf_entries = NULL)
+    {
+        $this->_gene_id     = $gene_id;
+        $this->_gene_name   = $gene_name;
+        $this->_transcripts = $transcripts;
+        $this->_vcf_entries = $vcf_entries;
+    }
+    
+    public function get_counts_for_vcf_annotation_type($type)
+    {
+        $count = 0;
+        foreach ($this->_vcf_entries as $curr_vcf_entry)
+        {
+            foreach ($curr_vcf_entry->annotations as $curr_vcf_annotation)
+            {
+                if ($this->_gene_id == $curr_vcf_annotation->gene_id &&
+                    $curr_vcf_annotation->type == type)
+                {
+                        $count++;
+                }
+            }
+        }
+        
+        return $count;
+    }
+    
     public function __get($key)
     {
         return $this->{'_'.$key};
@@ -141,11 +338,6 @@ class VCFEntry {
     public function __set($key, $value)
     {
         $this->{'_'.$key} = $value;
-    }
-    
-    public function get_allele_information()
-    {
-        
     }
 }
 
@@ -165,6 +357,9 @@ class VCFEntry {
  * @method string get_column_header()
  * @method array  get_column_headers()
  * @method array  get_gene_summary
+ * 
+ * @static int   compare_vcf_items_gene_id()
+ * @static array get_allele_information()
  */
 
 class VCF {
@@ -274,8 +469,7 @@ class VCF {
         {
             // XXX Should have better error handling
             die('Unexpected annotation format');
-            //echo 'Unexpected annotation format';
-            //return NULL;
+            // Better to throw exception
         }
         
         return $annotation;
@@ -385,7 +579,7 @@ class VCF {
                 }
                 else 
                 {
-                    $curr_entry->genotype = $this->_process_genotype();
+                    $curr_entry->genotype = $this->_process_genotype($tokens[$i], $i);
                 }
             }
             
@@ -501,18 +695,26 @@ class VCF {
         return $samples;
     }
     
+    public static function compare_vcf_items_gene_id($a, $b)
+    {
+        return strcmp($a['gene_id'], $b['gene_id']);
+    }
+    
     /**
+     * Create an array of VCFGene objects with the gene summary
      * 
+     * @param string $annotation_file
+     * @return array of VCFGene objects
      */
     public function get_gene_summaries($annotation_file)
-    {
+    {   
         if (empty($this->_gene_transcript_entries) ||
             empty($this->_gene_intervals))
         {
-            $intervals = Interval::parse_file($annotation_file);                        // FIXME: Implement
-            // FIXME: sort $intervals
+            $this->_gene_intervals = IntervalFind::parse_file($annotation_file);
+            usort($this->_gene_intervals, array('Interval', 'compare_name'));
             
-            $gene_transcript_entries = Util::get_gene_Transcript_entries($intervals);   // FIXME: Implement
+            $this->_gene_transcript_entries = VAT::get_gene_transcript_entries($intervals);
         }
         
         $vcf_items = array();
@@ -531,21 +733,18 @@ class VCF {
             }
         }
         
-        // FIXME: Sort $curr_vcf_items
-        $vcf_genes = array();
+        usort($curr_vcf_items, array('VCF', 'compare_vcf_items_gene_id'));
         
         $i = 0;
         while ($i < count($vcf_items))
         {
             $curr_vcf_item = $vcf_items[$i];
-            $curr_vcf_gene = array(
-                'transcripts' => array(),
-                'vcf_entries' => array(),
-                'gene_id'     => $curr_vcf_item['gene_id'],
-                'gene_name'   => $curr_vcf_item['gene_name']
-            );
+            $curr_vcf_gene = new VCFGene($curr_vcf_item['gene_id'],
+                                         $curr_vcf_item['gene_name'],
+                                         array(),
+                                         array());
             array_push($vcf_genes, $curr_vcf_gene);
-            array_push($curr_vcf_gene['vcf_entries'], $curr_vcf_item['vcf_entry']);
+            array_push($curr_vcf_gene->vcf_entries, $curr_vcf_item['vcf_entry']);
             
             $j = $i + 1;
             
@@ -555,24 +754,27 @@ class VCF {
                 if ($curr_vcf_item['gene_id'] != $next_vcf_item['gene_id'])
                     break;
                 
-                array_push($curr_vcf_gene['vcf_entries'], $next_vcf_item['vcf_entry']);
+                array_push($curr_vcf_gene->vcf_entries, $next_vcf_item['vcf_entry']);
                 
                 $j++;
             }
             
-            // FIXME: sort $curr_vcf_gene['vcf_entries']
-            // FIXME: uniq $curr_vcf_gene['vcf_entries']
+            usort($curr_vcf_gene->vcf_entries, array('VCFEntry', 'compare'));
+            $curr_vcf_gene->vcf_entries = array_uunique($curr_vcf_gene->vcf_entries, array('VCFEntry', 'compare'));
             
-            $query_strings = Util::get_query_strings_for_gene_id($gene_transcript_entries, $curr_vcf_item['gene_id']);
+            $query_strings = VAT::get_query_strings_for_gene_id($this->_gene_transcript_entries, $curr_vcf_item['gene_id']);
             
             for ($k = 0; $k < count($query_strings); $k++)
             {
                 $test_interval = new Interval();
                 $test_interval->name = $query_strings[$k];
-                if (array_search($needle, $haystack))
+                if (($index = array_usearch($test_interval, $this->_gene_intervals, array('Interval', 'compare_name'))) === FALSE)
                 {
-                    
+                    die ("Expected to find interval: ".$query_strings[$k]);
+                    // XXX: Better to throw exception
                 }
+                
+                array_push($curr_vcf_gene->transcripts, $interval_find->get_interval($index));
             }
             
             $i = $j;
@@ -580,6 +782,20 @@ class VCF {
 
         return $vcf_genes;
     }
-    
+
+    public static function get_alleles_from_genotype($genotype)
+    {
+        if (strstr($genotype, '.'))
+            return FALSE;
+        
+        $pos = strpbrkpos($genotype, '|/');
+        if ($pos == FALSE)
+        {
+            echo 'Unexpected genotype '.$genotype;
+            return FALSE;
+        }
+        
+        return array(substr($genotype, 0, $pos), substr($genotype, $pos + 1));
+    }
 }
 ?>

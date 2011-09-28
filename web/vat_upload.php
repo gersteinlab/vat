@@ -12,8 +12,10 @@
  * @license    ???
  */
 
-require 'lib/util.php';
-require 'lib/aws/sdk.class.php';
+require_once 'lib/config.php';
+require_once 'lib/util.php';
+require_once 'lib/vatutil.php';
+require_once 'lib/aws/sdk.class.php';
 
 /**
  * Globals
@@ -23,12 +25,11 @@ $errors = array(
     'upFile' => "",
 );
 $fatal_error = "";
-$vat_config = array();                                                                // FIXME!!!!
 
 /**
  * 
  */
-function vat_upload_validate_form($files)
+function validate_form($files)
 {
     global $errors;
     
@@ -46,7 +47,7 @@ function vat_upload_validate_form($files)
 /**
  * 
  */
-function vat_upload_write_files($proc_id, $vcf_file)
+function write_files($proc_id, $vcf_file)
 {
     global $vat_config, $fatal_error;
     
@@ -72,7 +73,7 @@ function vat_upload_write_files($proc_id, $vcf_file)
 /**
  * 
  */
-function vat_upload_annotate_variants($proc_id, $program, $annotation_file)
+function annotate_variants($proc_id, $program, $annotation_file)
 {
     global $vat_config, $fatal_error;
     
@@ -100,7 +101,7 @@ function vat_upload_annotate_variants($proc_id, $program, $annotation_file)
 /**
  * 
  */
-function vat_upload_index_files($proc_id)
+function index_files($proc_id)
 {
     global $vat_config, $fatal_error;
     
@@ -120,7 +121,7 @@ function vat_upload_index_files($proc_id)
 /**
  * 
  */
-function vat_upload_create_summary_file($proc_id, $annotation_file)
+function create_summary_file($proc_id, $annotation_file)
 {
     global $vat_config, $fatal_error;
     
@@ -134,7 +135,7 @@ function vat_upload_create_summary_file($proc_id, $annotation_file)
 /**
  * 
  */
-function vat_upload_generate_images($proc_id, $annotation_file)
+function generate_images($proc_id, $annotation_file)
 {
     global $vat_config, $fatal_error;
     
@@ -150,7 +151,7 @@ function vat_upload_generate_images($proc_id, $annotation_file)
 /**
  * 
  */
-function vat_upload_subset_file()
+function subset_file()
 {
     global $vat_config, $fatal_error;
     
@@ -172,7 +173,7 @@ function vat_upload_subset_file()
 <body>
 
 <? if ($_POST): ?>
-	<? $upload_success = vat_upload_validate_form(); ?>
+	<? $upload_success = validate_form(); ?>
 <? endif; ?>
 
 <? if ($upload_success): ?>
@@ -187,7 +188,7 @@ function vat_upload_subset_file()
 		
 		Step [1/6]: Writing file...
 		<? flush(); ?>
-		<? if (!($ret = vat_upload_write_file($proc_id, $vcf_file))): ?>
+		<? if (!($ret = write_file($proc_id, $vcf_file))): ?>
 		    <span class="error">Writing file failed</span>
 		    <? die(); ?>
 		<? endif; ?>
@@ -195,7 +196,7 @@ function vat_upload_subset_file()
 		
 		<h3>Step [2/6]: Annotating variants...</h3>
 		<? flush(); ?>
-		<? if (!($ret = vat_upload_annotate_variants($proc_id, $program, $annotation_file))): ?>
+		<? if (!($ret = annotate_variants($proc_id, $program, $annotation_file))): ?>
 		    <span class="error">Annotating variants failed</span>
 		    <? die(); ?>
 		<? endif; ?>
@@ -203,7 +204,7 @@ function vat_upload_subset_file()
 		
 		<h3>Step [3/6]: Indexing files...</h3>
 		<? flush(); ?>
-		<? if (!($ret = vat_upload_index_files($proc_id))): ?>
+		<? if (!($ret = index_files($proc_id))): ?>
 		    <span class="error">Indexing files failed</span>
 		    <? die(); ?>
 		<? endif; ?>
@@ -211,7 +212,7 @@ function vat_upload_subset_file()
 		
 		<h3>Step [4/6]: Creating variant summay file...</h3>
 		<? flush(); ?>
-		<? if (!($ret = vat_upload_create_summary_file($proc_id, $annotation_file))): ?>
+		<? if (!($ret = create_summary_file($proc_id, $annotation_file))): ?>
 		    <span class="error">Creating variant summay file failed</span>
 		    <? die(); ?>
 		<? endif; ?>
@@ -219,7 +220,7 @@ function vat_upload_subset_file()
 		
 		<h3>Step [5/6]: Generating images...</h3>
 		<? flush(); ?>
-		<? if (!($ret = vat_upload_generate_images($proc_id, $annotation_file))): ?>
+		<? if (!($ret = generate_images($proc_id, $annotation_file))): ?>
 		    <span class="error">Generating images failed</span>
 		    <? die(); ?>
 		<? endif; ?>
@@ -227,7 +228,7 @@ function vat_upload_subset_file()
 		
 		<h3>Step [6/6]: Subsetting file...</h3>
 		<? flush(); ?>
-		<? if (!($ret = vat_upload_subset_file())): ?>
+		<? if (!($ret = subset_file())): ?>
 		    <span class="error">Subsetting file failed</span>
 		    <? die(); ?>
 		<? endif; ?>
