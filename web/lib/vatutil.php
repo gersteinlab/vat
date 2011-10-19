@@ -38,8 +38,13 @@ class GeneTranscriptEntry implements Comparable {
         $this->_transcript_name = $transcript_name;
     }
     
-    public static function compare(GeneTranscriptEntry $a, 
-                                   GeneTranscriptEntry $b)
+    /**
+     * Compares two GeneTranscriptEntries by Gene ID
+     * 
+     * @param GeneTranscriptEntry $a
+     * @param GeneTranscriptEntry $b
+     */
+    public static function compare($a, $b)
     {
         return strcmp($a->gene_id, $b->gene_id);
     }
@@ -53,6 +58,9 @@ class GeneTranscriptEntry implements Comparable {
  * @static array get_gene_transcript_entries()
  * @static array process_transcript_line()
  * @static array get_query_strings_for_gene_id()
+ * @static array get_gene_summary()
+ * @static array get_sample_summary()
+ * @static string hyperlink_id()
  */
 class VAT {
     
@@ -166,6 +174,143 @@ class VAT {
         }
         
         return $query_strings;
+    }
+    
+    
+    /**
+     * Returns an array containing gene summary information, which can be used
+     * by vat.php to be converted into a JSON string to be displayed as a
+     * table
+     * 
+     * @param string $base_path
+     * @param string $data_set
+     * @param string $annotation_set
+     * @param string $type
+     * @return array
+     */
+    public static function get_gene_summary($base_path, $data_set, $annotation_set, $type)
+    {   
+        $gene_summary = array(
+                'aaData'    => array(),
+                'aoColumns' => array()
+        );
+        
+        $file = $base_path.'/'.$data_set.'.geneSummary.txt';
+        if (($fp = fopen($file, 'r')) === FALSE)
+        {
+            echo "Cannot open open ". $file;
+            return NULL;
+        }
+        
+        $header = fgets($fp);
+        $tokens = explode("\t", $header);
+        foreach ($tokens as $token)
+        {
+            array_push($gene_summary['aoColumns'], array('sTitle' => $token));
+        }
+        array_push($gene_summary['aoColumns'], array('sTitle' => 'Link'));
+        
+        while (($line = fgets($fp)) !== FALSE)
+        {
+            $line_array = explode("\t", $line);
+            $gene_id = $line_array[0];
+        
+            if ($type == "coding")
+            {
+                $link = '<a href="vat.php?mode=showGene&dataSet='.$data_set
+                .'&annotationSet='.$annotation_set.'&geneId='.$gene_id.'"'
+                .' target="gene">Link</a>';
+                array_push($line_array, $link);
+            }
+            elseif ($type == "nonCoding")
+            {
+                $link = '<a href="vat.php?mode=showNonCoding&dataSet='.$data_set
+                .'&annotationSet='.$annotation_set.'&geneId='.$gene_id.'"'
+                .'target="gene">Link</a>';
+                array_push($line_array, $link);
+            }
+            else
+            {
+                echo "Unknown type ".$type;
+                return NULL;
+                // XXX Better to throw exception
+            }
+        
+            array_push($gene_summary['aaData'], $line_array);
+        }
+        fclose($fp);
+        
+        return $gene_summary;
+    }
+    
+    /**
+     * Returns an array containing sample summary information, which can be used
+     * by vat.php to be converted into a JSON string to be displayed as a table.
+     *
+     * @param string $base_path
+     * @param string $data_set
+     * @return array
+     */
+    public static function get_sample_summary($base_path, $data_set)
+    {
+        $sample_summary = array(
+            'aaData'    => array(),
+            'aoColumns' => array(),
+        );
+    
+        $file = $base_path.'/'.$data_set.'.sampleSummary.txt';
+        if (($fp = fopen($file, 'r')) === FALSE)
+        {
+            return NULL;
+        }
+    
+        $header = fgets($fp);
+        $tokens = explode("\t", $header);
+        foreach ($tokens as $token)
+        {
+            array_push($sample_summary['aoColumns'], array('sTitle' => $token));
+        }
+    
+        while (($line = fgets($fp)) !== FALSE)
+        {
+            $tokens = explode("\t", $line);
+            array_push($sample_summary['aaData'], $tokens);
+        }
+    
+        fclose($fp);
+    
+        return $sample_summary;
+    }
+    
+    /**
+     * Creates a hyperlink to the NIH SNP tool
+     * 
+     * @param unknown_type $id
+     * @return string
+     */
+    public static function hyperlink_id($id)
+    {
+        if (strstr($id, 'rs') === FALSE)
+        return $id;
+    
+        $tokens = explode(';', $id);
+        $str = "";
+        for ($i = 0; $i < count($tokens); $i++)
+        {
+            if (strstr($tokens[$i]) !== FALSE)
+            {
+                $str .= '<a href="http://www.ncbi.nlm.nih.gov/SNP/snp_ref.cgi?rs='
+                .substr($tokens[$i], 2).'" target="external">'.$tokens[$i].'</a>';
+            }
+            else
+            {
+                $str .= $tokens[$i];
+            }
+    
+            $str .= ($i < count($tokens) - 1) ? ';' : '';
+        }
+    
+        return $str;
     }
 }
 

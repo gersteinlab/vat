@@ -14,136 +14,13 @@ require_once 'lib/config.php';
 require_once 'lib/util.php';
 require_once 'lib/vatutil.php';
 require_once 'lib/vcf.php';
-require_once 'lib/aws/sdk.class.php';
 
-/**
- * 
- */
+if ($vat_config['USE_S3'] === TRUE):
+require_once 'lib/s3.php';
+endif;
 
-function hyperlink_id($id)
-{
-    if (strstr($id, 'rs') === FALSE)
-        return $id;
-    
-    $tokens = explode(';', $id);
-    $str = "";
-    for ($i = 0; $i < count($tokens); $i++)
-    {
-        if (strstr($tokens[$i]) !== FALSE)
-        {
-            $str .= '<a href="http://www.ncbi.nlm.nih.gov/SNP/snp_ref.cgi?rs='
-                    .substr($tokens[$i], 2).'" target="external">'.$tokens[$i].'</a>';
-        }
-        else 
-        {
-            $str .= $tokens[$i];
-        }
-        
-        $str .= ($i < count($tokens) - 1) ? ';' : '';
-    }
-    
-    return $str;
-}
-
-/**
- * Returns a JSON string  containing gene summary information
- * 
- * @param string $data_set
- * @param $annotation_set
- * @param string $type
- * @return array
- */
-function gene_summary_json($data_set, $annotation_set, $type)
-{
-    global $vat_config;
-    
-    $gene_summary = array(
-        'aaData'    => array(),
-        'aoColumns' => array()
-    );
-    
-    $file = $vat_config['WEB_DATA_DIR'].'/'.$data_set.'.geneSummary.txt';
-    if (($fp = fopen($file, 'r')) === FALSE)
-    {
-        return FALSE;
-    }
-    
-    $header = fgets($fp);
-    $tokens = explode("\t", $header);
-    foreach ($tokens as $token)
-    {
-        array_push($gene_summary['aoColumns'], array('sTitle' => $token));
-    }
-    array_push($gene_summary['aoColumns'], array('sTitle' => 'Link'));
-    
-    while (($line = fgets($fp)) !== FALSE)
-    {
-        $line_array = explode("\t", $line);
-        $gene_id = $line_array[0];
-        
-        if ($type == "coding")
-        {
-            $link = '<a href="vat.php?mode=showGene&dataSet='.$data_set
-                   .'&annotationSet='.$annotation_set.'&geneId='.$gene_id.'"'
-                   .' target="gene">Link</a>';
-            array_push($line_array, $link);
-        }
-        elseif ($type == "nonCoding")
-        {
-            $link = '<a href="vat.php?mode=showNonCoding&dataSet='.$data_set
-                   .'&annotationSet='.$annotation_set.'&geneId='.$gene_id.'"' 
-                   .'target="gene">Link</a>';
-            array_push($line_array, $link);
-        }
-        else
-        {
-            echo "Unknown type ".$type;
-            return FALSE;
-            // XXX Better to throw exception
-        }
-        
-        array_push($gene_summary['aaData'], $line_array);
-    }
-    
-    return json_encode($gene_summary);   
-}
-
-/**
- * Returns a JSON string containing sample sumary information
- * 
- * @param $data_set
- * @return array
- */
-function sample_summary_json($data_set)
-{
-    global $vat_config;
-    
-    $sample_summary = array(
-        'aaData'    => array(),
-        'aoColumns' => array(),
-    );
-    
-    $file = $vat_config['WEB_DATA_DIR'].'/'.$data_set.'.sampleSummary.txt';
-    if (($fp = fopen($file, 'r')) === FALSE)
-    {
-        return FALSE;
-    }
-    
-    $header = fgets($fp);
-    $tokens = explode("\t", $header);
-    foreach ($tokens as $token)
-    {
-        array_push($sample_summary['aoColumns'], array('sTitle' => $token));
-    }
-    
-    while (($line = fgets($fp)) !== FALSE)
-    {
-        $tokens = explode("\t", $line);
-        array_push($sample_summary['aaData'], $tokens);
-    }
-    
-    return json_encode($sample_summary);
-}
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 
 /**
  * Controller/view for process data page
@@ -152,9 +29,34 @@ function sample_summary_json($data_set)
  * @param $annotation_set
  * @param string $gene_id
  */
-function process_data($data_set, $annotation_set, $gene_id)
+function process_data($data_set, $annotation_set, $type)
 {
     global $vat_config;
+    
+    $gene_summary = VAT::get_gene_summary($vat_config['WEB_DATA_DIR'], $data_set, $annotation_set, $type);
+    if ($gene_summary == NULL)
+    {
+        echo "Cannot get gene summary";
+        return FALSE;
+    }
+    
+    $sample_summary = VAT::get_sample_summary($vat_config['WEB_DATA_DIR'], $data_set);
+    if ($sample_summary == NULL)
+    {
+        echo "Cannot get sample summary";
+        return FALSE;
+    }
+    
+    $gene_summary['bProcessing'] = TRUE;
+    $gene_summary['iDisplayLength'] = 25;
+    $gene_summary['bStateSave'] = TRUE;
+    $gene_summary['sPaginationType'] = "full_numbers";
+    
+    $sample_summary['bProcessing'] = TRUE;
+    $sample_summary['iDisplayLength'] = 25;
+    $sample_summary['bStateSave'] = TRUE;
+    $sample_summary['sPaginationType'] = "full_numbers";
+    
     ?>
 <head>
 	<meta charset="utf-8">
@@ -168,21 +70,13 @@ function process_data($data_set, $annotation_set, $gene_id)
 	<script type="text/javascript" charset="utf-8">
 		$(document).ready(function() {
 			$('#ex1').html ('<table border="1" cellpadding="2" align="center" id="gene" class="display"></table>');
-  			$('#gene').dataTable({
-				"bProcessing": true,
-				"iDisplayLength": 25,
-				"bStateSave": true,
-				"sPaginationType": "full_numbers",
-                <? echo gene_summary_json($data_set, $annotation_set, $type); ?>
-			});
+  			$('#gene').dataTable(
+                <? echo json_format(json_encode($gene_summary)); ?>
+			);
 			$('#ex2').html ('<table border="1" cellpadding="2" align="center" id="sample" class="display"></table>');
-			$('#sample').dataTable({
-				"bProcessing": true,
-				"iDisplayLength": 25,
-				"bStateSave": true,
-				"sPaginationType": "full_numbers",
-                <? echo sample_summary_json($data_set); ?>
-			});
+			$('#sample').dataTable(
+				<? echo json_format(json_encode($sample_summary)); ?>
+			);
 		});
 	</script>	
 </head>
@@ -205,10 +99,17 @@ function process_data($data_set, $annotation_set, $gene_id)
 	</center>
 </body>
     <?
+    
+    return TRUE;
 }
 
 /**
+ * Controller/view for the show information page.
  * 
+ * @param string $data_set
+ * @param string $annotation_set
+ * @param string $gene_id
+ * @param string $type
  */
 function show_information($data_set, $annotation_set, $gene_id, $type)
 {
@@ -242,7 +143,7 @@ function show_information($data_set, $annotation_set, $gene_id, $type)
 	if ($i == count($vcf_genes))
 	{
 	    echo "Unable to find ".$gene_id." in ".$data_set."!";
-	    return;
+	    return FALSE;
 	}
 	
 	$curr_interval = $curr_vcf_gene->transcripts[0];
@@ -385,7 +286,7 @@ function show_information($data_set, $annotation_set, $gene_id, $type)
                 <td><? echo $curr_vcf_entry->position; ?></td>
                 <td><? echo strlen($curr_vcf_entry->reference_allele) > 50 ? "Length > 50 nucleotides" : $curr_vcf_entry->reference_allele; ?></td>
                 <td><? echo strlen($curr_vcf_entry->alternate_allele) > 50 ? "Length > 50 nucleotides" : $curr_vcf_entry->alternate_allele; ?></td> 
-                <td><? echo hyperlink_id($curr_vcf_entry->id); ?></td>
+                <td><? echo VAT::hyperlink_id($curr_vcf_entry->id); ?></td>
                 <td><? echo $curr_vcf_annotation->type; ?></td>
                 <td><? echo $curr_vcf_annotation->fraction; ?></td>
                 <td>
@@ -587,24 +488,44 @@ function clean_up_data()
 if (!isset($_GET['mode']))
     die('mode argument not set');
 
-$data_set       = $_GET['dataSet'];
-$annotation_set = $_GET['annotationSet'];
-$gene_id        = $_GET['geneId'];
-$type           = $_GET['type'];
-$index          = $_GET['index'];
+$data_set       = isset($_GET['dataSet']) ? $_GET['dataSet'] : NULL;
+$annotation_set = isset($_GET['annotationSet']) ? $_GET['annotationSet'] : NULL;
+$gene_id        = isset($_GET['geneId']) ? $_GET['geneId'] : NULL;
+$type           = isset($_GET['type']) ? $_GET['type'] : NULL;
+$index          = isset($_GET['index']) ? $_GET['index'] : NULL;
 
 switch ($_GET['mode'])
 {
     case 'process':
+        if ($data_set == NULL || $annotation_set == NULL || $type == NULL)
+        {
+            die('dataSet, annotationSet, and type must be set in query string');
+        }
+        
         process_data($data_set, $annotation_set, $type);
         break;
     case 'showGene':
+        if ($data_set == NULL || $annotation_set == NULL || $gene_id == NULL)
+        {
+            die('dataSet, annotationSet, and geneId must be set in query string');
+        }
+        
         show_gene_information($data_set, $annotation_set, $gene_id);
         break;
     case 'showNonCoding':
+        if ($data_set == NULL || $annotation_set == NULL || $gene_id == NULL)
+        {
+            die('dataSet, annotationSet, and geneId must be set in query string');
+        }
+        
         show_non_coding_information($data_set, $annotation_set, $gene_id);
         break;
     case 'showGenotypes':
+        if ($data_set == NULL || $annotation_set == NULL || $index == NULL)
+        {
+            die('dataSet, annotationSet, and index must be set in query string');
+        }
+        
         show_genotypes($data_set, $annotation_set, $index);
         break;
     case 'cleanUp':

@@ -77,6 +77,20 @@ class Interval implements Comparable {
     protected $_sub_interval_count;
     protected $_sub_intervals;
     
+    public function __construct($source        = NULL,
+                                $name          = NULL,
+                                $chromosome    = NULL,
+                                $strand        = NULL,
+                                $start         = NULL,
+                                $end           = NULL,
+                                $sub_intervals = NULL)
+    {
+        $this->_source = $source;
+        $this->_name   = $name;
+        $this->_strand = $strand;
+        
+    }
+    
     public function __get($key)
     {
         return $this->{'_'.$key};
@@ -113,7 +127,14 @@ class Interval implements Comparable {
         return count($this->_sub_intervals);
     }
     
-    public static function compare(Interval $a, Interval $b)
+    /**
+     * Compares two Intervals by position
+     * 
+     * @param Interval $a
+     * @param Interval $b
+     * @return int
+     */
+    public static function compare($a, $b)
     {
         $diff = strcmp($a->chromosome, $b->chromosome);
         if ($diff != 0)
@@ -126,7 +147,14 @@ class Interval implements Comparable {
         return $b->end - $a->end;
     }
     
-    public static function compare_name(Interval $a, Interval $b)
+    /**
+     * Compares two intervals by name
+     *
+     * @param Interval $a
+     * @param Interval $b
+     * @return int
+     */
+    public static function compare_name($a, $b)
     {
         return strcmp($a->name, $b->name);
     }
@@ -185,7 +213,14 @@ class SuperInterval implements Comparable {
         $this->{'_'.$key} = $value;
     }
     
-    public static function compare(SuperInterval $a, SuperInterval $b)
+    /**
+     * Compares two SuperIntervals by position
+     * 
+     * @param SuperInterval $a
+     * @param SuperInterval $b
+     * @return int
+     */
+    public static function compare($a, $b)
     {
         $diff = strcmp($a->chromosome, $b->chromosome);
         if ($diff != 0)

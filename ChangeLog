@@ -1,1 +1,34 @@
 Please refer to 'http://vat.gersteinlab.org' for additional information.
+
+
+2011.10.10  David Z. Chen  <david.chen@yale.edu>
+
+    * Completed debugging/testing for vat_upload.php
+    * web/tests: directory added to contain unit test scripts for use with
+      PHPUnit testing framework 
+    
+
+2011.10.03  David Z. Chen  <david.chen@yale.edu>
+
+    * web/lib/s3.php: added and begun work on S3Adaptor class to abstract S3
+      calls
+    * web/lib/config.php: added configuration parser and bootstrapper. 
+      config.php must be included at the top of every VAT web script 
+    
+
+2011-10-02  David Z. Chen  <david.chen@yale.edu>
+
+    * Makefile.am: Added install hook to Makefile.am to install web components.
+    * scripts/*: Created scripts to install
+    * default.vatrc: Created as a copy of vatConfiguration.txt and read by
+      install scripts during install. Moved to home directory as .vatrc during
+      install. Added WEB_DIR_CGI configuration directive to point to directory
+      where web components reside. Added VAT_EXEC_DIR directive to point to
+      where VAT executables are installed to. WEB_DATA_DIR is now used 
+      exclusively for the data directory where the data files reside, which is
+      now the data subdirectory in WEB_DIR_CGI.
+    * web/vat_upload.php: Changed path for calling VAT executables to the
+      VAT_EXEC_DIR setting instead of WEB_DATA_DIR. Changed path config for
+      calling tabix and bgzip from WEB_DATA_DIR (incorrect!) to TABIX_DIR.
+
+ 

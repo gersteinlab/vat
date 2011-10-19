@@ -1,20 +1,25 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([vat], [1.0.0], [lukas.habegger@yale.edu])
+AC_INIT([vat], [1.1.0], [lukas.habegger@yale.edu])
 AC_CONFIG_SRCDIR([src/vcf.c])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADER([config.h])
+
 AM_INIT_AUTOMAKE([-Wall -Werror])
-LT_INIT
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Checks for programs.
 AC_PROG_CC
-AC_PROG_LIBTOOL
-
-AC_CHECK_PROG(TABIX, tabix, yes, no)
-AC_CHECK_PROG(BGZIP, bgzip, yes, no)
-AC_CHECK_PROG(TWOBITTOFA, twoBitToFa, yes, no)
+AC_PROG_RANLIB
+AC_CHECK_PROG([TABIX], [tabix], yes, no)
+AC_CHECK_PROG([BGZIP], [bgzip], yes, no)
+AC_CHECK_PROG([TWOBITTOFA], [twoBitToFa], yes, no)
+AC_CHECK_PROG([PHPUNIT], [phpunit], yes, no)
+if test -z "$PHPUNIT"; then
+    AC_MSG_WARN([PHPUnit not found - PHP testsuite not active])
+fi
+AM_CONDITIONAL([USE_PHPUNIT], [test -n "$PHPUNIT"])
 
 # Checks for libraries.
 AC_CHECK_LIB([m], [log], [], [AC_MSG_ERROR([Cannot find standard math library])])
@@ -33,5 +38,5 @@ AC_CHECK_HEADERS([stdlib.h unistd.h])
 # Checks for library functions.
 AC_CHECK_FUNCS([floor strchr strpbrk strrchr strstr])
 
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile vat.pc:vat.pc.in])
 AC_OUTPUT

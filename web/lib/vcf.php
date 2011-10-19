@@ -175,7 +175,7 @@ class VCFEntry implements Comparable {
      * @param VCFEntry $b
      * @return int
      */
-    public static function compare(VCFEntry $a, VCFEntry $b)
+    public static function compare($a, $b)
     {
         return $a->entity_id - $b->entity_id;
     }

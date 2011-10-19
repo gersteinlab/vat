@@ -1,0 +1,40 @@
+// =============================================================================
+// REQUIRED
+// =============================================================================
+
+// Tabix directory (includes both tabix and bgzip)
+TABIX_DIR /usr/bin
+
+// Directory where VAT executables are
+VAT_EXEC_DIR /usr/local/bin
+
+
+// =============================================================================
+// OPTIONAL (required only for CGIs)
+// =============================================================================
+
+// CGI base URL (where the CGIs are located)
+WEB_URL_CGI http://localhost
+
+// Path to where the where the CGIs are located
+WEB_DIR_CGI /var/www/
+
+// Path to the web data directory where the preprocessed files are stored
+WEB_DATA_DIR /var/www/data
+
+// URL to preprocessed files
+WEB_DATA_URL http://localhost/data
+
+// =============================================================================
+// AWS/S3 Configuration values
+// =============================================================================
+
+
+// Option for turning on or off Amazon Simple Storage Support (S3) support. 
+// Use true to activate S3, false to deactivate. Note that if S3 support is
+// active, you will need to enter your AWS account infomation for the VAT web
+// components in web/lib/aws/config.inc.php
+USE_S3 false
+
+// The name of the S3 bucket
+AWS_S3_BUCKET gerstein-vat
