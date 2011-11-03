@@ -3,7 +3,7 @@
 // =============================================================================
 
 // Tabix directory (includes both tabix and bgzip)
-TABIX_DIR /usr/bin
+TABIX_DIR /usr/local/bin
 
 // Directory where VAT executables are
 VAT_EXEC_DIR /usr/local/bin
@@ -14,27 +14,54 @@ VAT_EXEC_DIR /usr/local/bin
 // =============================================================================
 
 // CGI base URL (where the CGIs are located)
-WEB_URL_CGI http://localhost
+WEB_URL_CGI http://localhost/cgi-bin
 
 // Path to where the where the CGIs are located
-WEB_DIR_CGI /var/www/
+WEB_DIR_CGI /var/www/cgi-bin
 
-// Path to the web data directory where the preprocessed files are stored
-WEB_DATA_DIR /var/www/data
+
+WEB_DATA_DIR /var/www/data/sets
 
 // URL to preprocessed files
-WEB_DATA_URL http://localhost/data
+WEB_DATA_URL http://localhost/data/sets
+
+// Path to the web data directory where the preprocessed files are stored
+WEB_DATA_REFERENCE_DIR /var/www/data/reference
+
+WEB_DATA_WORKING_DIR /var/www/data/working
+
+WEB_DATA_RAW_DIR /var/www/data/raw
+
+// URL to static web files, such as images, style sheets
+WEB_STATIC_URL http://localhost/assets
 
 // =============================================================================
 // AWS/S3 Configuration values
 // =============================================================================
 
-
 // Option for turning on or off Amazon Simple Storage Support (S3) support. 
 // Use true to activate S3, false to deactivate. Note that if S3 support is
 // active, you will need to enter your AWS account infomation for the VAT web
 // components in web/lib/aws/config.inc.php
-USE_S3 false
+AWS_USE_S3 true
 
-// The name of the S3 bucket
-AWS_S3_BUCKET gerstein-vat
+// S3 access key ID
+AWS_ACCESS_KEY_ID AKIAJD23VJ42GZJWR5YQ
+
+// S3 secret access key
+AWS_SECRET_ACCESS_KEY 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
+
+// S3 hostname
+AWS_S3_HOSTNAME s3.amazonaws.com
+
+// The name of the S3 bucket for processed data sets. If S3 support is enabled,  
+// this bucket is used instead of WEB_DATA_DIR
+AWS_S3_DATA_BUCKET vat-data
+
+AWS_S3_DATA_URL foo
+
+// The name of the S3 bucket for raw VCF input files. If S3 support is enabled,
+// this bucket is used instead of WEB_DATA_RAW_DIR 
+AWS_S3_RAW_BUCKET vat-raw
+
+

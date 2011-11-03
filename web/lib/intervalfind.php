@@ -274,7 +274,7 @@ class IntervalFind {
      */
     public function __construct($file_name, $source)
     {
-        $this->_intervals = $this->_parse_file_content($file_name, $source);
+        $this->_intervals = IntervalFind::parse_file($file_name, $source);
     }
     
     /**
@@ -282,7 +282,7 @@ class IntervalFind {
      * @param string $str
      * @return array
      */
-    private function process_comma_separated_list($str)
+    public static function process_comma_separated_list($str)
     {
         $tokens = explode(',', $str);
         $results = array();
@@ -306,7 +306,7 @@ class IntervalFind {
      * useful when multiple files are used
      * @return Interval
      */
-    public function parse_line($line, $source)
+    public static function parse_line($line, $source)
     {
         $interval = new Interval();
         
@@ -320,8 +320,8 @@ class IntervalFind {
         $interval->end                = $tokens[4];
         $interval->sub_interval_count = $tokens[5];
         
-        $sub_interval_starts = $this->_process_comma_separated_list($tokens[6]);
-        $sub_interval_ends   = $this->_process_comma_separated_list($tokens[7]);
+        $sub_interval_starts = IntervalFind::process_comma_separated_list($tokens[6]);
+        $sub_interval_ends   = IntervalFind::process_comma_separated_list($tokens[7]);
         
         // FIXME: Do we need to make sure that these counts are equal to
         // $interval->sub_interval_count??????
@@ -349,7 +349,7 @@ class IntervalFind {
      * @param $source:
      * @return array of Intervals parsed from file
      */
-    private function _parse_file_content($file_name, $source)
+    public static function parse_file($file_name, $source)
     {
         $fp = fopen($file_name, 'r');
         
@@ -363,7 +363,7 @@ class IntervalFind {
             if ($line == "")
                 continue;
             
-            $interval = $this->parse_line($line, $source);
+            $interval = IntervalFind::parse_line($line, $source);
             array_push($intervals, $interval);
         }
         
@@ -507,17 +507,5 @@ class IntervalFind {
         }
         
         return $matching_intervals;
-    }
-    
-     /**
-     * Parse a file in the Interval format. @see file header for format.
-     * 
-     * @param string $file_name
-     * @param int    $source
-     * @return array 
-     */
-    public static function parse_file($file_name, $source)
-    {
-        return parse_file_content($file_name, $source);
     }
 }

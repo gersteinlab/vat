@@ -525,7 +525,7 @@ class VCF {
         if ( ! empty($this->_entries))
             return $this->_entries;
         
-        $fp = fopen($this->_file_path);
+        $fp = fopen($this->_file_path, 'r');
         if ( ! $fp)
             return NULL;
         
@@ -646,7 +646,7 @@ class VCF {
     {
         $groups = array();
         
-        for ($i = 8; $i < count($this->_column_headers()); $i++)
+        for ($i = 8; $i < count($this->_column_headers); $i++)
         {
             if (($header = $this->_column_headers[$i]) == 'FORMAT')
                 continue;
@@ -711,13 +711,14 @@ class VCF {
         if (empty($this->_gene_transcript_entries) ||
             empty($this->_gene_intervals))
         {
-            $this->_gene_intervals = IntervalFind::parse_file($annotation_file);
+            $this->_gene_intervals = IntervalFind::parse_file($annotation_file, 0);
             usort($this->_gene_intervals, array('Interval', 'compare_name'));
             
-            $this->_gene_transcript_entries = VAT::get_gene_transcript_entries($intervals);
+            $this->_gene_transcript_entries = VAT::get_gene_transcript_entries($this->_gene_intervals);
         }
         
         $vcf_items = array();
+        $vcf_genes = array();
         
         foreach ($this->_entries as $curr_vcf_entry)
         {
@@ -733,7 +734,7 @@ class VCF {
             }
         }
         
-        usort($curr_vcf_items, array('VCF', 'compare_vcf_items_gene_id'));
+        usort($vcf_items, array('VCF', 'compare_vcf_items_gene_id'));
         
         $i = 0;
         while ($i < count($vcf_items))

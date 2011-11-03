@@ -21,6 +21,9 @@
 /* Define to 1 if you have the `m' library (-lm). */
 #undef HAVE_LIBM
 
+/* Define to 1 if you have the `s3' library (-ls3). */
+#undef HAVE_LIBS3
+
 /* Define to 1 if you have the <math.h> header file. */
 #undef HAVE_MATH_H
 

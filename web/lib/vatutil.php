@@ -10,44 +10,9 @@
 
 require_once 'util.php';
 
-/**
- * Class representing a gene transcript entry
- * 
- * @property string $gene_id
- * @property string $transcript_id
- * @property string $gene_name
- * @property string $transcript_name
- * 
- * @static int compare()
- */
-class GeneTranscriptEntry implements Comparable {
-
-    protected $_gene_id;
-    protected $_transcript_id;
-    protected $_gene_name;
-    protected $_transcript_name;
-    
-    public function __construct($gene_id         = NULL,
-                                $transcript_id   = NULL,
-                                $gene_name       = NULL,
-                                $transcript_name = NULL)
-    {
-        $this->_gene_id         = $gene_id;
-        $this->_transcript_id   = $transcript_id;
-        $this->_gene_name       = $gene_name;
-        $this->_transcript_name = $transcript_name;
-    }
-    
-    /**
-     * Compares two GeneTranscriptEntries by Gene ID
-     * 
-     * @param GeneTranscriptEntry $a
-     * @param GeneTranscriptEntry $b
-     */
-    public static function compare($a, $b)
-    {
-        return strcmp($a->gene_id, $b->gene_id);
-    }
+function gene_transcript_entry_compare($a, $b)
+{
+    return strcmp($a['gene_id'], $b['gene_id']);
 }
 
 
@@ -82,13 +47,16 @@ class VAT {
                  $gene_name, 
                  $transcript_name) = VAT::process_transcript_line($curr_interval->name);
             
-            $curr_entry = new GeneTranscriptEntry($gene_id, 
-                                                  $transcript_id, 
-                                                  $gene_name, 
-                                                  $transcript_name);
+            $curr_entry = array(
+                'gene_id' => $gene_id,
+                'transcript_id' => $transcript_id,
+                'gene_name' => $gene_name,
+                'transcript_name' => $transcript_name
+            );
+
             array_push($gene_transcript_entries, $curr_entry);
         }
-        usort($gene_transcript_entries, array('GeneTranscriptEntry', 'compare'));
+        usort($gene_transcript_entries, 'gene_transcript_entry_compare');
         
         return $gene_transcript_entries;
     }
@@ -124,7 +92,7 @@ class VAT {
         $test_entry = new GeneTranscriptEntry();
         $test_entry->gene_id = $gene_id;
         
-        if (($index = array_usearch($test_entry, $gene_transcript_entries, array('GeneTranscriptEntry', 'compare'))) == FALSE)
+        if (($index = array_usearch($test_entry, $gene_transcript_entries, 'gene_transcript_entry_compare')) == FALSE)
         {
             echo "Expected to find geneId ".$gene_id;
             return FALSE;
@@ -135,13 +103,13 @@ class VAT {
         {
             $curr_entry = $gene_transcript_entries[$i];
             
-            if ($curr_entry->gene_id == $gene_id)
+            if ($curr_entry['gene_id'] == $gene_id)
             {
                 $query_string = sprintf("%s|%s|%s|%s", 
-                                        $curr_entry->gene_id,
-                                        $curr_entry->transcript_id,
-                                        $curr_entry->gene_name,
-                                        $curr_entry->transcript_name);
+                                        $curr_entry['gene_id'],
+                                        $curr_entry['transcript_id'],
+                                        $curr_entry['gene_name'],
+                                        $curr_entry['transcript_name']);
                 array_push($query_strings, $query_string);
             }
             else
@@ -156,13 +124,13 @@ class VAT {
         while ($i > 0)
         {
             $curr_entry = $gene_transcript_entries[$i];
-            if ($curr_entry->gene_id == $gene_id)
+            if ($curr_entry['gene_id'] == $gene_id)
             {
-                $query_string = sprintf("%s|%s|%s|%s",
-                                        $curr_entry->gene_id,
-                                        $curr_entry->transcript_id,
-                                        $curr_entry->gene_name,
-                                        $curr_entry->transcript_name);
+                $query_string = sprintf("%s|%s|%s|%s", 
+                                        $curr_entry['gene_id'],
+                                        $curr_entry['transcript_id'],
+                                        $curr_entry['gene_name'],
+                                        $curr_entry['transcript_name']);
                 array_push($query_strings, $query_string);
             }
             else 
@@ -191,8 +159,8 @@ class VAT {
     public static function get_gene_summary($base_path, $data_set, $annotation_set, $type)
     {   
         $gene_summary = array(
-                'aaData'    => array(),
-                'aoColumns' => array()
+			'aaData'    => array(),
+			'aoColumns' => array()
         );
         
         $file = $base_path.'/'.$data_set.'.geneSummary.txt';

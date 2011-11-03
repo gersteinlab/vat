@@ -33,7 +33,6 @@ $errors = array(
 $fatal_error = array();
 $uploaded_file = "";
 
-ob_start();
 
 /*
  * Display error if max file size set by web server configuration has been

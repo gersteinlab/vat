@@ -1,5 +1,13 @@
 noinst_LIBRARIES = libvat.a
-libvat_a_SOURCES = vcf.c vcf.h util.c util.h
+libvat_a_SOURCES = \
+	vcf.c vcf.h \
+	util.c util.h \
+	shutil.c shutil.h \
+	cfio.c cfio.h \
+	md5.c md5.h \
+	growbuffer.c growbuffer.h \
+	s3.c s3.h
+
 
 bin_PROGRAMS = \
 	gencode2interval \
@@ -12,8 +20,13 @@ bin_PROGRAMS = \
 	vcfSummary \
 	vcfSubsetByGene \
 	vcfModifyHeader\
-	 vat_cgi \
-	vat_fileUpload_cgi
+	vat_cgi \
+	vat_fileUpload_cgi \
+	vat_list_raw_cgi \
+	vat_list_data_cgi \
+	vat_process_cgi \
+	vat_upload_cgi \
+	tests3
 
 gencode2interval_SOURCES = gencode2interval.c
 gencode2interval_LDADD = -lbios
@@ -46,7 +59,10 @@ vcfModifyHeader_SOURCES = vcfModifyHeader.c
 vcfModifyHeader_LDADD = libvat.a -lbios -lm
 
 vat_cgi_SOURCES = vat_cgi.c
-vat_cgi_LDADD = libvat.a -lbios -lm
+vat_cgi_LDADD = libvat.a -lbios -lm -ls3
 
 vat_fileUpload_cgi_SOURCES = vat_fileUpload_cgi.c
-vat_fileUpload_cgi_LDADD = libvat.a -lbios -lm
+vat_fileUpload_cgi_LDADD = libvat.a -lbios -lm -ls3
+
+tests3_SOURCES = tests3.c
+tests3_LDADD = libvat.a -ls3

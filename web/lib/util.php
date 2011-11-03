@@ -108,7 +108,7 @@ function range_intersection($start1, $end1, $start2, $end2)
 function flush_buffers()
 {
     //ob_end_flush();
-    ob_flush();
+    //ob_flush();
     flush();
     //ob_start();
 }

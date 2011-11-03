@@ -27,6 +27,7 @@ AC_CHECK_LIB([gslcblas], [cblas_dgemm], [], [AC_MSG_ERROR([Cannot find cblas lib
 AC_CHECK_LIB([gsl], [gsl_ran_hypergeometric_pdf], [], [AC_MSG_ERROR([Cannot find gsl library])])
 AC_CHECK_LIB([bios], [needMem], [], [AC_MSG_ERROR([Cannot find bios library])])
 AC_CHECK_LIB([gd], [gdImageCreate], [], [AC_MSG_ERROR([Cannot find gd library])])
+AC_CHECK_LIB([s3], [S3_initialize], [], [AC_MSG_ERROR([Cannot find libs3])])
 
 # Checks for header files.
 AC_HEADER_STDC
