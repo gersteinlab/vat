@@ -3,12 +3,16 @@
 #include <bios/linestream.h>
 #include <bios/intervalFind.h>
 #include <bios/html.h>
+#include "cfio.h"
 #include "util.h"
 #include "vcf.h"
 
 
 
-static void geneSummary2json (char *dataSet, char *annotationSet, char *type)
+static void geneSummary2json (char *dataSet,
+                              char *annotationSet,
+                              char *type,
+                              int setId)
 {
   static Stringa buffer = NULL;
   LineStream ls;
@@ -19,8 +23,16 @@ static void geneSummary2json (char *dataSet, char *annotationSet, char *type)
   static char *geneId = NULL;
   int first;
 
-  stringCreateClear (buffer,100);
-  stringPrintf (buffer,"%s/%s.geneSummary.txt",util_getConfigValue ("WEB_DATA_DIR"),dataSet);
+  stringCreateClear (buffer, 100);
+
+  stringPrintf (buffer, "%d/%s.geneSummary.txt", setId, dataSet);
+  if (cfio_get_data (setId, OUT_GENE_SUMMARY) != 0) {
+    die ("Cannot get geneSummary");
+  }
+
+  stringClear (buffer);
+  stringPrintf (buffer,"%s/%d/%s.geneSummary.txt",
+                util_getConfigValue ("WEB_DATA_WORKING_DIR"), setId, dataSet);
   ls = ls_createFromFile (string (buffer));
   header = hlr_strdup (ls_nextLine (ls));
   puts ("\"aaData\": [ ");
@@ -62,7 +74,7 @@ static void geneSummary2json (char *dataSet, char *annotationSet, char *type)
 
 
 
-static void sampleSummary2json (char *dataSet)
+static void sampleSummary2json (char *dataSet, int setId)
 {
   static Stringa buffer = NULL;
   LineStream ls;
@@ -72,7 +84,14 @@ static void sampleSummary2json (char *dataSet)
   char *token;
 
   stringCreateClear (buffer,100);
-  stringPrintf (buffer,"%s/%s.sampleSummary.txt",util_getConfigValue ("WEB_DATA_DIR"),dataSet);
+  stringPrintf (buffer, "%d/%s.sampleSummary.txt", setId, dataSet);
+  if (cfio_get_data (setId, OUT_SAMPLE_SUMMARY) != 0) {
+    die ("Cannot get sample summary");
+  }
+
+  stringClear (buffer);
+  stringPrintf (buffer, "%s/%d/%s.sampleSummary.txt",
+                util_getConfigValue ("WEB_DATA_WORKING_DIR"), setId, dataSet);
   ls = ls_createFromFile (string (buffer));
   header = hlr_strdup (ls_nextLine (ls));
   puts ("\"aaData\": [ ");
@@ -98,7 +117,7 @@ static void sampleSummary2json (char *dataSet)
 
 
 
-static void processData (char *dataSet, char *annotationSet, char *type)
+static void processData (char *dataSet, char *annotationSet, char *type, int setId)
 {
   puts ("<html>");
   puts ("<head>");
@@ -117,7 +136,7 @@ static void processData (char *dataSet, char *annotationSet, char *type)
   puts ("                                  \"iDisplayLength\": 25,");
   puts ("                                  \"bStateSave\": true,");
   puts ("                                  \"sPaginationType\": \"full_numbers\",");
-  geneSummary2json (dataSet,annotationSet,type);
+  geneSummary2json (dataSet,annotationSet,type, setId);
   puts ("                             } );");
   puts ("                             $('#ex2').html ( '<table border=1 cellpadding=2 align=center id=sample class=display></table>' )");
   puts ("				$('#sample').dataTable( {");
@@ -125,7 +144,7 @@ static void processData (char *dataSet, char *annotationSet, char *type)
   puts ("                                  \"iDisplayLength\": 25,");
   puts ("                                  \"bStateSave\": true,");
   puts ("                                  \"sPaginationType\": \"full_numbers\",");
-  sampleSummary2json (dataSet);
+  sampleSummary2json (dataSet, setId);
   puts ("                             } );");
   puts ("			} );");
   puts ("</script>");
@@ -137,16 +156,19 @@ static void processData (char *dataSet, char *annotationSet, char *type)
   puts ("<div id=ex1></div>");
   puts ("<br><br>");
   puts ("<center>");
-  printf ("[<a href=%s/%s.vcf.gz target=external>Download compressed VCF file with annotated variants</a>]",util_getConfigValue ("WEB_DATA_URL"),dataSet);
+  printf ("[<a href=%s/%d/%s.vcf.gz target=external>Download compressed VCF file with annotated variants</a>]",
+          util_getConfigValue ("WEB_DATA_URL"), setId, dataSet);
   puts ("&nbsp;&nbsp;&nbsp;");
-  printf ("[<a href=%s/%s.geneSummary.txt target=external>View tab-delimited gene summary file</a>]",util_getConfigValue ("WEB_DATA_URL"),dataSet);
+  printf ("[<a href=%s/%d/%s.geneSummary.txt target=external>View tab-delimited gene summary file</a>]",
+          util_getConfigValue ("WEB_DATA_URL"), setId, dataSet);
   puts ("</center>");
   puts ("<br><br><br><br><br><br>");
   puts ("<h3><center>Sample summary</center></h3>");
   puts ("<div id=ex2></div>");
   puts ("<br><br>");
   puts ("<center>");
-  printf ("[<a href=%s/%s.sampleSummary.txt target=external>View tab-delimited sample summary file</a>]",util_getConfigValue ("WEB_DATA_URL"),dataSet);
+  printf ("[<a href=%s/%d/%s.sampleSummary.txt target=external>View tab-delimited sample summary file</a>]",
+          util_getConfigValue ("WEB_DATA_URL"), setId, dataSet);
   puts ("</center>");
   puts ("</body>");
   puts ("</html>");
@@ -539,10 +561,16 @@ int main (int argc, char *argv[])
   char *annotationSet = NULL;
   char *type = NULL;
   int index;
+  int setId;
 
   cgiInit();
   cgiHeader("text/html");
   util_configInit ("VAT_CONFIG_FILE");
+
+  if (cfio_init () != 0) {
+    die ("Could not initiate I/O layer\n");
+  }
+
   queryString = cgiGet2Post();
   if (queryString[0] == '\0') {
     warn ("Wrong URL");
@@ -572,12 +600,15 @@ int main (int argc, char *argv[])
     else if (strEqual (iPtr,"index")) {
       index = atoi (vPtr);
     }
+    else if (strEqual (iPtr, "setId")) {
+      setId = atoi (vPtr);
+    }
     else {
       die ("Unexpected inputs: '%s' '%s'\n",iPtr,vPtr); 
     }
   }
   if (strEqual (mode,"process")) {
-    processData (dataSet,annotationSet,type);
+    processData (dataSet, annotationSet, type, setId);
   }
   else if (strEqual (mode,"showGene")) {
     showGeneInformation (dataSet,annotationSet,geneId);
@@ -586,7 +617,7 @@ int main (int argc, char *argv[])
     showNonCodingInformation (dataSet,annotationSet,geneId);
   }
   else if (strEqual (mode,"showGenotypes")) {
-    showGenotypes (dataSet,geneId,index);
+    showGenotypes (dataSet, geneId, index);
   }
   else if (strEqual (mode,"cleanUp")) {
     cleanUpData ();
@@ -595,6 +626,8 @@ int main (int argc, char *argv[])
     die ("Unknown mode: %s",mode);
   }
   fflush (stdout);
+
+  cfio_deinit ();
   util_configDeInit ();
   return 0;
 }

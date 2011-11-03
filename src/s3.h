@@ -53,7 +53,7 @@ int s3_put (char *filename, char *bucket, char *key);
 /**
  *
  */
-int s3_put_dir (char *dir, char *bucket);
+int s3_put_dir (char *dir, char *bucket, char *prefix);
 
 /**
  * Gets an object with specified key from specified bucket and writes it to

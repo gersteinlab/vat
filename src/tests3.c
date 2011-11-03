@@ -11,12 +11,19 @@ int main(int argc, char **argv)
     util_configInit ("VAT_CONFIG_FILE");
     Stringa cmd = stringCreate (20);
 
-    printf ("Initiate I/O later\n");
+    printf ("Initiate I/O layer\n");
     if (cfio_init () != 0) {
         fprintf (stderr, "Cannot initialize I/O layer\n");
         return -1;
     }
 
+    if (cfio_push_data (1956) != 0) {
+        fprintf (stderr, "Cannot push data\n");
+        perror(0);
+        return -1;
+    }
+
+    /*
     printf ("Touch test file f___foo\n");
     stringPrintf (cmd, "touch f___foo");
     if (hlr_system (string (cmd), 1) != 0) {
@@ -89,7 +96,7 @@ int main(int argc, char **argv)
     }
 
     printf ("Tests complete\n");
-    stringDestroy (cmd);
+    stringDestroy (cmd);*/
     cfio_deinit ();
     util_configDeInit ();
 

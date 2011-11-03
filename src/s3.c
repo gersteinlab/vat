@@ -343,7 +343,7 @@ int s3_put (char *filename, char *bucket, char *key)
         NULL,                       // ContentType
         NULL,                       // md5
         NULL,                       // cacheControl
-        filename,                   // contentDispositionFilename
+        NULL,                       // contentDispositionFilename
         NULL,                       // contentEncoding
         0,                          // expires
         S3CannedAclPublicRead,      // cannedAcl
@@ -380,7 +380,7 @@ int s3_put (char *filename, char *bucket, char *key)
     };
 
     do {
-        S3_put_object(&bucket_context, filename, content_length, &put_properties,
+        S3_put_object(&bucket_context, key, content_length, &put_properties,
                       0, &putObjectHandler, &data);
     } while (S3_status_is_retryable (S3_status) && should_retry ());
 
@@ -399,11 +399,12 @@ int s3_put (char *filename, char *bucket, char *key)
     return 0;
 }
 
-int s3_put_dir (char *dir, char *bucket)
+int s3_put_dir (char *dir, char *bucket, char *prefix)
 {
     DIR *dirp;
     struct dirent *direntry;
     Stringa file = stringCreate (20);
+    Stringa key  = stringCreate (20);
 
     if (dir == NULL || bucket == NULL)
         return -1;
@@ -420,13 +421,15 @@ int s3_put_dir (char *dir, char *bucket)
             continue;
 
         stringClear (file);
+        stringClear (key);
         stringPrintf (file, "%s/%s", dir, direntry->d_name);
+        stringPrintf (key, "%s/%s", prefix, direntry->d_name);
 
 #if ___S3_DEBUG > 0
         printf ("Putting file %s\n", string (file));
 #endif
 
-        if (s3_put (string (file), bucket, string (file)) != 0) {
+        if (s3_put (string (file), bucket, string (key)) != 0) {
             fprintf (stderr, "Could not put file %s to bucket %s\n",
                      string (file), bucket);
             return -1;

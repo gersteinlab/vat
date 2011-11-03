@@ -21,6 +21,8 @@ int cfio_delete_raw (char *filename);
 
 int cfio_push_data (int pid);
 
+int cfio_push_raw (char *filename);
+
 int cfio_clear_working (int pid);
 
 Array cfio_get_list_raw (void);

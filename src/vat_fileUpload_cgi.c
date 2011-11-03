@@ -218,7 +218,7 @@ int main (int argc, char *argv[])
 
     puts ("Syncing files... ");
     fflush (stdout);
-    if (cfio_push_raw (pid) != 0) {
+    if (cfio_push_data (pid) != 0) {
       die ("Failed to sync files\n");
     }
     if (cfio_clear_working (pid) != 0) {
@@ -228,8 +228,8 @@ int main (int argc, char *argv[])
     printf ("<img src=%s/check.png height=15 width=15><br><br><br>\n",
             util_getConfigValue ("WEB_STATIC_URL"));
 
-    printf ("[<a href=%s/vat_cgi?mode=process&dataSet=vat.%d&annotationSet=%s&type=coding>View results</a>]\n",
-            util_getConfigValue ("WEB_URL_CGI"), pid, annotationFile);
+    printf ("[<a href=%s/vat_cgi?mode=process&dataSet=vat.%d&setId=%d&annotationSet=%s&type=coding>View results</a>]\n",
+            util_getConfigValue ("WEB_URL_CGI"), pid, pid, annotationFile);
 
     puts ("<script type=\"text/javascript\" charset=\"utf-8\">"); 
     puts ("document.getElementById(\"processing\").style.visibility = \"hidden\"");

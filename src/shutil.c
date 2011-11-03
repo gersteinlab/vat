@@ -38,3 +38,15 @@ int shell_mkdir (char *path)
 
     return ret;
 }
+
+int shell_rmrf (char *path)
+{
+    Stringa cmd = stringCreate (20);
+    int ret;
+
+    stringPrintf (cmd, "rm -rf %s", path);
+    ret = hlr_system (string (cmd), 1);
+    stringDestroy (cmd);
+
+    return ret;
+}
