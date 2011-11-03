@@ -15,6 +15,8 @@ int cfio_init ();
 
 int cfio_get_data (int pid, int filemask);
 
+int cfio_get_gene_data (int pid, char *geneId);
+
 int cfio_get_raw (char *filename);
 
 int cfio_delete_raw (char *filename);

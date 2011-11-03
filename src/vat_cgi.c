@@ -48,12 +48,12 @@ static void geneSummary2json (char *dataSet,
       printf ("\"%s\",",token);
     }
     if (strEqual (type,"coding")) {
-      printf ("\"<a href=%s/vat_cgi?mode=showGene&dataSet=%s&annotationSet=%s&geneId=%s target=gene>Link</a>\"],\n",
-              util_getConfigValue ("WEB_URL_CGI"),dataSet,annotationSet,geneId);
+      printf ("\"<a href=%s/vat_cgi?mode=showGene&dataSet=%s&setId=%d&annotationSet=%s&geneId=%s target=gene>Link</a>\"],\n",
+              util_getConfigValue ("WEB_URL_CGI"), dataSet, setId, annotationSet, geneId);
     }
     else if (strEqual (type,"nonCoding")) {
-      printf ("\"<a href=%s/vat_cgi?mode=showNonCoding&dataSet=%s&annotationSet=%s&geneId=%s target=gene>Link</a>\"],\n",
-              util_getConfigValue ("WEB_URL_CGI"),dataSet,annotationSet,geneId);
+      printf ("\"<a href=%s/vat_cgi?mode=showNonCoding&dataSet=%s&setId=%d&annotationSet=%s&geneId=%s target=gene>Link</a>\"],\n",
+              util_getConfigValue ("WEB_URL_CGI"), dataSet, setId, annotationSet, geneId);
     }
     else {
       die ("Unknown type: %s",type);
@@ -190,7 +190,8 @@ static char* hyperlinkId (char *id)
   tokens = textFieldtokP (id,";");
   for (i = 0; i < arrayMax (tokens); i++) {
     if (strstr (textItem (tokens,i),"rs")) {
-      stringAppendf (buffer,"<a href=http://www.ncbi.nlm.nih.gov/SNP/snp_ref.cgi?rs=%s target=external>%s</a>",textItem (tokens,i) + 2,textItem (tokens,i));
+      stringAppendf (buffer,"<a href=http://www.ncbi.nlm.nih.gov/SNP/snp_ref.cgi?rs=%s target=external>%s</a>",
+                     textItem (tokens,i) + 2,textItem (tokens,i));
     }
     else {
       stringAppendf (buffer,"%s",textItem (tokens,i));
@@ -204,7 +205,11 @@ static char* hyperlinkId (char *id)
 
 
 
-static void showInformation (char *dataSet, char *annotationSet, char *geneId, char *type)
+static void showInformation (char *dataSet,
+                             char *annotationSet,
+                             char *geneId,
+                             char *type,
+                             int setId)
 {
   static Stringa buffer = NULL;
   Array vcfEntries;
@@ -226,14 +231,24 @@ static void showInformation (char *dataSet, char *annotationSet, char *geneId, c
   puts ("<title>VAT</title>\n");
   puts ("</head>");
   puts ("<body>");
+  fflush (stdout);
 
   stringCreateClear (buffer,100);
-  stringPrintf (buffer,"%s/%s/%s.vcf",util_getConfigValue ("WEB_DATA_DIR"),dataSet,geneId);
+
+  if (cfio_get_gene_data (setId, geneId) != 0) {
+    die ("Cannot get gene file %s\n", geneId);
+  }
+
+  stringPrintf (buffer,"%s/%d/%s/%s.vcf",
+                util_getConfigValue ("WEB_DATA_WORKING_DIR"),
+                setId, dataSet, geneId);
   vcf_init (string (buffer));
   vcfEntries = vcf_parse ();
   groups = vcf_getGroupsFromColumnHeaders ();
   vcf_deInit ();
-  stringPrintf (buffer,"%s/%s.interval",util_getConfigValue ("WEB_DATA_DIR"),annotationSet);
+
+  stringPrintf (buffer,"%s/%s.interval",
+                util_getConfigValue ("WEB_DATA_REFERENCE_DIR"), annotationSet);
   vcfGenes = vcf_getGeneSummaries (vcfEntries,string (buffer));
   i = 0; 
   while (i < arrayMax (vcfGenes)) {
@@ -259,13 +274,17 @@ static void showInformation (char *dataSet, char *annotationSet, char *geneId, c
     }
   }
 
-  printf ("<h1><center>%s: gene summary for <font color=red>%s</font> [%s]</center></h1><br>\n",dataSet,currVcfGene->geneName,geneId);
+  printf ("<h1><center>%s: gene summary for <font color=red>%s</font> [%s]</center></h1><br>\n",
+          dataSet,currVcfGene->geneName,geneId);
   printf ("<h3><center>External links:</h3>\n");
   puts ("<center><b>");
-  printf ("[<a href=http://genome.ucsc.edu/cgi-bin/hgTracks?clade=mammal&org=human&db=hg18&position=%s:%d-%d target=external>UCSC genome browser</a>]&nbsp;&nbsp;&nbsp;\n",currInterval->chromosome,start - 1000,end + 1000);
-  printf ("[<a href=http://may2009.archive.ensembl.org/Homo_sapiens/Gene/Summary?g=%s target=external>Ensembl genome browser</a>]&nbsp;&nbsp;&nbsp;\n",geneId);
+  printf ("[<a href=http://genome.ucsc.edu/cgi-bin/hgTracks?clade=mammal&org=human&db=hg18&position=%s:%d-%d target=external>UCSC genome browser</a>]&nbsp;&nbsp;&nbsp;\n",
+          currInterval->chromosome,start - 1000,end + 1000);
+  printf ("[<a href=http://may2009.archive.ensembl.org/Homo_sapiens/Gene/Summary?g=%s target=external>Ensembl genome browser</a>]&nbsp;&nbsp;&nbsp;\n",
+          geneId);
   if (strEqual (type,"coding")) {
-    printf ("[<a href=http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s target=external>Gene Cards</a>]&nbsp;&nbsp;&nbsp;\n",currVcfGene->geneName);
+    printf ("[<a href=http://www.genecards.org/cgi-bin/carddisp.pl?gene=%s target=external>Gene Cards</a>]&nbsp;&nbsp;&nbsp;\n",
+            currVcfGene->geneName);
   }
   puts ("</b></center>");
   puts ("<br><br><br>");
@@ -292,7 +311,7 @@ static void showInformation (char *dataSet, char *annotationSet, char *geneId, c
   transcriptName = NULL;
   for (i = 0; i < arrayMax (currVcfGene->transcripts); i++) {
     currInterval = arru (currVcfGene->transcripts,i,Interval*);
-    util_processTranscriptLine (currInterval->name,&thisGeneId,&transcriptId,&geneName,&transcriptName);
+    util_processTranscriptLine (currInterval->name, &thisGeneId, &transcriptId, &geneName, &transcriptName);
     puts ("<tr align=center>");
     printf ("<td>%s</td>",transcriptName);
     printf ("<td>%s</td>",transcriptId);
@@ -310,18 +329,22 @@ static void showInformation (char *dataSet, char *annotationSet, char *geneId, c
 
   if (strEqual (type,"coding")) {
     puts ("<h3><center>Graphical representation of genetic variants</center></h3>");
-    printf ("<center><img src=%s/%s/%s.png></center>\n",util_getConfigValue ("WEB_DATA_URL"),dataSet,geneId);
+    printf ("<center><img src=%s/%d/%s/%s.png></center>\n",
+            util_getConfigValue ("WEB_DATA_URL"), setId, dataSet, geneId);
     puts ("<br><br>");
-    printf ("<center><img src=%s/%s/legend.png></center>\n",util_getConfigValue ("WEB_DATA_URL"),dataSet);
+    printf ("<center><img src=%s/%d/%s/legend.png></center>\n",
+            util_getConfigValue ("WEB_DATA_URL"), setId, dataSet);
     puts ("<br><br><br>");
     fflush (stdout);
   }
   else if (strEqual (type,"nonCoding")) {
     puts ("<h3><center>Graphical representation of the secondary structure</center></h3>");
     puts ("<center><h4>Reference</center></h4>");
-    printf ("<center><embed src=%s/%s/%s_ref.svg height=450px width=1000px></center>\n",util_getConfigValue ("WEB_DATA_URL"),dataSet,geneId);
+    printf ("<center><embed src=%s/%d/%s/%s_ref.svg height=450px width=1000px></center>\n",
+            util_getConfigValue ("WEB_DATA_URL"), setId, dataSet, geneId);
     puts ("<center><h4>Variants</center></h4>");
-    printf ("<center><embed src=%s/%s/%s_alt.svg height=450px width=1000px></center>\n",util_getConfigValue ("WEB_DATA_URL"),dataSet,geneId);
+    printf ("<center><embed src=%s/%d/%s/%s_alt.svg height=450px width=1000px></center>\n",
+            util_getConfigValue ("WEB_DATA_URL"), setId, dataSet, geneId);
   }
   else {
     die ("Unknown type: %s",type);
@@ -402,8 +425,8 @@ static void showInformation (char *dataSet, char *annotationSet, char *geneId, c
           }
           puts ("</td>");
         }
-        printf ("<td><a href=%s/vat_cgi?mode=showGenotypes&dataSet=%s&geneId=%s&index=%d target=genotypes>Link</a></td>\n",
-                util_getConfigValue ("WEB_URL_CGI"),dataSet,geneId,i);
+        printf ("<td><a href=%s/vat_cgi?mode=showGenotypes&dataSet=%s&setId=%d&geneId=%s&index=%d target=genotypes>Link</a></td>\n",
+                util_getConfigValue ("WEB_URL_CGI"), dataSet, setId, geneId, i);
         puts ("</tr>");
       } 
     }
@@ -417,21 +440,21 @@ static void showInformation (char *dataSet, char *annotationSet, char *geneId, c
 
 
 
-static void showGeneInformation (char *dataSet, char *annotationSet, char *geneId)
+static void showGeneInformation (char *dataSet, char *annotationSet, char *geneId, int setId)
 {
-  showInformation (dataSet,annotationSet,geneId,"coding");
+  showInformation (dataSet, annotationSet, geneId, "coding", setId);
 }
 
 
 
-static void showNonCodingInformation (char *dataSet, char *annotationSet, char *geneId)
+static void showNonCodingInformation (char *dataSet, char *annotationSet, char *geneId, int setId)
 {
-  showInformation (dataSet,annotationSet,geneId,"nonCoding");
+  showInformation (dataSet, annotationSet, geneId, "nonCoding", setId);
 }
 
 
 
-static void showGenotypes (char *dataSet, char *geneId, int index)
+static void showGenotypes (char *dataSet, char *geneId, int index, int setId)
 {
   static Stringa buffer = NULL;
   Array vcfEntries;
@@ -449,8 +472,14 @@ static void showGenotypes (char *dataSet, char *geneId, int index)
   puts ("</head>");
   puts ("<body>");
 
+  if (cfio_get_gene_data (setId, geneId) != 0) {
+    die ("Cannot get gene file %s\n", geneId);
+  }
+
   stringCreateClear (buffer,100);
-  stringPrintf (buffer,"%s/%s/%s.vcf",util_getConfigValue ("WEB_DATA_DIR"),dataSet,geneId);
+  stringPrintf (buffer,"%s/%d/%s/%s.vcf",
+                util_getConfigValue ("WEB_DATA_WORKING_DIR"),
+                setId, dataSet, geneId);
   vcf_init (string (buffer));
   vcfEntries = vcf_parse ();
   groups = vcf_getGroupsFromColumnHeaders ();
@@ -561,7 +590,7 @@ int main (int argc, char *argv[])
   char *annotationSet = NULL;
   char *type = NULL;
   int index;
-  int setId;
+  int setId = -1;
 
   cgiInit();
   cgiHeader("text/html");
@@ -607,17 +636,18 @@ int main (int argc, char *argv[])
       die ("Unexpected inputs: '%s' '%s'\n",iPtr,vPtr); 
     }
   }
+
   if (strEqual (mode,"process")) {
     processData (dataSet, annotationSet, type, setId);
   }
   else if (strEqual (mode,"showGene")) {
-    showGeneInformation (dataSet,annotationSet,geneId);
+    showGeneInformation (dataSet,annotationSet,geneId, setId);
   }
   else if (strEqual (mode,"showNonCoding")) {
-    showNonCodingInformation (dataSet,annotationSet,geneId);
+    showNonCodingInformation (dataSet,annotationSet,geneId, setId);
   }
   else if (strEqual (mode,"showGenotypes")) {
-    showGenotypes (dataSet, geneId, index);
+    showGenotypes (dataSet, geneId, index, setId);
   }
   else if (strEqual (mode,"cleanUp")) {
     cleanUpData ();
@@ -627,6 +657,9 @@ int main (int argc, char *argv[])
   }
   fflush (stdout);
 
+  if (setId != -1) {
+    cfio_clear_working (setId);
+  }
   cfio_deinit ();
   util_configDeInit ();
   return 0;

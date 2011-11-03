@@ -44,6 +44,8 @@ int cfio_init ()
     return 0;
 }
 
+
+
 /**
  * Makes a request to S3 bucket and
  */
@@ -226,6 +228,64 @@ int cfio_get_data (int pid, int filemask)
             }
         }
     }
+
+    return 0;
+}
+
+int cfio_get_gene_data (int pid, char *geneId)
+{
+    Stringa src = stringCreate (20);
+    Stringa dst = stringCreate (20);
+
+    struct stat statbuf;
+    stringPrintf (dst, "%s/%d",
+                  util_getConfigValue ("WEB_DATA_WORKING_DIR"), pid);
+    if (stat (string (dst), &statbuf) != 0) {
+        if (shell_mkdir (string (dst)) != 0) {
+            fprintf (stderr, "Could not create directory %s\n", string (dst));
+            perror (0);
+            return -1;
+        }
+    }
+
+    stringClear (dst);
+    stringPrintf (dst, "%s/%d/vat.%d",
+                  util_getConfigValue ("WEB_DATA_WORKING_DIR"), pid, pid);
+    if (stat (string (dst), &statbuf) != 0) {
+        if (shell_mkdir (string (dst)) != 0) {
+            fprintf (stderr, "Could not create directory %s\n", string (dst));
+            perror (0);
+            return -1;
+        }
+    }
+
+    if (strcmp (util_getConfigValue ("AWS_USE_S3"), "true") == 0) {
+        stringPrintf (src, "%d/vat.%d/%s.vcf", pid, pid, geneId);
+        stringPrintf (dst, "%s/%d/vat.%d/%s.vcf",
+                      util_getConfigValue ("WEB_DATA_WORKING_DIR"),
+                      pid, pid, geneId);
+
+        if (s3_get (util_getConfigValue ("AWS_S3_DATA_BUCKET"),
+                    string (src), string (dst)) != 0) {
+            fprintf (stderr, "Cannot get %s from %s\n", string (src), string (dst));
+            return -1;
+        }
+    } else {
+        stringPrintf (src, "%s/%d/vat.%d/%s.vcf",
+                      util_getConfigValue ("WEB_DATA_DIR"), pid, pid, geneId);
+        stringPrintf (dst, "%s/%d/vat.%d/%s.vcf",
+                      util_getConfigValue ("WEB_DATA_WORKING_DIR"),
+                      pid, pid, geneId);
+
+        if (shell_cp (string (src), string (dst)) != 0) {
+            fprintf (stderr, "Cannot cp %s %s\n", string (src), string (dst));
+            return -1;
+        }
+    }
+
+
+    stringDestroy (src);
+    stringDestroy (dst);
 
     return 0;
 }
