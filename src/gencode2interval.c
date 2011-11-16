@@ -41,12 +41,30 @@ static int sortGtfEntries (GtfEntry *a, GtfEntry *b)
 
 
 
+static int hasFeature (Array items, char *feature) 
+{
+  int i;
+  GtfEntry *thisGtfEntry;
+
+  for (i = 0; i < arrayMax (items); i++) {
+    thisGtfEntry = arru (items,i,GtfEntry*);
+    if (strEqual (thisGtfEntry->feature,feature)) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+
+
 static void writeAnnotation (GtfEntry *currGtfEntry, Array items)
 {
   int i;
   static Array starts = NULL; 
   static Array ends = NULL;
   GtfEntry *thisGtfEntry;
+  int hasStart;
+  int hasStop;
 
   if (starts == NULL) {
     starts = arrayCreate (100,int);
@@ -62,8 +80,10 @@ static void writeAnnotation (GtfEntry *currGtfEntry, Array items)
   }
   for (i = 0; i < arrayMax (items); i++) {
     thisGtfEntry = arru (items,i,GtfEntry*);
-    array (starts,arrayMax (starts),int) = thisGtfEntry->start - 1; // convert to zero-based intervals
-    array (ends,arrayMax (ends),int) = thisGtfEntry->end;
+    if (strEqual (thisGtfEntry->feature,"CDS") || strEqual (thisGtfEntry->feature,"exon")) {
+      array (starts,arrayMax (starts),int) = thisGtfEntry->start - 1; // convert to zero-based intervals
+      array (ends,arrayMax (ends),int) = thisGtfEntry->end;
+    }
   }
   if (arrayMax (starts) != arrayMax (ends)) {
     die ("Unequal number of starts and ends");
@@ -71,8 +91,29 @@ static void writeAnnotation (GtfEntry *currGtfEntry, Array items)
   if (strEqual (currGtfEntry->chromosome,"chrMT")) {
     currGtfEntry->chromosome[4] = '\0';
   }
+  hasStart = hasFeature (items,"start_codon");
+  hasStop = hasFeature (items,"stop_codon");
   arraySort (starts,(ARRAYORDERF)arrayIntcmp);
   arraySort (ends,(ARRAYORDERF)arrayIntcmp);
+  if (currGtfEntry->strand[0] == '+') {
+    if (hasStart == 0) {
+      arru (starts,0,int) = arru (starts,0,int) + currGtfEntry->frame;
+    }
+    if (hasStop == 1) {
+      arru (ends,arrayMax (ends) - 1,int) = arru (ends,arrayMax (ends) - 1,int) + 3;
+    }
+  }
+  else if (currGtfEntry->strand[0] == '-') {
+    if (hasStart == 0) {
+      arru (ends,arrayMax (ends) - 1,int) = arru (ends,arrayMax (ends) - 1,int) - currGtfEntry->frame;
+    }
+    if (hasStop == 1) {
+      arru (starts,0,int) = arru (starts,0,int) - 3;
+    }
+  }
+  else {
+    die ("Unexpected strand: %c",currGtfEntry->strand[0]);
+  }
   printf ("%s|%s|%s|%s\t%s\t%s\t",
           currGtfEntry->geneId,currGtfEntry->transcriptId,currGtfEntry->geneName,currGtfEntry->transcriptName,
           currGtfEntry->chromosome,currGtfEntry->strand);
