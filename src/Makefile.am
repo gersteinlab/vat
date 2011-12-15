@@ -1,3 +1,5 @@
+AM_CPPFLAGS = -I$(top_srcdir)/lib
+
 noinst_LIBRARIES = libvat.a
 libvat_a_SOURCES = \
 	vcf.c vcf.h \
@@ -7,7 +9,7 @@ libvat_a_SOURCES = \
 	md5.c md5.h \
 	growbuffer.c growbuffer.h \
 	s3.c s3.h
-
+libvat_a_LIBADD = $(top_srcdir)/lib/libgnu.a $(LIBINTL)
 
 bin_PROGRAMS = \
 	gencode2interval \
@@ -20,12 +22,9 @@ bin_PROGRAMS = \
 	vcfSummary \
 	vcfSubsetByGene \
 	vcfModifyHeader\
+	vatson \
 	vat_cgi \
 	vat_fileUpload_cgi \
-	vat_list_raw_cgi \
-	vat_list_data_cgi \
-	vat_process_cgi \
-	vat_upload_cgi \
 	tests3
 
 gencode2interval_SOURCES = gencode2interval.c
@@ -57,6 +56,9 @@ vcfSubsetByGene_LDADD = libvat.a -lbios -lm
 
 vcfModifyHeader_SOURCES = vcfModifyHeader.c
 vcfModifyHeader_LDADD = libvat.a -lbios -lm
+
+vatson_SOURCES = vatson.c
+vatson_LDADD = libvat.a -lbios -lm -ls3
 
 vat_cgi_SOURCES = vat_cgi.c
 vat_cgi_LDADD = libvat.a -lbios -lm -ls3

@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <time.h>
 #include <assert.h>
 #include <dirent.h>
@@ -635,6 +636,7 @@ Array s3_list (char *bucket)
             S3_list_bucket (&bucketContext, 0, 0, 0, 0, 0,
                             &listBucketHandler, &data);
         } while (S3_status_is_retryable (S3_status) && should_retry ());
+
         if (S3_status != S3StatusOK)
             break;
     } while (data.is_truncated);

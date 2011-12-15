@@ -20,20 +20,21 @@ WEB_URL_CGI http://localhost/cgi-bin
 WEB_DIR_CGI /var/www/cgi-bin
 
 
-WEB_DATA_DIR /var/www/data/sets
+WEB_DATA_DIR /var/www/html/data/sets
 
 // URL to preprocessed files
-WEB_DATA_URL http://localhost/data/sets
+WEB_DATA_URL https://s3.amazonaws.com/vat-data
 
 // Path to the web data directory where the preprocessed files are stored
-WEB_DATA_REFERENCE_DIR /var/www/data/reference
+WEB_DATA_REFERENCE_DIR /var/www/html/data/reference
 
-WEB_DATA_WORKING_DIR /var/www/data/working
+WEB_DATA_WORKING_DIR /var/www/html/data/working
 
-WEB_DATA_RAW_DIR /var/www/data/raw
+WEB_DATA_RAW_DIR /var/www/html/data/raw
 
 // URL to static web files, such as images, style sheets
 WEB_STATIC_URL http://localhost/assets
+
 
 // =============================================================================
 // AWS/S3 Configuration values
@@ -64,4 +65,20 @@ AWS_S3_DATA_URL foo
 // this bucket is used instead of WEB_DATA_RAW_DIR 
 AWS_S3_RAW_BUCKET vat-raw
 
+// =============================================================================
+// Set only if setting up as master node in master/worker configuration
+// =============================================================================
 
+MASTER_NODE false
+
+MASTER_MYSQL_HOST localhost
+
+MASTER_MYSQL_USER vatmaster
+
+MASTER_MYSQL_PASS public12
+
+MASER_MYSQL_DB vat
+
+MASTER_WORKER_AMI_BUCKET foo
+
+MASTER_WORKER_AMI foo

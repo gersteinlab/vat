@@ -101,6 +101,79 @@ function range_intersection($start1, $end1, $start2, $end2)
     return $e - $s;
 }
 
+/**
+ * Recursively delete a directory and all its files and subdirectories
+ * 
+ * @param string $dir_name
+ * @return bool
+ */
+function rrmdir($dir_name)
+{
+    if ($dir_name == NULL || ! is_string($dir_name) || ! is_dir($dir_name)) {
+        return FALSE;
+    }
+
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($dir_name),
+        RecursiveIteratorIterator::CHILD_FIRST);
+
+    foreach ($iterator as $entry) {
+        $path = $entry->__toString();
+
+        if (substr($path, -1) == "." || substr($path, -2) == "..") {
+            continue;
+        }
+
+        if ($entry->isDir()) {
+             if (rmdir($path) === FALSE) {
+                 return FALSE;
+             }
+        } else {
+             if (unlink($path) === FALSE) {
+                 return FALSE;
+             }
+        }
+    }
+
+    return rmdir($dir_name);
+}
+
+/**
+* Recursively delete all the files and subdirectories of a directory
+*
+* @param string $dir_name
+* @return bool
+*/
+function cleardir($dir_name)
+{
+    if ($dir_name == NULL || ! is_string($dir_name) || ! is_dir($dir_name)) {
+        return FALSE;
+    }
+
+    $iterator = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($dir_name),
+    RecursiveIteratorIterator::CHILD_FIRST);
+
+    foreach ($iterator as $entry) {
+        $path = $entry->__toString();
+
+        if (substr($path, -1) == "." || substr($path, -2) == "..") {
+            continue;
+        }
+
+        if ($entry->isDir()) {
+            if (rmdir($path) === FALSE) {
+                return FALSE;
+            }
+        } else {
+            if (unlink($path) === FALSE) {
+                return FALSE;
+            }
+        }
+    }
+
+    return TRUE;
+}
 
 /**
  * Flushes all output buffers

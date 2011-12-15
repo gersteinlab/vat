@@ -11,6 +11,8 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Checks for programs.
 AC_PROG_CC
+gl_EARLY
+gl_INIT
 AC_PROG_RANLIB
 AC_CHECK_PROG([TABIX], [tabix], yes, no)
 AC_CHECK_PROG([BGZIP], [bgzip], yes, no)
@@ -39,5 +41,8 @@ AC_CHECK_HEADERS([stdlib.h unistd.h])
 # Checks for library functions.
 AC_CHECK_FUNCS([floor strchr strpbrk strrchr strstr])
 
-AC_CONFIG_FILES([Makefile src/Makefile vat.pc:vat.pc.in])
+AC_CONFIG_FILES([Makefile 
+		 lib/Makefile 
+		 src/Makefile 
+		 vat.pc:vat.pc.in])
 AC_OUTPUT

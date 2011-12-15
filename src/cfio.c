@@ -6,6 +6,7 @@
  * @copyright (c) 2011 Gerstein Lab
  */
 
+#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

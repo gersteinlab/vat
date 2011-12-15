@@ -9,8 +9,10 @@
  * @license    ????
  */
 
-define('CONFIG_FILE_PATH', '/home/dzc/.vatrc');
+// XXX Need to get this to work better
+define('CONFIG_FILE_PATH', 'vatrc');
 define('CONFIG_COMMENT_DELIM', '//');
+define('VAT_SRC', TRUE);
 
 // Turn on all error reporting
 error_reporting(E_ALL);

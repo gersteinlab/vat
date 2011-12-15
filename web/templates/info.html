@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>VAT - Variant Annotation Tool</title>
+        <meta name="description" content="Variant annotation tool cloud service">
+        <meta name="author" content="Gerstein Lab">
+        
+        <!-- HTML5 shim for IE 6-8 support -->
+        <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        
+        <!-- Styles -->
+        <link href="css/bootstrap.css" rel="stylesheet">
+        <style type="text/css">
+            body {
+                padding-top: 60px;
+            }
+        </style>
+        
+        <!-- Fav and touch icons -->
+        <link rel="shortcut icon" href="images/favicon.ico">
+        <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+        
+        <style type="text/css" media="screen">
+		    @import url("css/demo_table_jui.css");
+		    @import url("css/smoothness/jquery-ui-1.8.4.custom.css");
+        </style>
+        
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+        <script type="text/javascript" language="javascript" src="js/jquery.dataTables.js"></script>
+        <script type="text/javascript" charset="utf-8">
+            $(document).ready(function() {
+                $('#ex1').html ('<table id="gene" class="zebra-striped"></table>')
+                    $('#gene').dataTable( {
+                        "bJQueryUI": true,
+                        "bProcessing": true,
+                        "iDisplayLength": 25,
+                        "bStateSave": true,
+                        "sPaginationType": "full_numbers",
+                        "aaData": [ 
+							["ENSG00000008128","CDC2L2","15","9","6","0","0","1","1","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000008128 target=gene>Link</a>"],
+							["ENSG00000008130","NADK","7","2","4","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000008130 target=gene>Link</a>"],
+							["ENSG00000067606","PRKCZ","7","5","1","0","0","0","0","<a href=gene.html target=gene>Link</a>"],
+							["ENSG00000078369","GNB1","7","1","2","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000078369 target=gene>Link</a>"],
+							["ENSG00000078808","SDF4","3","8","7","0","1","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000078808 target=gene>Link</a>"],
+							["ENSG00000116151","MORN1","7","2","5","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000116151 target=gene>Link</a>"],
+							["ENSG00000127054","CPSF3L","7","7","1","1","0","0","1","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000127054 target=gene>Link</a>"],
+							["ENSG00000131584","ACAP3","3","3","3","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000131584 target=gene>Link</a>"],
+							["ENSG00000131591","C1orf159","15","6","5","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000131591 target=gene>Link</a>"],
+							["ENSG00000142606","MMEL1","3","8","2","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000142606 target=gene>Link</a>"],
+							["ENSG00000142609","C1orf222","9","20","24","1","0","0","1","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000142609 target=gene>Link</a>"],
+							["ENSG00000149527","PLCH2","9","9","12","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000149527 target=gene>Link</a>"],
+							["ENSG00000157870","C1orf93","5","1","2","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000157870 target=gene>Link</a>"],
+							["ENSG00000157873","TNFRSF14","8","1","1","0","0","1","1","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000157873 target=gene>Link</a>"],
+							["ENSG00000157881","PANK4","2","5","3","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000157881 target=gene>Link</a>"],
+							["ENSG00000157911","PEX10","2","3","2","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000157911 target=gene>Link</a>"],
+							["ENSG00000157933","SKI","1","3","2","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000157933 target=gene>Link</a>"],
+							["ENSG00000160072","ATAD3B","6","1","0","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000160072 target=gene>Link</a>"],
+							["ENSG00000160075","SSU72","4","3","0","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000160075 target=gene>Link</a>"],
+							["ENSG00000160087","UBE2J2","10","1","3","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000160087 target=gene>Link</a>"],
+							["ENSG00000162571","TTLL10","4","6","13","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000162571 target=gene>Link</a>"],
+							["ENSG00000162572","SCNN1D","7","4","12","1","0","0","1","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000162572 target=gene>Link</a>"],
+							["ENSG00000162585","C1orf86","11","3","1","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000162585 target=gene>Link</a>"],
+							["ENSG00000169885","CALML6","2","3","3","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000169885 target=gene>Link</a>"],
+							["ENSG00000169972","PUSL1","1","1","2","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000169972 target=gene>Link</a>"],
+							["ENSG00000178821","TMEM52","5","1","3","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000178821 target=gene>Link</a>"],
+							["ENSG00000179403","VWA1","3","1","0","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000179403 target=gene>Link</a>"],
+							["ENSG00000184163","FAM132A","1","4","4","1","0","0","1","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000184163 target=gene>Link</a>"],
+							["ENSG00000186827","TNFRSF4","3","2","2","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000186827 target=gene>Link</a>"],
+							["ENSG00000186891","TNFRSF18","3","2","2","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000186891 target=gene>Link</a>"],
+							["ENSG00000187583","PLEKHN1","3","7","9","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000187583 target=gene>Link</a>"],
+							["ENSG00000187608","ISG15","1","3","1","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000187608 target=gene>Link</a>"],
+							["ENSG00000187634","SAMD11","6","7","10","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000187634 target=gene>Link</a>"],
+							["ENSG00000187642","C1orf170","2","10","9","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000187642 target=gene>Link</a>"],
+							["ENSG00000187730","GABRD","1","4","1","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000187730 target=gene>Link</a>"],
+							["ENSG00000187961","KLHL17","2","8","1","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000187961 target=gene>Link</a>"],
+							["ENSG00000188157","AGRN","3","18","11","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000188157 target=gene>Link</a>"],
+							["ENSG00000188290","HES4","2","0","1","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000188290 target=gene>Link</a>"],
+							["ENSG00000188976","NOC2L","1","5","5","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000188976 target=gene>Link</a>"],
+							["ENSG00000189339","RP11-345P4.2","2","4","2","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000189339 target=gene>Link</a>"],
+							["ENSG00000197530","MIB2","8","10","4","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000197530 target=gene>Link</a>"],
+							["ENSG00000197785","ATAD3A","7","3","5","1","0","0","1","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000197785 target=gene>Link</a>"],
+							["ENSG00000205090","C1orf70","3","1","1","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000205090 target=gene>Link</a>"],
+							["ENSG00000215014","AL645728.1","1","0","1","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000215014 target=gene>Link</a>"],
+							["ENSG00000215059","AL590822.1","1","1","2","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000215059 target=gene>Link</a>"],
+							["ENSG00000215790","SLC35E2","3","0","1","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000215790 target=gene>Link</a>"],
+							["ENSG00000215912","TTC34","2","5","4","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000215912 target=gene>Link</a>"],
+							["ENSG00000215915","ATAD3C","3","0","1","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000215915 target=gene>Link</a>"],
+							["ENSG00000221978","CCNL2","7","0","1","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000221978 target=gene>Link</a>"],
+							["ENSG00000224051","GLTPD1","1","1","0","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000224051 target=gene>Link</a>"],
+							["ENSG00000228594","RP11-345P4.1","1","0","1","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000228594 target=gene>Link</a>"],
+							["ENSG00000230858","AL645608.6","1","0","3","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000230858 target=gene>Link</a>"],
+							["ENSG00000231958","AL645608.4","1","2","7","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000231958 target=gene>Link</a>"],
+							["ENSG00000232602","AL645608.1","1","0","0","2","0","2","4","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000232602 target=gene>Link</a>"],
+							["ENSG00000234662","AL590822.3","1","0","2","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000234662 target=gene>Link</a>"],
+							["ENSG00000237330","AL390719.3","1","1","3","0","0","0","0","<a href=http://128.36.220.24/cgi-bin/vat_cgi?mode=showGene&dataSet=vat.20080&setId=20080&annotationSet=gencode3b&geneId=ENSG00000237330 target=gene>Link</a>"],
+                        ],
+                        "aoColumns": [
+                            {"sTitle": "Gene ID"},
+                            {"sTitle": "Gene name"},
+                            {"sTitle": "Transcripts"},
+                            {"sTitle": "Synonymous SNPs"},
+                            {"sTitle": "Nonsynonymous SNPs"},
+                            {"sTitle": "PrematureStop SNPs"},
+                            {"sTitle": "RemovedStop SNPs"},
+                            {"sTitle": "Splice overlaps"},
+                            {"sTitle": "LOF variants"},
+                            {"sTitle": "Link"}
+                        ]
+                    });
+                $('#ex2').html ( '<table id="sample" class="zebra-striped"></table>' )
+                $('#sample').dataTable( {
+                	"bJQueryUI": true,
+                    "bProcessing": true,
+                    "iDisplayLength": 25,
+                    "bStateSave": true,
+                    "sPaginationType": "full_numbers",
+                    "aaData": [ 
+						["NA06985","CEU","40","30","1","1","0","1",],
+						["NA06986","CEU","42","32","0","1","1","1",],
+						["NA06994","CEU","48","39","0","1","1","1",],
+						["NA07000","CEU","42","36","0","1","0","0",],
+						["NA07037","CEU","38","31","0","1","1","1",],
+						["NA07051","CEU","38","28","0","1","1","1",],
+						["NA07346","CEU","44","31","0","1","1","1",],
+						["NA07347","CEU","36","23","0","1","0","0",],
+						["NA07357","CEU","42","38","0","1","1","1",],
+						["NA10847","CEU","46","35","0","1","1","1",],
+						["NA10851","CEU","48","37","0","1","1","1",],
+						["NA11829","CEU","42","31","0","1","1","1",],
+						["NA11830","CEU","46","34","0","1","0","0",],
+						["NA11831","CEU","38","30","0","1","1","1",],
+						["NA11832","CEU","41","30","0","1","1","1",],
+						["NA11840","CEU","38","25","0","1","1","1",],
+						["NA11881","CEU","36","31","0","1","1","1",],
+						["NA11894","CEU","43","30","0","1","1","1",],
+						["NA11918","CEU","42","37","0","1","1","1",],
+						["NA11919","CEU","49","34","0","1","0","0",],
+						["NA11920","CEU","41","34","0","1","0","0",],
+						["NA11931","CEU","43","31","0","1","1","1",],
+						["NA11992","CEU","50","36","0","1","1","1",],
+						["NA11993","CEU","45","29","0","1","1","1",],
+						["NA11994","CEU","35","32","0","1","1","1",],
+						["NA11995","CEU","46","34","1","1","2","3",],
+						["NA12003","CEU","40","32","0","1","1","1",],
+						["NA12004","CEU","38","34","0","1","1","1",],
+						["NA12005","CEU","45","35","0","1","1","1",],
+						["NA12006","CEU","38","31","0","1","1","1",],
+						["NA12043","CEU","40","31","0","1","0","0",],
+						["NA12044","CEU","42","34","0","1","1","1",],
+						["NA12045","CEU","44","36","0","1","1","1",],
+						["NA12144","CEU","40","25","0","1","1","1",],
+						["NA12154","CEU","44","34","0","1","0","0",],
+						["NA12155","CEU","43","35","0","1","1","1",],
+						["NA12156","CEU","46","33","1","1","1","2",],
+						["NA12234","CEU","42","28","0","1","0","0",],
+						["NA12249","CEU","48","37","0","1","1","1",],
+						["NA12287","CEU","40","35","0","1","0","0",],
+						["NA12414","CEU","43","32","1","1","2","3",],
+						["NA12489","CEU","43","27","0","1","1","1",],
+						["NA12716","CEU","49","41","0","1","1","1",],
+						["NA12717","CEU","44","28","0","1","0","0",],
+						["NA12749","CEU","49","39","1","1","1","2",],
+						["NA12750","CEU","43","37","0","1","1","1",],
+						["NA12751","CEU","40","33","0","1","0","0",],
+						["NA12760","CEU","40","33","0","1","0","0",],
+						["NA12761","CEU","42","34","0","1","1","1",],
+						["NA12762","CEU","44","32","0","1","0","0",],
+						["NA12763","CEU","41","38","0","1","1","1",],
+						["NA12776","CEU","36","24","0","1","1","1",],
+						["NA12812","CEU","44","34","0","1","1","1",],
+						["NA12813","CEU","44","39","0","1","1","1",],
+						["NA12814","CEU","40","29","0","1","1","1",],
+						["NA12815","CEU","46","31","0","1","1","1",],
+						["NA12828","CEU","46","36","1","1","1","2",],
+						["NA12872","CEU","48","38","0","1","1","1",],
+						["NA12873","CEU","46","37","0","1","1","1",],
+						["NA12874","CEU","50","40","0","1","1","1",],
+						["NA18526","CHBJPT","44","39","1","1","1","2",],
+						["NA18532","CHBJPT","49","44","0","1","0","0",],
+						["NA18537","CHBJPT","49","44","0","1","0","0",],
+						["NA18542","CHBJPT","54","48","2","1","1","3",],
+						["NA18545","CHBJPT","52","45","1","1","1","2",],
+						["NA18547","CHBJPT","45","39","2","1","1","3",],
+						["NA18550","CHBJPT","55","49","0","1","1","1",],
+						["NA18552","CHBJPT","47","44","2","1","0","2",],
+						["NA18555","CHBJPT","46","40","1","1","1","2",],
+						["NA18558","CHBJPT","56","50","1","1","1","2",],
+						["NA18561","CHBJPT","54","48","0","1","1","1",],
+						["NA18562","CHBJPT","51","43","1","1","0","1",],
+						["NA18563","CHBJPT","43","33","0","1","1","1",],
+						["NA18564","CHBJPT","44","39","0","1","1","1",],
+						["NA18566","CHBJPT","59","52","0","1","1","1",],
+						["NA18570","CHBJPT","60","45","0","1","2","2",],
+						["NA18571","CHBJPT","46","44","1","1","2","3",],
+						["NA18572","CHBJPT","51","42","0","1","1","1",],
+						["NA18573","CHBJPT","56","49","1","1","2","3",],
+						["NA18576","CHBJPT","48","36","0","1","1","1",],
+						["NA18577","CHBJPT","58","57","0","1","1","1",],
+						["NA18579","CHBJPT","53","44","0","1","1","1",],
+						["NA18582","CHBJPT","48","40","2","1","1","3",],
+						["NA18592","CHBJPT","43","35","1","1","2","3",],
+						["NA18593","CHBJPT","55","48","0","1","1","1",],
+						["NA18603","CHBJPT","47","44","0","1","1","1",],
+						["NA18605","CHBJPT","43","40","1","1","1","2",],
+						["NA18608","CHBJPT","53","48","1","1","1","2",],
+						["NA18609","CHBJPT","49","38","0","1","1","1",],
+						["NA18638","CHBJPT","46","39","0","1","1","1",],
+						["NA18940","CHBJPT","52","47","0","1","1","1",],
+						["NA18942","CHBJPT","46","41","0","1","1","1",],
+						["NA18943","CHBJPT","46","37","1","1","1","2",],
+						["NA18944","CHBJPT","56","44","0","1","1","1",],
+						["NA18945","CHBJPT","41","41","0","1","0","0",],
+						["NA18947","CHBJPT","52","46","1","1","2","3",],
+						["NA18948","CHBJPT","52","45","1","1","1","2",],
+						["NA18949","CHBJPT","45","44","1","1","2","3",],
+						["NA18951","CHBJPT","48","40","1","1","2","3",],
+						["NA18952","CHBJPT","57","52","0","1","1","1",],
+						["NA18953","CHBJPT","47","41","0","1","1","1",],
+						["NA18956","CHBJPT","52","39","1","1","2","3",],
+						["NA18959","CHBJPT","49","46","0","1","1","1",],
+						["NA18960","CHBJPT","59","55","0","1","1","1",],
+						["NA18961","CHBJPT","54","46","1","1","1","2",],
+						["NA18964","CHBJPT","52","49","2","1","1","3",],
+						["NA18965","CHBJPT","51","44","2","1","1","3",],
+						["NA18967","CHBJPT","39","39","1","1","1","2",],
+						["NA18968","CHBJPT","40","35","0","1","1","1",],
+						["NA18969","CHBJPT","48","42","1","1","1","2",],
+						["NA18970","CHBJPT","46","34","0","1","0","0",],
+						["NA18971","CHBJPT","51","49","0","1","1","1",],
+						["NA18972","CHBJPT","45","44","1","1","1","2",],
+						["NA18973","CHBJPT","50","46","0","1","1","1",],
+						["NA18974","CHBJPT","49","45","0","1","1","1",],
+						["NA18975","CHBJPT","50","46","0","1","1","1",],
+						["NA18976","CHBJPT","48","41","0","1","0","0",],
+						["NA18980","CHBJPT","45","43","2","1","1","3",],
+						["NA18981","CHBJPT","47","42","0","1","0","0",],
+						["NA19005","CHBJPT","60","51","1","1","1","2",],
+						["NA18486","YRI","38","31","1","1","1","2",],
+						["NA18489","YRI","49","40","1","1","0","1",],
+						["NA18498","YRI","48","36","0","1","2","2",],
+						["NA18499","YRI","52","49","0","1","1","1",],
+						["NA18501","YRI","46","37","0","1","0","0",],
+						["NA18502","YRI","49","44","1","1","1","2",],
+						["NA18504","YRI","50","42","1","1","0","1",],
+						["NA18505","YRI","46","37","2","1","1","3",],
+						["NA18507","YRI","43","38","0","1","1","1",],
+						["NA18508","YRI","54","45","1","1","1","2",],
+						["NA18510","YRI","44","34","0","1","2","2",],
+						["NA18511","YRI","44","36","1","1","1","2",],
+						["NA18516","YRI","39","28","0","1","2","2",],
+						["NA18517","YRI","51","44","3","1","1","4",],
+						["NA18519","YRI","52","41","0","1","0","0",],
+						["NA18520","YRI","50","38","1","1","1","2",],
+						["NA18522","YRI","42","35","0","1","2","2",],
+						["NA18523","YRI","44","37","0","1","1","1",],
+						["NA18853","YRI","47","34","1","1","2","3",],
+						["NA18856","YRI","61","38","0","1","1","1",],
+						["NA18858","YRI","42","34","1","1","1","2",],
+						["NA18861","YRI","50","44","1","1","1","2",],
+						["NA18870","YRI","48","45","0","1","2","2",],
+						["NA18871","YRI","47","33","0","1","0","0",],
+						["NA18907","YRI","51","38","0","1","1","1",],
+						["NA18909","YRI","51","44","0","1","0","0",],
+						["NA18912","YRI","49","52","2","1","0","2",],
+						["NA18916","YRI","48","41","1","1","1","2",],
+						["NA19093","YRI","52","37","1","1","1","2",],
+						["NA19098","YRI","50","35","0","1","0","0",],
+						["NA19099","YRI","46","38","1","1","1","2",],
+						["NA19102","YRI","56","45","2","1","1","3",],
+						["NA19108","YRI","52","44","2","1","1","3",],
+						["NA19114","YRI","51","39","0","1","1","1",],
+						["NA19116","YRI","47","41","1","1","1","2",],
+						["NA19119","YRI","53","39","1","1","0","1",],
+						["NA19129","YRI","46","37","1","1","1","2",],
+						["NA19131","YRI","40","39","1","1","0","1",],
+						["NA19137","YRI","55","32","0","1","1","1",],
+						["NA19138","YRI","48","38","1","1","2","3",],
+						["NA19141","YRI","46","37","1","1","0","1",],
+						["NA19143","YRI","48","40","3","1","1","4",],
+						["NA19144","YRI","50","50","1","1","1","2",],
+						["NA19147","YRI","52","42","0","1","1","1",],
+						["NA19152","YRI","44","33","1","1","1","2",],
+						["NA19153","YRI","43","39","0","1","1","1",],
+						["NA19159","YRI","51","43","0","1","1","1",],
+						["NA19160","YRI","42","31","1","1","0","1",],
+						["NA19171","YRI","53","32","1","1","0","1",],
+						["NA19172","YRI","45","31","1","1","0","1",],
+						["NA19190","YRI","47","42","0","1","1","1",],
+						["NA19200","YRI","47","41","0","1","1","1",],
+						["NA19201","YRI","45","37","0","1","1","1",],
+						["NA19204","YRI","42","36","0","1","0","0",],
+						["NA19207","YRI","44","38","0","1","0","0",],
+						["NA19209","YRI","43","32","1","1","2","3",],
+						["NA19210","YRI","39","35","0","1","0","0",],
+						["NA19225","YRI","48","40","1","1","1","2",],
+						["NA19257","YRI","54","45","2","1","1","3",],
+					],
+				    "aoColumns": [
+                        {"sTitle": "Sample"},
+                        {"sTitle": "Group"},
+                        {"sTitle": "Synonymous SNPs"},
+                        {"sTitle": "Nonsynonymous SNPs"},
+                        {"sTitle": "PrematureStop SNPs"},
+                        {"sTitle": "RemovedStop SNPs"},
+                        {"sTitle": "Splice overlaps"},
+                        {"sTitle": "LOF variants"},
+                    ]
+                });
+            });
+        </script>
+        <title>VAT</title>
+
+    </head>
+    <body>
+        <div class="topbar">
+            <div class="fill">
+                <div class="container-fluid">
+                    <a class="brand" href="index.php">VAT</a>
+                    <ul class="nav">
+                        <li><a href="index.php">Home</a></li>
+                        <li><a href="upload.php">Upload</a></li>
+                        <li><a href="documentation.php">Documentation</a></li>
+                        <li><a href="download.php">Download</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    
+        <div class="container-fluid">
+            <div class="sidebar">
+                <div class="well">
+                <h3>Data files</h3>
+                <ul>
+                    <li><a href="https://s3.amazonaws.com/vat-data/20080/vat.20080.vcf.gz" target="external">Download compressed VCF file with annotated variants</a></li>
+                    <li><a href="https://s3.amazonaws.com/vat-data/20080/vat.20080.geneSummary.txt" target="external">View tab-delimited gene summary file</a></li>
+                    <li><a href="https://s3.amazonaws.com/vat-data/20080/vat.20080.sampleSummary.txt" target="external">View tab-delimited sample summary file</a></li>
+                </ul>
+                </div>
+            </div>
+            
+            <div class="content">
+                <div class="page-header">
+                    <h1>Results: vat.20080</h1>
+                </div>
+                
+                <h2>Gene summary based on gencode3b annotation set</h2>
+                <div id="ex1"></div>
+                <p></p>
+            
+                <h2>Sample summary</h2>
+                <div id="ex2"></div>
+            </div>
+            
+            <footer>
+                <p>&copy; Gerstein Lab 2011</p>
+            </footer>
+        </div>
+
+    </body>
+</html>
