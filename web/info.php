@@ -1,6 +1,6 @@
 <?php 
 
-require_once 'lib/config.php';
+require_once 'lib/init.php';
 require_once 'lib/util.php';
 require_once 'lib/cfio.php';
 require_once 'lib/vat.php';
@@ -116,7 +116,7 @@ if (empty($fatal_error))
                     <a class="brand" href="index.php">VAT</a>
                     <ul class="nav">
                         <li><a href="index.php">Home</a></li>
-                        <li><a href="vat_upload.php">Upload</a></li>
+                        <li><a href="upload.php">Upload</a></li>
                         <li><a href="documentation.php">Documentation</a></li>
                         <li><a href="download.php">Download</a></li>
                     </ul>
@@ -270,7 +270,7 @@ if (empty($fatal_error))
 								<td><? echo $allele_freq; ?></td>
 		<? endforeach; ?>
 		<? 
-		$genotypes_link = sprintf("vat_genotype.php?dataSet=%s&setId=%s&geneId=%s&index=%s",  
+		$genotypes_link = sprintf("genotype.php?dataSet=%s&setId=%s&geneId=%s&index=%s",  
 		                          $data_set, 
 		                          $set_id,
 		                          $gene_id,

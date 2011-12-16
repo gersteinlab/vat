@@ -1,6 +1,6 @@
 <?php 
 
-require_once 'lib/config.php';
+require_once 'lib/init.php';
 require_once 'lib/util.php';
 require_once 'lib/cfio.php';
 require_once 'lib/vat.php';
@@ -104,7 +104,7 @@ if (empty($fatal_error))
                     <a class="brand" href="index.php">VAT</a>
                     <ul class="nav">
                         <li><a href="index.php">Home</a></li>
-                        <li><a href="vat_upload.php">Upload</a></li>
+                        <li><a href="upload.php">Upload</a></li>
                         <li><a href="documentation.php">Documentation</a></li>
                         <li><a href="download.php">Download</a></li>
                     </ul>

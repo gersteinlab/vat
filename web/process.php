@@ -1,7 +1,7 @@
 <?php
 
 
-require_once 'lib/config.php';
+require_once 'lib/init.php';
 require_once 'lib/util.php';
 require_once 'lib/cfio.php';
 
@@ -385,7 +385,7 @@ else
                     <a class="brand" href="index.php">VAT</a>
                     <ul class="nav">
                         <li><a href="index.php">Home</a></li>
-                        <li><a href="vat_upload.php">Upload</a></li>
+                        <li><a href="upload.php">Upload</a></li>
                         <li><a href="documentation.php">Documentation</a></li>
                         <li><a href="download.php">Download</a></li>
                     </ul>
@@ -444,8 +444,8 @@ else
             </script>
         	<div class="span16">
                 <div class="well">
-                    <a class="btn" href="vat_upload.php">Back</a>
-                    <a class="btn primary" href="vat_process.php?inFile=<? echo $uploaded_file; ?>&annotationFile=<? echo $annotation_file; ?>&variantType=<? echo $program; ?>">Process file</a>
+                    <a class="btn" href="upload.php">Back</a>
+                    <a class="btn primary" href="process.php?inFile=<? echo $uploaded_file; ?>&annotationFile=<? echo $annotation_file; ?>&variantType=<? echo $program; ?>">Process file</a>
                 </div>
             </div>
 
@@ -623,8 +623,8 @@ else
 
             <div class="span16">
                 <div class="well">
-                    <a class="btn primary" href="vat_summary.php?dataSet=vat.<? echo $cfio->get_set_id(); ?>&setId=<? echo $cfio->get_set_id(); ?>&annotationSet=<? echo $annotation_file; ?>&type=coding">View results</a>
-                    <a class="btn" href="vat_upload.php">Back</a>
+                    <a class="btn primary" href="summary.php?dataSet=vat.<? echo $cfio->get_set_id(); ?>&setId=<? echo $cfio->get_set_id(); ?>&annotationSet=<? echo $annotation_file; ?>&type=coding">View results</a>
+                    <a class="btn" href="upload.php">Back</a>
                 </div>
             </div>
 	<? endif; ?>    

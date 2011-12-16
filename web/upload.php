@@ -12,7 +12,7 @@
  * @license    ???
  */
 
-require_once 'lib/config.php';
+require_once 'lib/init.php';
 require_once 'lib/util.php';
 
 $poids_max = ini_get('post_max_size') + 0;
@@ -51,11 +51,11 @@ $poids_max = ini_get('post_max_size') + 0;
         <div class="topbar">
             <div class="fill">
                 <div class="container">
-                    <a class="brand" href="vat_upload.php">VAT</a>
+                    <a class="brand" href="upload.php">VAT</a>
                     <ul class="nav">
                         <li class="active"><a href="vat_upload.php">Upload</a></li>
-                        <li><a href="vat_list_raw.php">Input files</a></li>
-                        <li><a href="vat_list_data.php">Data sets</a></li>
+                        <li><a href="list_raw.php">Input files</a></li>
+                        <li><a href="list_data.php">Data sets</a></li>
                     </ul>
                 </div>
             </div>
@@ -82,13 +82,13 @@ $poids_max = ini_get('post_max_size') + 0;
                         The following example files were obtained from the <a href="http://www.1000genomes.org">1000 Genomes Pilot Project</a>. The genome coordinates are based on hg18.
                     </p>
                     <ul>
-                        <li><a href="http://homes.gersteinlab.org/people/lh372/VAT/1000genomes_pilot_snps.sample.vcf">SNPs</a></li>
-                        <li><a href="http://homes.gersteinlab.org/people/lh372/VAT/1000genomes_pilot_indels.sample.vcf">Indels</a></li>
-                        <li><a href="http://homes.gersteinlab.org/people/lh372/VAT/1000genomes_pilot_svs.sample.vcf">SVs</a></li>
+                        <li><a href="https://s3.amazonaws.com/vat-example/1000genomes_pilot_snps.sample.vcf">SNPs</a></li>
+                        <li><a href="https://s3.amazonaws.com/vat-example/1000genomes_pilot_indels.sample.vcf">Indels</a></li>
+                        <li><a href="https://s3.amazonaws.com/vat-example/1000genomes_pilot_svs.sample.vcf">SVs</a></li>
                     </ul>
                 </div>
                 <div class="span12">
-                    <form action="vat_process.php" method="POST" enctype="multipart/form-data">
+                    <form action="process.php" method="POST" enctype="multipart/form-data">
                         <fieldset>
                             <legend>Input VCF file</legend>
                             <div class="clearfix">

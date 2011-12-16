@@ -1,5 +1,12 @@
 <?php defined('VAT_SRC') or die('No direct script access');
-
+/**
+ * VAT-specific utility functions
+ * 
+ * @author    David Z. Chen
+ * @package   VAT
+ * @copyright (C) 2011-2012 Gerstein Lab
+ * @license   CC BY-NC
+ */
 
 /**
 * Returns an array containing gene summary information, which can be used
@@ -40,13 +47,13 @@ function get_gene_summary($base_path, $data_set, $annotation_set, $type, $set_id
 
         if ($type == "coding")
         {
-            $link = sprintf("<a href=\"vat_info.php?type=coding&dataSet=%s&annotationSet=%s&geneId=%s&setId=%s\" target=\"gene\">Link</a>",
+            $link = sprintf("<a href=\"info.php?type=coding&dataSet=%s&annotationSet=%s&geneId=%s&setId=%s\" target=\"gene\">Link</a>",
                             $data_set, $annotation_set, $gene_id, $set_id);
             array_push($line_array, $link);
         }
         elseif ($type == "nonCoding")
         {
-            $link = sprintf("<a href=\"vat_info.php?type=nonCoding&dataSet=%s&annotationSet=%s&geneId=%s&setId=%s\" target=\"gene\">Link</a>",
+            $link = sprintf("<a href=\"info.php?type=nonCoding&dataSet=%s&annotationSet=%s&geneId=%s&setId=%s\" target=\"gene\">Link</a>",
                             $data_set, $annotation_set, $gene_id, $set_id);
             array_push($line_array, $link);
         }
@@ -102,6 +109,21 @@ function get_sample_summary($base_path, $data_set)
     return $sample_summary;
 }
 
+
+/**
+ * Runs the vatson executable to obtain a JSON string containing the information
+ * for showing the information for a gene. Returns an associative array parsed
+ * from the JSON string
+ * 
+ * @param string $file
+ * @param string $data_set
+ * @param string $annotation_set
+ * @param string $gene_id
+ * @param string $type
+ * @param int $set_id
+ * @throws Exception
+ * @return array
+ */
 function get_info($file, $data_set, $annotation_set, $gene_id, $type, $set_id)
 {
     global $vat_config;
@@ -131,6 +153,19 @@ function get_info($file, $data_set, $annotation_set, $gene_id, $type, $set_id)
     return json_decode($json, TRUE);
 }
 
+/**
+ * Runs the vatson command line executable to obtain a JSON string containing
+ * the information for a genotype of a gene. Returns an associative array
+ * parsed from the JSON string
+ * 
+ * @param string $file
+ * @param string $data_set
+ * @param string $gene_id
+ * @param int $index
+ * @param int $set_id
+ * @throws Exception
+ * @return array
+ */
 function get_genotype_info($file, $data_set, $gene_id, $index, $set_id)
 {
     global $vat_config;

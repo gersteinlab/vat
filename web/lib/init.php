@@ -14,6 +14,8 @@ define('CONFIG_FILE_PATH', 'vatrc');
 define('CONFIG_COMMENT_DELIM', '//');
 define('VAT_SRC', TRUE);
 
+require_once 'constants.php';
+
 // Turn on all error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', '1');

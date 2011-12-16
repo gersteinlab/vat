@@ -1,6 +1,6 @@
 <?php 
 
-require_once 'lib/config.php';
+require_once 'lib/init.php';
 require_once 'lib/util.php';
 require_once 'lib/cfio.php';
 require_once 'lib/vat.php';

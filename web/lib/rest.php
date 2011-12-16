@@ -1,7 +1,15 @@
 <?php defined('VAT_SRC') or die('No direct script access');
 /**
- * Simple REST library.
+ * Simple REST library adapted from tutorials [Create a REST API with PHP][ref-rest1]
+ * and [Making RESTful requests in PHP][ref-rest2] by Ian Selby
+ * 
+ * [ref-rest1]: http://www.gen-x-design.com/archives/create-a-rest-api-with-php/
+ * [ref-rest2]: http://www.gen-x-design.com/archives/making-restful-requests-in-php/
+ * 
+ * @author adapted by David Z. Chen
+ * 
  */
+
 
 /**
  * REST helper class 
@@ -12,6 +20,11 @@
  */
 
 class REST {
+    
+    const TYPE_JSON = 'application/json';
+    const TYPE_HTML = 'text/html';
+    const TYPE_XML  = 'application/xml';
+    
     /**
      * 
      * Enter description here ...
@@ -38,8 +51,8 @@ class REST {
                 break;
         }
         
-        $return_obj->set_method($request_method)
-                   ->set_request_vars($data);
+        $return_obj->set_method($request_method);
+        $return_obj->set_request_vars($data);
         
         if (isset($data['data'])) 
         {
@@ -61,7 +74,7 @@ class REST {
                                          $content_type = 'text/html')
     {
         $status_header = 'HTTP/1.1 ' . $status . ' ' . 
-                         RestUtils::getStatusCodeMessage($status);
+                         REST::get_status_code_message($status);
         // set the status
         header($status_header);
         // set the content type
@@ -289,6 +302,16 @@ class RESTTxRequest {
         $this->_response_info  = NULL;
     }
     
+    public function get_response_body()
+    {
+        return $this->_response_body;
+    }
+    
+    public function get_response_info()
+    {
+        return $this->_response_info;
+    }
+    
     /**
      * 
      * Enter description here ...
@@ -411,9 +434,9 @@ class RESTTxRequest {
      * Enter description here ...
      * @param unknown_type $ch
      */
-    protected function execute_DELETE($ch)
+    protected function _execute_DELETE($ch)
     {
-        curl_setopt($ch, CURLOPT_CUSTOREQUEST, 'DELETE');
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
         
         $this->_execute($ch);
     }
@@ -451,7 +474,7 @@ class RESTTxRequest {
      * Enter description here ...
      * @param unknown_type $curl_handle
      */
-    protected function set_auth(&$curl_handle)
+    protected function _set_auth(&$curl_handle)
     {
         if ($this->_username !== NULL && $this->_password !== NULL) 
         {
