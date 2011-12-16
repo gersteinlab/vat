@@ -1,6 +1,7 @@
 <?php 
 
 require_once 'lib/init.php';
+require_once 'libmaster/init_master.php';
 require_once 'lib/util.php';
 require_once 'lib/rest.php';
 require_once 'lib/vat.php';
@@ -39,9 +40,10 @@ if (empty($fatal_error))
     $type           = $_GET['type'];
     $set_id         = $_GET['setId'];
     
-    /// XXX XXX XXX ADD BALANCER SERVER SELECTION
-    $url = sprintf("http://128.36.220.24/summary_api.php?annotation_set=%s&set_id=%s&type=%s",
-                   $annotation_set, $set_id, $type);
+    $server = Server::get(1);
+    
+    $url = sprintf("http://%s/summary_api.php?annotation_set=%s&set_id=%s&type=%s",
+                   $server['address'], $annotation_set, $set_id, $type);
     
     $request = new RESTTxRequest($url, 'GET', array());
 

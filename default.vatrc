@@ -67,18 +67,17 @@ AWS_S3_RAW_BUCKET vat-raw
 // Set only if setting up as master node in master/worker configuration
 // =============================================================================
 
-CLUSTER false
+// Set to true if we are using the master/worker cluster configuration, false
+// if we are running single-node only
+CLUSTER true
 
-MASTER_ADDRESS 255.255.255.255
+// IP address of master node. Used by worker to access the master's API
+MASTER_ADDRESS 107.20.183.198
 
+// Used by master only:
+
+// MySQL configuration
 MASTER_MYSQL_HOST localhost
-
-MASTER_MYSQL_USER vatmaster
-
-MASTER_MYSQL_PASS public12
-
-MASER_MYSQL_DB vat
-
-WORKER_AMI_BUCKET foo
-
-WORKER_AMI foo
+MASTER_MYSQL_USER root
+MASTER_MYSQL_PASS public!@
+MASTER_MYSQL_DB vat

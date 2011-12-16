@@ -105,7 +105,7 @@ $poids_max = ini_get('post_max_size') + 0;
                             <div class="clearfix">
                             	<label for="description">Description</label>
                             	<div class="input">
-                            		<textarea class="xxlarge" name="description" rows="3" disabled></textarea>
+                            		<textarea class="xxlarge" name="description" rows="3"></textarea>
                             	</div>
                             </div><!-- /clearfix -->
                             <div class="clearfix">

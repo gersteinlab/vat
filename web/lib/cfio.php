@@ -624,7 +624,7 @@ class CFIO {
     {
         global $vat_config;
         
-        //rrmdir($this->_working_dir);
+        rrmdir($this->_working_dir);
         
         if ($vat_config['AWS_USE_S3'] == TRUE) {
             $this->_s3 = NULL;

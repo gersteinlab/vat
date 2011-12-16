@@ -6,7 +6,7 @@ all-local:
 	@echo '  CP     js'
 	@cp -r $(top_srcdir)/web/js $(top_srcdir)/master
 	@echo '  CP     lib'
-	@cp -r $(top_srcdir)/web/lib/cfio.php $(top_srcdir)/master
+	@cp -r $(top_srcdir)/web/lib $(top_srcdir)/master
 
 clean-local:
 	rm -rf css image js lib

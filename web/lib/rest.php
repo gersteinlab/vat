@@ -56,7 +56,7 @@ class REST {
         
         if (isset($data['data'])) 
         {
-            $return_obj->set_data(json_decode($data['data']));
+            $return_obj->set_data(json_decode($data['data'], TRUE));
         }
         
         return $return_obj;
@@ -202,7 +202,7 @@ class RESTRxRequest {
         $this->_http_accept  = (strpos($_SERVER['HTTP_ACCEPT'], 'json')) 
                              ? 'json' 
                              : 'xml';
-        $this->_method        = 'get';
+        $this->_method      q = 'get';
     }
 
     public function set_data($data)

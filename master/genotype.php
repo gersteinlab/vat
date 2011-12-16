@@ -1,6 +1,7 @@
 <?php 
 
 require_once 'lib/init.php';
+require_once 'libmaster/init_master.php';
 require_once 'lib/util.php';
 require_once 'lib/rest.php';
 require_once 'lib/vat.php';
@@ -41,10 +42,10 @@ if (empty($fatal_error))
     $index    = $_GET['index'];
     $gene_id  = $_GET['geneId'];
     
+    $server = Server::get(1);
     
-    /// XXX XXX XXX ADD BALANCER SERVER SELECTION
-    $url = sprintf("http://128.36.220.24/genotype_api.php?gene_id=%s&set_id=%s&index=%s",
-                   $gene_id, $set_id, $index);
+    $url = sprintf("http://%s/genotype_api.php?gene_id=%s&set_id=%s&index=%s",
+                   $server['address'], $gene_id, $set_id, $index);
     
     $request = new RESTTxRequest($url, 'GET', array());
     

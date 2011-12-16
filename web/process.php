@@ -399,7 +399,7 @@ else
                 <h1>Processing</h1>
             </div>
 
-<? if ( ! empty($fatal_errors)): ?>
+<? if ( ! empty($fatal_error)): ?>
             <div class="span16">
 				<h2><font color="red">Errors found</font></h2>
 				<ul>

@@ -1,0 +1,12 @@
+[
+    { 
+        "name" : "vat-mg", 
+        "address" : "128.36.220.24", 
+        "last" : 0 
+    },
+    { 
+        "name" : "vat-worker-1",
+        "address" : "107.20.248.194",
+        "last" : 1 
+    }
+]
