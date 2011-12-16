@@ -59,8 +59,6 @@ AWS_S3_HOSTNAME s3.amazonaws.com
 // this bucket is used instead of WEB_DATA_DIR
 AWS_S3_DATA_BUCKET vat-data
 
-AWS_S3_DATA_URL foo
-
 // The name of the S3 bucket for raw VCF input files. If S3 support is enabled,
 // this bucket is used instead of WEB_DATA_RAW_DIR 
 AWS_S3_RAW_BUCKET vat-raw
@@ -69,7 +67,9 @@ AWS_S3_RAW_BUCKET vat-raw
 // Set only if setting up as master node in master/worker configuration
 // =============================================================================
 
-MASTER_NODE false
+CLUSTER false
+
+MASTER_ADDRESS 255.255.255.255
 
 MASTER_MYSQL_HOST localhost
 
@@ -79,6 +79,6 @@ MASTER_MYSQL_PASS public12
 
 MASER_MYSQL_DB vat
 
-MASTER_WORKER_AMI_BUCKET foo
+WORKER_AMI_BUCKET foo
 
-MASTER_WORKER_AMI foo
+WORKER_AMI foo

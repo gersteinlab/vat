@@ -1,16 +1,24 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = lib src
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = vat.pc
+
+
 EXTRA_DIST = \
 	scripts \
-	check.png \
-	processing.gif \
-	vatConfirgurationTemplate.txt \
+	web \
 	default.vatrc \
 	m4/gnulib-cache.m4
 
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = vat.pc
+if MAKE_MASTER
+
+SUBDIRS = lib src master
+
+else
+
+SUBDIRS = lib src
+
+endif
 
 install-data-hook:
 	scripts/install_rc.sh

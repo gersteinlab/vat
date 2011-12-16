@@ -1,4 +1,4 @@
-<?php 
+<?php defined('VAT_SRC') or die('No direct script access');
 
 class Balancer {
     protected $_servers = array();

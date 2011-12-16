@@ -469,7 +469,7 @@ int cfio_push_data (int pid)
         stringPrintf (dst, "%s/%d",
                       util_getConfigValue ("WEB_DATA_WORKING_DIR"), pid);
         if (shell_mkdir (string (dst)) != 0) {
-            fprintf (stderr, "Could not create directory %d\n", string (dst));
+            fprintf (stderr, "Could not create directory %s\n", string (dst));
         }
 
         // Move raw vcf

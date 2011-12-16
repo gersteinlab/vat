@@ -10,6 +10,8 @@
  * @license    ???
  */
 
+require_once 'lib/init.php';
+require_once 'lib/util.php';
 
 $poids_max = ini_get('post_max_size') + 0;
 
@@ -50,7 +52,7 @@ $poids_max = ini_get('post_max_size') + 0;
                     <a class="brand" href="index.php">VAT</a>
                     <ul class="nav">
                         <li><a href="index.php">Home</a></li>
-                        <li class="active"><a href="vat_upload.php">Upload</a></li>
+                        <li class="active"><a href="upload.php">Upload</a></li>
                         <li><a href="documentation.php">Documentation</a></li>
                         <li><a href="download.php">Download</a></li>
                     </ul>
@@ -79,9 +81,9 @@ $poids_max = ini_get('post_max_size') + 0;
                         The following example files were obtained from the <a href="http://www.1000genomes.org">1000 Genomes Pilot Project</a>. The genome coordinates are based on hg18.
                     </p>
                     <ul>
-                        <li><a href="http://homes.gersteinlab.org/people/lh372/VAT/1000genomes_pilot_snps.sample.vcf">SNPs</a></li>
-                        <li><a href="http://homes.gersteinlab.org/people/lh372/VAT/1000genomes_pilot_indels.sample.vcf">Indels</a></li>
-                        <li><a href="http://homes.gersteinlab.org/people/lh372/VAT/1000genomes_pilot_svs.sample.vcf">SVs</a></li>
+                        <li><a href="https://s3.amazonaws.com/vat-example/1000genomes_pilot_snps.sample.vcf">SNPs</a></li>
+                        <li><a href="https://s3.amazonaws.com/vat-example/1000genomes_pilot_indels.sample.vcf">Indels</a></li>
+                        <li><a href="https://s3.amazonaws.com/vat-example/1000genomes_pilot_svs.sample.vcf">SVs</a></li>
                     </ul>
                 </div>
                 <div class="span12">
@@ -93,6 +95,18 @@ $poids_max = ini_get('post_max_size') + 0;
                                 <div class="input">
                                     <input class="input-file" type="file" name="upFile" />
                                 </div>
+                            </div><!-- /clearfix -->
+                            <div class="clearfix">
+                            	<label for="title">Title</label>
+                            	<div class="input">
+                            		<input class="xlarge" name="title" size="30" type="text" />
+                            	</div>
+                            </div><!-- /clearfix -->
+                            <div class="clearfix">
+                            	<label for="description">Description</label>
+                            	<div class="input">
+                            		<textarea class="xxlarge" name="description" rows="3" disabled></textarea>
+                            	</div>
                             </div><!-- /clearfix -->
                             <div class="clearfix">
                                 <label for="variantType">Variant type</label>

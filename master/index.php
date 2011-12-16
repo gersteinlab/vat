@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<?php 
+
+require_once 'lib/init.php';
+
+?>
+
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>VAT - Variant Annotation Tool</title>
+        <meta name="description" content="Variant annotation tool cloud service">
+        <meta name="author" content="Gerstein Lab">
+        
+        <!-- HTML5 shim for IE 6-8 support -->
+        <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        
+        <!-- Styles -->
+        <link href="css/bootstrap.css" rel="stylesheet">
+        <style type="text/css">
+            body {
+                padding-top: 60px;
+            }
+        </style>
+        
+        <!-- Fav and touch icons -->
+        <link rel="shortcut icon" href="images/favicon.ico">
+        <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+ 
+    </head>
+    <body>
+        <div class="topbar">
+            <div class="fill">
+                <div class="container">
+                    <a class="brand" href="index.php">VAT</a>
+                    <ul class="nav">
+                        <li class="active"><a href="index.php">Home</a></li>
+                        <li><a href="upload.php">Upload</a></li>
+                        <li><a href="documentation.php">Documentation</a></li>
+                        <li><a href="download.php">Download</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    
+        <div class="container">
+        
+            <div class="hero-unit">
+                <h1>Variant Annotation Tool</h1>
+                <p>Vestibulum id ligula porta felis euismod semper. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
+                <p><a class="btn primary large" href="download.php">Latest version 1.1.0 &raquo;</a></p>
+            </div>
+        
+            <div class="row">
+		        <div class="span-one-third">
+		            <h2>Web Interface</h2>
+		            <p>Etiam porta sem malesuada magna mollis euismod. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
+		            <p><a class="btn" href="upload.php">Upload VCF file &raquo;</a></p>
+		        </div>
+		        <div class="span-one-third">
+		            <h2>Documentation</h2>
+		            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+		            <p><a class="btn" href="documentation.php">View &raquo;</a></p>
+		        </div>
+		        <div class="span-one-third">
+		            <h2>Data sets</h2>
+		            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+		            <p><a class="btn" href="data_sets.php">View details &raquo;</a></p>
+		        </div>
+		    </div>
+        
+            <footer>
+                <p>&copy; Gerstein Lab 2011</p>
+            </footer>
+        </div> <!-- /container -->
+    </body>
+</html>

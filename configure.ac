@@ -23,6 +23,17 @@ if test -z "$PHPUNIT"; then
 fi
 AM_CONDITIONAL([USE_PHPUNIT], [test -n "$PHPUNIT"])
 
+AC_ARG_ENABLE([master], 
+    [AS_HELP_STRING([--enable-master], [Enable master-worker cluster setup (default is no)])], 
+    [case "${enableval}" in
+        yes) master=true ;;
+        no)  master=false ;;
+        *) AC_MSG_ERROR([bad value ${enableval} for --enable-master]) ;;
+    esac], 
+    [master="false"])
+
+AM_CONDITIONAL([MAKE_MASTER], [test x$master = xtrue])
+
 # Checks for libraries.
 AC_CHECK_LIB([m], [log], [], [AC_MSG_ERROR([Cannot find standard math library])])
 AC_CHECK_LIB([gslcblas], [cblas_dgemm], [], [AC_MSG_ERROR([Cannot find cblas library])])
@@ -41,6 +52,7 @@ AC_CHECK_HEADERS([stdlib.h unistd.h])
 # Checks for library functions.
 AC_CHECK_FUNCS([floor strchr strpbrk strrchr strstr])
 
+AM_COND_IF([MAKE_MASTER], [AC_CONFIG_FILES([master/Makefile])])
 AC_CONFIG_FILES([Makefile 
 		 lib/Makefile 
 		 src/Makefile 
