@@ -36,7 +36,11 @@ static int sortGtfEntries (GtfEntry *a, GtfEntry *b)
   if (diff != 0) {
     return diff;
   }
-  return strcmp (a->transcriptId,b->transcriptId);
+  diff = strcmp (a->transcriptId,b->transcriptId);
+  if (diff != 0) {
+    return diff;
+  }
+  return a->start - b->start;
 } 
 
 
@@ -57,7 +61,7 @@ static int hasFeature (Array items, char *feature)
 
 
 
-static void writeAnnotation (GtfEntry *currGtfEntry, Array items)
+static void writeAnnotation (char *geneId, char *transcriptId, char *geneName,char *transcriptName, char *chromosome, char* strand, Array items)
 {
   int i;
   static Array starts = NULL; 
@@ -88,35 +92,31 @@ static void writeAnnotation (GtfEntry *currGtfEntry, Array items)
   if (arrayMax (starts) != arrayMax (ends)) {
     die ("Unequal number of starts and ends");
   }
-  if (strEqual (currGtfEntry->chromosome,"chrMT")) {
-    currGtfEntry->chromosome[4] = '\0';
+  if (strEqual (chromosome,"chrMT")) {
+    chromosome[4] = '\0';
   }
   hasStart = hasFeature (items,"start_codon");
   hasStop = hasFeature (items,"stop_codon");
-  arraySort (starts,(ARRAYORDERF)arrayIntcmp);
-  arraySort (ends,(ARRAYORDERF)arrayIntcmp);
-  if (currGtfEntry->strand[0] == '+') {
+  if (strand[0] == '+') {
     if (hasStart == 0) {
-      arru (starts,0,int) = arru (starts,0,int) + currGtfEntry->frame;
+      arru (starts,0,int) = arru (starts,0,int) + arru (items,0,GtfEntry*)->frame;
     }
     if (hasStop == 1) {
       arru (ends,arrayMax (ends) - 1,int) = arru (ends,arrayMax (ends) - 1,int) + 3;
     }
   }
-  else if (currGtfEntry->strand[0] == '-') {
+  else if (strand[0] == '-') {
     if (hasStart == 0) {
-      arru (ends,arrayMax (ends) - 1,int) = arru (ends,arrayMax (ends) - 1,int) - currGtfEntry->frame;
+      arru (ends,arrayMax (ends) - 1,int) = arru (ends,arrayMax (ends) - 1,int) - arru (items,arrayMax (items) - 1,GtfEntry*)->frame;
     }
     if (hasStop == 1) {
       arru (starts,0,int) = arru (starts,0,int) - 3;
     }
   }
   else {
-    die ("Unexpected strand: %c",currGtfEntry->strand[0]);
+    die ("Unexpected strand: %c",strand[0]);
   }
-  printf ("%s|%s|%s|%s\t%s\t%s\t",
-          currGtfEntry->geneId,currGtfEntry->transcriptId,currGtfEntry->geneName,currGtfEntry->transcriptName,
-          currGtfEntry->chromosome,currGtfEntry->strand);
+  printf ("%s|%s|%s|%s\t%s\t%s\t",geneId,transcriptId,geneName,transcriptName,chromosome,strand);
   printf ("%d\t%d\t%d\t",arru (starts,0,int),arru (ends,arrayMax (ends) - 1,int),arrayMax (starts));
   for (i = 0; i < arrayMax (starts); i++) {
     printf ("%d%s",arru (starts,i,int),i < arrayMax (starts) - 1 ? "," : "\t");
@@ -209,7 +209,8 @@ int main (int argc, char *argv[])
       j++;
     }
     i = j;
-    writeAnnotation (currGtfEntry,items);
+    writeAnnotation (currGtfEntry->geneId,currGtfEntry->transcriptId,currGtfEntry->geneName,currGtfEntry->transcriptName,
+                     currGtfEntry->chromosome,currGtfEntry->strand,items);
   }
   return 0;
 }
