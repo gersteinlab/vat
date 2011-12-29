@@ -6,7 +6,7 @@
  * @package    VAT
  * @author     David Z. Chen
  * @copyright  (c) 2011 Gerstein Lab
- * @license    ????
+ * @license    CC BY-NC
  */
 
 // XXX Need to get this to work better

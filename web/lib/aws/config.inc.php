@@ -15,13 +15,14 @@
  * Amazon Web Services Key. Found in the AWS Security Credentials. You can also pass this value as the first
  * parameter to a service constructor.
  */
-define('AWS_KEY', 'AKIAJD23VJ42GZJWR5YQ');
+//define('AWS_KEY', 'AKIAJD23VJ42GZJWR5YQ');
+define('AWS_KEY', $vat_config['AWS_ACCESS_KEY_ID']);
 
 /**
  * Amazon Web Services Secret Key. Found in the AWS Security Credentials. You can also pass this value as
  * the second parameter to a service constructor.
  */
-define('AWS_SECRET_KEY', '0xLFwrcOP3XVtORtkjUSNPZFtS5ZGlwXDQPeEPpv');
+define('AWS_SECRET_KEY', $vat_config['AWS_SECRET_ACCESS_KEY']);
 
 /**
  * Amazon Account ID without dashes. Used for identification with Amazon EC2. Found in the AWS Security

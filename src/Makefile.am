@@ -22,10 +22,7 @@ bin_PROGRAMS = \
 	vcfSummary \
 	vcfSubsetByGene \
 	vcfModifyHeader\
-	vatson \
-	vat_cgi \
-	vat_fileUpload_cgi \
-	tests3
+	vatson
 
 gencode2interval_SOURCES = gencode2interval.c
 gencode2interval_LDADD = -lbios
@@ -59,12 +56,3 @@ vcfModifyHeader_LDADD = libvat.a -lbios -lm
 
 vatson_SOURCES = vatson.c
 vatson_LDADD = libvat.a -lbios -lm -ls3
-
-vat_cgi_SOURCES = vat_cgi.c
-vat_cgi_LDADD = libvat.a -lbios -lm -ls3
-
-vat_fileUpload_cgi_SOURCES = vat_fileUpload_cgi.c
-vat_fileUpload_cgi_LDADD = libvat.a -lbios -lm -ls3
-
-tests3_SOURCES = tests3.c
-tests3_LDADD = libvat.a -ls3

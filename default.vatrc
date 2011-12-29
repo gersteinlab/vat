@@ -74,7 +74,9 @@ CLUSTER true
 // IP address of master node. Used by worker to access the master's API
 MASTER_ADDRESS 107.20.183.198
 
+// ----------------------------------------------------------------------------
 // Used by master only:
+// ----------------------------------------------------------------------------
 
 // MySQL configuration
 MASTER_MYSQL_HOST localhost

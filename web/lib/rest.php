@@ -202,7 +202,7 @@ class RESTRxRequest {
         $this->_http_accept  = (strpos($_SERVER['HTTP_ACCEPT'], 'json')) 
                              ? 'json' 
                              : 'xml';
-        $this->_method      q = 'get';
+        $this->_method       = 'get';
     }
 
     public function set_data($data)

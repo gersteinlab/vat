@@ -142,6 +142,9 @@ else
     array_push($fatal_error, "Nothing to do");
 }
 
+/*
+ * Make the request.
+ */
 if (empty($fatal_error) && $process == TRUE)
 {
 
@@ -288,8 +291,7 @@ if (empty($fatal_error) && $process == TRUE)
 
     <? else: ?>
     		<script>
-    		function update_statuses() {
-
+    	    function update_statuses() {
     		    $.ajax({
     		        type: 'GET',
     		        url: 'http://<? echo $vat_config['MASTER_ADDRESS'] ?>/dataset_api.php?id=<? echo $set_id; ?>',
@@ -298,18 +300,22 @@ if (empty($fatal_error) && $process == TRUE)
     		            reply = $.evalJSON(reply);
     		            var state = reply.dataset.status;
 
-						for (var i = 1; i <= state; i++) {
-							$('#proc-' + i + '-throbber').css({"visibility" : "hidden"});
-							$('#proc-' + i + '-done-label').css({"visibility" : "visible"});
-						}
+                        for (var i = 1; i <= state; i++) {
+                            $('#proc-' + i + '-throbber').css({"visibility" : "hidden"});
+                            $('#proc-' + i + '-done-label').css({"visibility" : "visible"});
+                        }
 
     		            if (state < 7) {
-                                var next = state + 1;
-    		            	$('#proc-' + next + '-throbber').css({"visibility" : "visible"});
-    		            	setTimeout(update_statuses, 1000);
+                            var next = parseInt(state) + 1;
+    		                $('#proc-' + next + '-throbber').css({"visibility" : "visible"}); 
+    		                setTimeout(update_statuses, 1000);
+    		            } else {
+        		            $('#wait-btn').css({"visibility" : "hidden"});
+                            $('#done-btn-back').css({"visibility" : "visible"});
+                            $('#done-btn-view').css({"visibility" : "visible"});
     		            }
     		        }
-    		    });
+                });
     		}
 
     		update_statuses();
@@ -387,8 +393,9 @@ if (empty($fatal_error) && $process == TRUE)
 	   <hr />
             <div class="span16">
                 <div class="well">
-                    <a class="btn primary" href="summary.php?dataSet=vat.<? echo $set_id; ?>&setId=<? echo $set_id; ?>&annotationSet=<? echo $annotation_file; ?>&type=coding">View results</a>
-                    <a class="btn" href="upload.php">Back</a>
+                    <a id="done-btn-view" style="visibility:hidden" class="btn primary" href="summary.php?dataSet=vat.<? echo $set_id; ?>&setId=<? echo $set_id; ?>&annotationSet=<? echo $annotation_file; ?>&type=coding">View results</a>
+                    <a id="done-btn-back" style="visibility:hidden" class="btn" href="upload.php">Back</a>
+                    <button id="wait-btn" class="btn" disabled>Please wait...</button>
                 </div>
             </div>
 	<? endif; ?>    

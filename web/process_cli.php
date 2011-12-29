@@ -303,6 +303,7 @@ else
 try
 {
     $cfio->push_data();
+    $cfio->delete_raw($raw_file);
 }
 catch (Exception $e)
 {

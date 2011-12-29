@@ -9,35 +9,51 @@
  * 
  * @author  David Z. Chen
  * @package VAT
+ * 
+ * @method array as_array()
+ * @method 
  */
 
 class Model {
     
+    /**
+     * Table name
+     * @var string
+     */
     protected $_table;
     
+    /**
+     * Name of primary key field
+     * @var string
+     */
     protected $_primary_key;
     
+    /**
+     * Array of fields for the object
+     * @var array
+     */
     protected $_fields = array();
     
+    /**
+     * Used to hold the data for a record's fields
+     * @var array
+     */
     protected $_object = array();
     
     /**
-     * 
-     * Enter description here ...
-     * @var unknown_type
+     * Array used to keep track of which fields have been changed 
+     * @var array
      */
     protected $_changed = array();
     
     /**
      * Has the current record been saved?
-     * 
-     * @var unknown_type
+     * @var bool
      */
     protected $_saved;
     
     /**
      * Are we making a new tuple?
-     * 
      * @var bool
      */
     protected $_new;
@@ -45,7 +61,7 @@ class Model {
     /**
      * Class Constructor
      * 
-     * @param unknown_type $id
+     * @param int $id
      */
     public function __construct($id = 0)
     {
@@ -65,11 +81,148 @@ class Model {
         }
     }
 
+    /**
+     * Return an associative array
+     *  
+     * @return array
+     */
     public function as_array()
     {
-        return $this->_object;
+        $ret = array();
+        
+        foreach ($this->_object as $key => $value)
+        {
+            $ret[$key] = $value;
+        }
+        
+        return $ret;
     }
     
+    /**
+     * Finds all tuples that fit the SQL conditions parsed from the $conds
+     * argument.
+     * 
+     * array(
+     *     'where' => array(
+     *         array('id', '>', '7'),
+     *         array('type', '=', '2'),
+     *     ),
+     *     'orderby' => array('id', 'desc'),
+     *     'limit' => array('1')
+     * )
+     * 
+     * XXX I'm basically making a query builder here. Might as well create an 
+     * actual query builder sometime
+     * 
+     * @param array $conds
+     * @throws InvalidArgumentException
+     * @return boolean|multitype
+     */
+    public function find_all($conds)
+    {
+        global $db;
+        
+        $sql = 'SELECT * FROM ' . $this->_table . ' ';
+        
+        if ( ! empty($conds))
+        {
+            if (isset($conds['where']))
+            {
+                $wherecond = $conds['where'];
+                
+                $sql .= 'WHERE ';
+                if ( ! is_array($wherecond))
+                {
+                    throw new InvalidArgumentException('Argument of where must be array');
+                }
+                if (is_array($wherecond[0]))
+                {
+                    $first = 1;
+                    
+                    foreach ($wherecond as $cond)
+                    {
+                        if (count($cond) != 3)
+                        {
+                            throw new InvalidArgumentException('Each WHERE condition must have three parts');
+                        }
+                        
+                        if ($first == 0)
+                        {
+                            $sql .= 'AND ';
+                        }
+                        $first = 0;
+                        
+                        $sql .= $cond[0] . ' ' . $cond[1] . ' ' . $cond[2] . ' ';
+                    }
+                }
+                else
+                {
+                    $sql .= $wherecond[0] . ' ' . $wherecond[1] . ' ' . $wherecond[2] . ' ';
+                }
+            }
+            
+            if (isset($conds['orderby']))
+            {
+                $orderbycond = $conds['orderby'];
+                
+                if ( ! is_array($orderbycond) || count($orderbycond) > 2)
+                {
+                    throw new InvalidArgumentException('ORDER BY condition must be an array and have one or two parts');
+                }
+                
+                if ( ! in_array($orderbycond[0], $this->_fields))
+                {
+                    throw new InvalidArgumentException('ORDER BY field must exist in table');
+                }
+                
+                if (count($orderbycond) > 1 && ! in_array(strtoupper($orderbycond[1]), array('DESC', 'ASC')))
+                {
+                    throw new InvalidArgumentException('ORDER BY must either be ASC or DESC');
+                }
+                
+                $sql .= 'ORDER BY ' . $orderbycond[0] . ' ';
+                
+                if (count($orderbycond) > 1)
+                {
+                    $sql .= $orderbycond[1] . ' ';
+                }
+            }
+            
+            if (isset($conds['limit']))
+            {
+                $limitcond = $conds['limit'];
+                
+                if ( ! is_array($limitcond) || count($limitcond > 1))
+                {
+                    throw new InvalidArgumentException('LIMIT condition must be an array and have only one part');
+                }
+                
+                $sql .= 'LIMIT ' . $limitcond[0];
+            }
+        }
+        
+        $result = $db->query($sql);
+        if ($result === FALSE || $result->num_rows == 0)
+        {
+            return FALSE;
+        }
+        
+        $rows = array();
+        while ($row = $result->fetch_assoc())
+        {
+            array_push($rows, $row);
+        }
+        $result->close();
+        
+        return $rows;
+    }
+    
+    /**
+     * 
+     * Enter description here ...
+     * @param unknown_type $id
+     * @return boolean|Model
+     */
     public function find($id)
     {
         global $db; 
@@ -90,9 +243,17 @@ class Model {
         }
         $result->close();
         
-        return TRUE;
+        return $this;
     }
 
+    /**
+     * 
+     * Enter description here ...
+     * @param unknown_type $column
+     * @param unknown_type $value
+     * @throws InvalidArgumentException
+     * @return Model
+     */
     public function set($column, $value)
     {
         if ( ! in_array($column, $this->_fields))
@@ -107,6 +268,12 @@ class Model {
         return $this;
     }
     
+    /**
+     * 
+     * Enter description here ...
+     * @param unknown_type $column
+     * @return boolean|multitype:
+     */
     public function get($column)
     {
         if ( ! in_array($column, $this->_fields))
@@ -117,6 +284,10 @@ class Model {
         return $this->_object[$column];
     }
     
+    /**
+     * 
+     * Enter description here ...
+     */
     public function save()
     {
         global $db;
@@ -196,7 +367,12 @@ class Model {
         return TRUE;
     }
     
-    
+    /**
+     * 
+     * Enter description here ...
+     * @param unknown_type $name
+     * @param unknown_type $id
+     */
     public static function factory($name, $id = 0)
     {
         $class = "Model_" . ucfirst($name);

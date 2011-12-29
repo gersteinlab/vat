@@ -603,6 +603,7 @@ else
             try
             {
                 $cfio->push_data();
+                $cfio->delete_raw($uploaded_file);
             }
             catch (Exception $e)
             {

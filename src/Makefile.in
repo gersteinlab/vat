@@ -38,8 +38,7 @@ bin_PROGRAMS = gencode2interval$(EXEEXT) interval2sequences$(EXEEXT) \
 	snpMapper$(EXEEXT) indelMapper$(EXEEXT) svMapper$(EXEEXT) \
 	genericMapper$(EXEEXT) vcf2images$(EXEEXT) vcfSummary$(EXEEXT) \
 	vcfSubsetByGene$(EXEEXT) vcfModifyHeader$(EXEEXT) \
-	vatson$(EXEEXT) vat_cgi$(EXEEXT) vat_fileUpload_cgi$(EXEEXT) \
-	tests3$(EXEEXT)
+	vatson$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -108,15 +107,6 @@ snpMapper_DEPENDENCIES = libvat.a
 am_svMapper_OBJECTS = svMapper.$(OBJEXT)
 svMapper_OBJECTS = $(am_svMapper_OBJECTS)
 svMapper_DEPENDENCIES = libvat.a
-am_tests3_OBJECTS = tests3.$(OBJEXT)
-tests3_OBJECTS = $(am_tests3_OBJECTS)
-tests3_DEPENDENCIES = libvat.a
-am_vat_cgi_OBJECTS = vat_cgi.$(OBJEXT)
-vat_cgi_OBJECTS = $(am_vat_cgi_OBJECTS)
-vat_cgi_DEPENDENCIES = libvat.a
-am_vat_fileUpload_cgi_OBJECTS = vat_fileUpload_cgi.$(OBJEXT)
-vat_fileUpload_cgi_OBJECTS = $(am_vat_fileUpload_cgi_OBJECTS)
-vat_fileUpload_cgi_DEPENDENCIES = libvat.a
 am_vatson_OBJECTS = vatson.$(OBJEXT)
 vatson_OBJECTS = $(am_vatson_OBJECTS)
 vatson_DEPENDENCIES = libvat.a
@@ -152,17 +142,15 @@ am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(libvat_a_SOURCES) $(gencode2interval_SOURCES) \
 	$(genericMapper_SOURCES) $(indelMapper_SOURCES) \
 	$(interval2sequences_SOURCES) $(snpMapper_SOURCES) \
-	$(svMapper_SOURCES) $(tests3_SOURCES) $(vat_cgi_SOURCES) \
-	$(vat_fileUpload_cgi_SOURCES) $(vatson_SOURCES) \
-	$(vcf2images_SOURCES) $(vcfModifyHeader_SOURCES) \
-	$(vcfSubsetByGene_SOURCES) $(vcfSummary_SOURCES)
+	$(svMapper_SOURCES) $(vatson_SOURCES) $(vcf2images_SOURCES) \
+	$(vcfModifyHeader_SOURCES) $(vcfSubsetByGene_SOURCES) \
+	$(vcfSummary_SOURCES)
 DIST_SOURCES = $(libvat_a_SOURCES) $(gencode2interval_SOURCES) \
 	$(genericMapper_SOURCES) $(indelMapper_SOURCES) \
 	$(interval2sequences_SOURCES) $(snpMapper_SOURCES) \
-	$(svMapper_SOURCES) $(tests3_SOURCES) $(vat_cgi_SOURCES) \
-	$(vat_fileUpload_cgi_SOURCES) $(vatson_SOURCES) \
-	$(vcf2images_SOURCES) $(vcfModifyHeader_SOURCES) \
-	$(vcfSubsetByGene_SOURCES) $(vcfSummary_SOURCES)
+	$(svMapper_SOURCES) $(vatson_SOURCES) $(vcf2images_SOURCES) \
+	$(vcfModifyHeader_SOURCES) $(vcfSubsetByGene_SOURCES) \
+	$(vcfSummary_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -658,12 +646,6 @@ vcfModifyHeader_SOURCES = vcfModifyHeader.c
 vcfModifyHeader_LDADD = libvat.a -lbios -lm
 vatson_SOURCES = vatson.c
 vatson_LDADD = libvat.a -lbios -lm -ls3
-vat_cgi_SOURCES = vat_cgi.c
-vat_cgi_LDADD = libvat.a -lbios -lm -ls3
-vat_fileUpload_cgi_SOURCES = vat_fileUpload_cgi.c
-vat_fileUpload_cgi_LDADD = libvat.a -lbios -lm -ls3
-tests3_SOURCES = tests3.c
-tests3_LDADD = libvat.a -ls3
 all: all-am
 
 .SUFFIXES:
@@ -760,15 +742,6 @@ snpMapper$(EXEEXT): $(snpMapper_OBJECTS) $(snpMapper_DEPENDENCIES)
 svMapper$(EXEEXT): $(svMapper_OBJECTS) $(svMapper_DEPENDENCIES) 
 	@rm -f svMapper$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(svMapper_OBJECTS) $(svMapper_LDADD) $(LIBS)
-tests3$(EXEEXT): $(tests3_OBJECTS) $(tests3_DEPENDENCIES) 
-	@rm -f tests3$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(tests3_OBJECTS) $(tests3_LDADD) $(LIBS)
-vat_cgi$(EXEEXT): $(vat_cgi_OBJECTS) $(vat_cgi_DEPENDENCIES) 
-	@rm -f vat_cgi$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(vat_cgi_OBJECTS) $(vat_cgi_LDADD) $(LIBS)
-vat_fileUpload_cgi$(EXEEXT): $(vat_fileUpload_cgi_OBJECTS) $(vat_fileUpload_cgi_DEPENDENCIES) 
-	@rm -f vat_fileUpload_cgi$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(vat_fileUpload_cgi_OBJECTS) $(vat_fileUpload_cgi_LDADD) $(LIBS)
 vatson$(EXEEXT): $(vatson_OBJECTS) $(vatson_DEPENDENCIES) 
 	@rm -f vatson$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(vatson_OBJECTS) $(vatson_LDADD) $(LIBS)
@@ -802,10 +775,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shutil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/snpMapper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/svMapper.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tests3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vat_cgi.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vat_fileUpload_cgi.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vatson.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vcf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vcf2images.Po@am__quote@

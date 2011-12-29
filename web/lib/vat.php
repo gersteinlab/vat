@@ -192,5 +192,15 @@ function get_genotype_info($file, $data_set, $gene_id, $index, $set_id)
     return json_decode($json, TRUE);
 }
 
-
+function program2type($program)
+{
+    if ($program == 'svMapper')
+        return 'SV';
+    elseif ($program == 'indelMapper')
+        return 'Indel';
+    elseif ($program == 'snpMapper')
+        return 'SNP';
+    else
+        return 'Generic';
+}
 ?>
