@@ -56,6 +56,21 @@ function handle_upload($working_dir)
     return TRUE;
 }
 
+function rename_file($id, $working_dir)
+{
+    global $fatal_error, $uploaded_file, $vat_config;
+
+    $new_filename = $id . "." . $uploaded_file;
+    if (($retval = rename($working_dir . "/" . $uploaded_file, $working_dir . "/" . $new_filename)) === FALSE)
+    {
+        array_push($fatal_error, "Cannot rename uploaded file " . $uploaded_file . " to " . $new_filename);
+        return FALSE;
+    }
+
+    $uploaded_file = $new_filename;
+    return TRUE;
+}
+
 /*
  * Display error if max file size set by web server configuration has been
  * exceeded by the upload file
@@ -103,6 +118,21 @@ if ( ! empty($_POST))
     $model->save();
     
     $set_id = $model->get('id');
+    rename_file($set_id, $working_dir);
+    $model->set('raw_filename', $uploaded_file);
+    $model->save();
+
+    if ($process === TRUE)
+    {
+        try
+        {
+            $cfio->push_raw($uploaded_file);
+        }
+        catch (Exception $e)
+        {
+            array_push($fatal_error, "Cannot push file " . $uploaded_file . " to bucket");
+        }
+    }
 }
 
 /*

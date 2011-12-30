@@ -209,7 +209,7 @@ else
 {
     echo "Make request to master with status " . SET_STATUS_WRITE_FILES . "\n";
     $request_body = array(
-        'id' => 1,
+        'id' => $set_id,
         'data' => '{ "status" : ' . SET_STATUS_WRITE_FILES .' }'
     );
     $request = new RESTTxRequest($url, 'PUT', $request_body);

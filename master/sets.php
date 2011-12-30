@@ -78,8 +78,12 @@ $results = $model->find_all(array(
                             </tr>
                         </thead>
                         <tbody>
-
-<? foreach ($results as $row): ?>
+<? if ($results === FALSE): ?>
+                            <tr>
+                            	<th colspan="7">No uploaded data sets.</th>
+                            </tr>
+<? else: ?>
+    <? foreach ($results as $row): ?>
                             <tr>
                                 <th><? echo $row['id']; ?></th>
                                 <td><? echo $row['title']; ?></td>
@@ -89,7 +93,8 @@ $results = $model->find_all(array(
                                 <td><? echo program2type($row['variant_type']); ?></td>
                                 <td><a href="summary.php?dataSet=vat.<? echo $row['id']; ?>&setId=<? echo $row['id']; ?>&annotationSet=<? echo $row['annotation_file']; ?>&type=coding">View</a>
                             </tr>
-<? endforeach; ?>
+    <? endforeach; ?>
+<? endif; ?>
                         </tbody>
                     </table>
                 </div>

@@ -78,7 +78,12 @@ $results = $model->find_all(array(
                             </tr>
                         </thead>
                         <tbody>
-<? foreach ($results as $row): ?>
+<? if ($results === FALSE): ?>
+                            <tr>
+                            	<th colspan="7">No raw VCF files.</th>
+                            </tr>
+<? else: ?>
+    <? foreach ($results as $row): ?>
                             <tr>
                                 <th><? echo $row['id']; ?></th>
                                 <td><? echo $row['title']; ?></td>
@@ -88,7 +93,8 @@ $results = $model->find_all(array(
                                 <td><? echo program2type($row['variant_type']); ?></td>
                                 <td><a href="process.php?id=<? echo $row['id']; ?>">Process</a></td>
                             </tr>
-<? endforeach; ?>
+    <? endforeach; ?>
+<? endif; ?>
                         </tbody>
                     </table>
                 </div>
