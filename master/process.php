@@ -19,26 +19,13 @@ $process         = TRUE;
 $set_id          = -1;
 $uploaded_file   = NULL;
 
-/**
-* Sanitize uploaded filename
-*
-* @param string $file_name
-* @return string
-*/
-function sanitize_file_name($file_name)
-{
-    $file_name = stripslashes($file_name);
-    $file_name = str_replace("'", "", $file_name);
-
-    return $file_name;
-}
 
 /**
-* Process the uploaded file, validate form, and copy uploaded file into
-* working directory
-*
-* @return bool
-*/
+ * Process the uploaded file, validate form, and copy uploaded file into
+ * working directory
+ *
+ * @return bool
+ */
 function handle_upload($working_dir)
 {
     global $fatal_error, $uploaded_file, $vat_config;
@@ -76,7 +63,7 @@ function rename_file($id, $working_dir)
  * exceeded by the upload file
  */
 if (empty($_POST) && empty($_FILES) && isset($_SERVER['REQUEST_METHOD']) &&
-$_SERVER['REQUEST_METHOD'] == 'POST')
+    $_SERVER['REQUEST_METHOD'] == 'POST')
 {
     $poids_max = ini_get('post_max_size');
     array_push($fatal_error, "Max upload file size " . $poids_max . " exceeded. Please configure your php.ini to allow uploads of larger files.");
@@ -93,6 +80,10 @@ if ( ! empty($_POST))
     $working_dir = $cfio->get_working_dir();
     
     $upload_success = handle_upload($working_dir);
+    if ($upload_success == FALSE)
+    {
+        array_push("Upload unsuccessful");
+    }
     
     $title           = $_POST['title'];
     $description     = $_POST['description'];
@@ -256,7 +247,17 @@ if (empty($fatal_error) && $process == TRUE)
                     <ul class="nav">
                         <li><a href="index.php">Home</a></li>
                         <li><a href="upload.php">Upload</a></li>
-                        <li><a href="documentation.php">Documentation</a></li>
+                        <li class="dropdown" data-dropdown="dropdown">
+                            <a href="#" class="dropdown-toggle">Documentation</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="installation.php">Installing</a></li>
+                                <li><a href="formats.php">Data formats</a></li>
+                                <li><a href="programs.php">List of programs</a></li>
+                                <li><a href="workflow.php">Example workflow</a></li>
+                                <li class="divider"></li>
+                                <li><a href="documentation.php">All documentation</a></li>
+                            </ul>
+                        </li>
                         <li><a href="download.php">Download</a></li>
                     </ul>
                 </div>
@@ -324,7 +325,7 @@ if (empty($fatal_error) && $process == TRUE)
     	    function update_statuses() {
     		    $.ajax({
     		        type: 'GET',
-    		        url: 'http://<? echo $vat_config['MASTER_ADDRESS'] ?>/dataset_api.php?id=<? echo $set_id; ?>',
+    		        url: 'http://<? echo $vat_config['MASTER_URL'] ?>/dataset_api.php?id=<? echo $set_id; ?>',
     		        dataType: 'application/json',
     		        success: function(reply) {
     		            reply = $.evalJSON(reply);

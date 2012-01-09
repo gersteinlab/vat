@@ -275,4 +275,18 @@ function json_format($json)
     return $new_json;
 }
 
+/**
+* Sanitize uploaded filename
+*
+* @param string $file_name
+* @return string
+*/
+function sanitize_file_name($file_name)
+{
+    $file_name = stripslashes($file_name);
+    $file_name = str_replace("'", "", $file_name);
+
+    return $file_name;
+}
+
 ?>

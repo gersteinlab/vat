@@ -13,27 +13,20 @@ VAT_EXEC_DIR /usr/local/bin
 // OPTIONAL (required only for CGIs)
 // =============================================================================
 
-// CGI base URL (where the CGIs are located)
-WEB_URL_CGI http://localhost/cgi-bin
-
-// Path to where the where the CGIs are located
-WEB_DIR_CGI /var/www/cgi-bin
-
-
+// Path to the directory to store processed data sets
 WEB_DATA_DIR /var/www/html/data/sets
-
-// URL to preprocessed files
-WEB_DATA_URL https://s3.amazonaws.com/vat-data
 
 // Path to the web data directory where the preprocessed files are stored
 WEB_DATA_REFERENCE_DIR /var/www/html/data/reference
 
+// Path to working directory
 WEB_DATA_WORKING_DIR /var/www/html/data/working
 
+// Path to directory to store raw VCF files
 WEB_DATA_RAW_DIR /var/www/html/data/raw
 
-// URL to static web files, such as images, style sheets
-WEB_STATIC_URL http://localhost/assets
+// URL to preprocessed files
+WEB_DATA_URL https://s3.amazonaws.com/vat-data
 
 
 // =============================================================================
@@ -71,8 +64,10 @@ AWS_S3_RAW_BUCKET vat-raw
 // if we are running single-node only
 CLUSTER true
 
-// IP address of master node. Used by worker to access the master's API
+// IP address and URL of master node. Used by worker nodes and client-side code 
+// to access the master's API
 MASTER_ADDRESS 107.20.183.198
+MASTER_URL vat.gersteinlab.org
 
 // ----------------------------------------------------------------------------
 // Used by master only:

@@ -114,6 +114,7 @@ if (empty($fatal_error))
         </style>
         
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+        <script>!window.jQuery && document.write('<script src="js/jquery-1.4.4.min.js"><\/script>')</script>
         <script type="text/javascript" language="javascript" src="js/jquery.dataTables.js"></script>
         <script type="text/javascript" charset="utf-8">
             $(document).ready(function() {
@@ -127,6 +128,7 @@ if (empty($fatal_error))
                 );
             });
         </script>
+        <script src="js/bootstrap-dropdown.js"></script>
         <title>VAT</title>
 
     </head>
@@ -138,7 +140,17 @@ if (empty($fatal_error))
                     <ul class="nav">
                         <li><a href="index.php">Home</a></li>
                         <li><a href="upload.php">Upload</a></li>
-                        <li><a href="documentation.php">Documentation</a></li>
+                        <li class="dropdown" data-dropdown="dropdown">
+                            <a href="#" class="dropdown-toggle">Documentation</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="installation.php">Installing</a></li>
+                                <li><a href="formats.php">Data formats</a></li>
+                                <li><a href="programs.php">List of programs</a></li>
+                                <li><a href="workflow.php">Example workflow</a></li>
+                                <li class="divider"></li>
+                                <li><a href="documentation.php">All documentation</a></li>
+                            </ul>
+                        </li>
                         <li><a href="download.php">Download</a></li>
                     </ul>
                 </div>
@@ -164,7 +176,8 @@ if (empty($fatal_error))
                 
                 <h2>Gene summary based on gencode3b annotation set</h2>
                 <div id="ex1"></div>
-                <p></p>
+                <p>&nbsp;</p>
+                <hr />
             
                 <h2>Sample summary</h2>
                 <div id="ex2"></div>

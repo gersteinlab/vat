@@ -104,6 +104,10 @@ if (empty($fatal_error))
         <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
         <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
         <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+        <script>!window.jQuery && document.write('<script src="js/jquery-1.4.4.min.js"><\/script>')</script>
+        <script src="js/bootstrap-dropdown.js"></script>
  
     </head>
     <body>
@@ -114,12 +118,23 @@ if (empty($fatal_error))
                     <ul class="nav">
                         <li><a href="index.php">Home</a></li>
                         <li><a href="upload.php">Upload</a></li>
-                        <li><a href="documentation.php">Documentation</a></li>
+                        <li class="dropdown" data-dropdown="dropdown">
+                            <a href="#" class="dropdown-toggle">Documentation</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="installation.php">Installing</a></li>
+                                <li><a href="formats.php">Data formats</a></li>
+                                <li><a href="programs.php">List of programs</a></li>
+                                <li><a href="workflow.php">Example workflow</a></li>
+                                <li class="divider"></li>
+                                <li><a href="documentation.php">All documentation</a></li>
+                            </ul>
+                        </li>
                         <li><a href="download.php">Download</a></li>
                     </ul>
                 </div>
             </div>
         </div>
+        
         <div class="container-fluid">
 <? if ( ! empty($fatal_error)): ?>
 			<div class="sidebar">

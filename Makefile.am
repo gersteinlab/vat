@@ -12,11 +12,11 @@ EXTRA_DIST = \
 
 if MAKE_MASTER
 
-SUBDIRS = lib src master
+SUBDIRS = lib src web master
 
 else
 
-SUBDIRS = lib src
+SUBDIRS = lib src web
 
 endif
 

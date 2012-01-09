@@ -29,20 +29,6 @@ $upload_file = NULL;
  */
 
 /**
-* Sanitize uploaded filename
-*
-* @param string $file_name
-* @return string
-*/
-function sanitize_file_name($file_name)
-{
-    $file_name = stripslashes($file_name);
-    $file_name = str_replace("'", "", $file_name);
-
-    return $file_name;
-}
-
-/**
  * Process the uploaded file, validate form, and copy uploaded file into
  * working directory
  *
@@ -630,7 +616,6 @@ else
             </div>
 	<? endif; ?>    
 <? endif; ?>
-            
 
             <footer>
                 <p>&copy; Gerstein Lab 2011</p>

@@ -1,4 +1,6 @@
 all-local:
+	@echo '  GEN    vat.conf'
+	@cp -r $(top_srcdir)/default.vatrc $(top_srcdir)/master/vat.conf
 	@echo '  CP     css'
 	@cp -r $(top_srcdir)/web/css $(top_srcdir)/master
 	@echo '  CP     image'
@@ -9,4 +11,4 @@ all-local:
 	@cp -r $(top_srcdir)/web/lib $(top_srcdir)/master
 
 clean-local:
-	rm -rf css image js lib
+	rm -rf vat.conf css image js lib

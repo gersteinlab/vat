@@ -53,8 +53,11 @@ AC_CHECK_HEADERS([stdlib.h unistd.h])
 AC_CHECK_FUNCS([floor strchr strpbrk strrchr strstr])
 
 AM_COND_IF([MAKE_MASTER], [AC_CONFIG_FILES([master/Makefile])])
-AC_CONFIG_FILES([Makefile 
-		 lib/Makefile 
-		 src/Makefile 
-		 vat.pc:vat.pc.in])
+AC_CONFIG_FILES([
+    Makefile 
+    lib/Makefile 
+    src/Makefile
+    web/Makefile 
+    vat.pc:vat.pc.in
+])
 AC_OUTPUT

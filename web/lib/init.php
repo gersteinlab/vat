@@ -1,7 +1,8 @@
 <?php
 /**
  * Initialization code for VAT. Sets some global constants, error reporting,
- * and parses the configuration file
+ * and parses the configuration file. A VAT configuration file named vat.conf
+ * is required to exist in the web root.
  *
  * @package    VAT
  * @author     David Z. Chen
@@ -9,14 +10,15 @@
  * @license    CC BY-NC
  */
 
-// XXX Need to get this to work better
-define('CONFIG_FILE_PATH', 'vatrc');
+define('CONFIG_FILE_PATH', 'vat.conf');
 define('CONFIG_COMMENT_DELIM', '//');
 define('VAT_SRC', TRUE);
 
 require_once 'constants.php';
 
-// Turn on all error reporting
+/* 
+ * Turn on all error reporting
+ */
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
@@ -74,12 +76,12 @@ function config_parse($path)
     return $config;
 }
 
-if (($vat_config_path = getenv('VAT_CONFIG_FILE')) === FALSE)
+if ( ! file_exists(CONFIG_FILE_PATH))
 {
-    $vat_config_path = CONFIG_FILE_PATH;
-    putenv("VAT_CONFIG_FILE=$vat_config_path");
+    die('Config file vat.conf not found in web root');
 }
 
-$vat_config = config_parse($vat_config_path);
+putenv("VAT_CONFIG_FILE=$vat_config_path");
+$vat_config = config_parse(CONFIG_FILE_PATH);
 
 ?>

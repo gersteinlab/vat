@@ -32,7 +32,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = master
+subdir = web
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/00gnulib.m4 \
@@ -543,9 +543,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu master/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu web/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu master/Makefile
+	  $(AUTOMAKE) --gnu web/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -711,18 +711,10 @@ uninstall-am:
 
 all-local:
 	@echo '  GEN    vat.conf'
-	@cp -r $(top_srcdir)/default.vatrc $(top_srcdir)/master/vat.conf
-	@echo '  CP     css'
-	@cp -r $(top_srcdir)/web/css $(top_srcdir)/master
-	@echo '  CP     image'
-	@cp -r $(top_srcdir)/web/image $(top_srcdir)/master
-	@echo '  CP     js'
-	@cp -r $(top_srcdir)/web/js $(top_srcdir)/master
-	@echo '  CP     lib'
-	@cp -r $(top_srcdir)/web/lib $(top_srcdir)/master
+	@cp -r $(top_srcdir)/default.vatrc $(top_srcdir)/web/vat.conf
 
 clean-local:
-	rm -rf vat.conf css image js lib
+	rm -rf vat.conf
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

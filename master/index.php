@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+
 <?php 
 
 require_once 'lib/init.php';
 
 ?>
 
-
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -31,6 +31,10 @@ require_once 'lib/init.php';
         <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
         <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
         <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+        <script>!window.jQuery && document.write('<script src="js/jquery-1.4.4.min.js"><\/script>')</script>
+        <script src="js/bootstrap-dropdown.js"></script>
  
     </head>
     <body>
@@ -41,7 +45,17 @@ require_once 'lib/init.php';
                     <ul class="nav">
                         <li class="active"><a href="index.php">Home</a></li>
                         <li><a href="upload.php">Upload</a></li>
-                        <li><a href="documentation.php">Documentation</a></li>
+                        <li class="dropdown" data-dropdown="dropdown">
+                            <a href="#" class="dropdown-toggle">Documentation</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="installation.php">Installing</a></li>
+                                <li><a href="formats.php">Data formats</a></li>
+                                <li><a href="programs.php">List of programs</a></li>
+                                <li><a href="workflow.php">Example workflow</a></li>
+                                <li class="divider"></li>
+                                <li><a href="documentation.php">All documentation</a></li>
+                            </ul>
+                        </li>
                         <li><a href="download.php">Download</a></li>
                     </ul>
                 </div>
@@ -52,25 +66,25 @@ require_once 'lib/init.php';
         
             <div class="hero-unit">
                 <h1>Variant Annotation Tool</h1>
-                <p>Vestibulum id ligula porta felis euismod semper. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
+                <p>A computational framework to functionally annotate variants in personal genomes using a cloud-computing environment.</p>
                 <p><a class="btn primary large" href="download.php">Latest version 1.1.0 &raquo;</a></p>
             </div>
         
             <div class="row">
 		        <div class="span-one-third">
-		            <h2>Web Interface</h2>
-		            <p>Etiam porta sem malesuada magna mollis euismod. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
-		            <p><a class="btn" href="upload.php">Upload VCF file &raquo;</a></p>
+		            <h2>Uploaded data sets</h2>
+		            <p>View a list of uploaded data sets processed and annotated using the Variant Annotation Tool.</p>
+		            <p><a class="btn" href="sets.php">View data sets &raquo;</a></p>
 		        </div>
 		        <div class="span-one-third">
 		            <h2>Documentation</h2>
-		            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-		            <p><a class="btn" href="documentation.php">View &raquo;</a></p>
+		            <p>View the documentation for on VAT's architecture, instructions on prerequisites, installation and running VAT.</p>
+		            <p><a class="btn" href="documentation.php">View documentation &raquo;</a></p>
 		        </div>
 		        <div class="span-one-third">
-		            <h2>Data sets</h2>
-		            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-		            <p><a class="btn" href="data_sets.php">View details &raquo;</a></p>
+		            <h2>1000-Genomes Project</h2>
+		            <p>We processed and annotate the genetic variants identified as part of the 1000 Genomes Pilot Project (R. M. Durbin et al., 2010).</p>
+		            <p><a class="btn" href="datasets.php">View details &raquo;</a></p>
 		        </div>
 		    </div>
         

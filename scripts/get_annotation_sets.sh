@@ -15,17 +15,17 @@ wget -nc \
      http://homes.gersteinlab.org/people/lh372/VAT/gencode7.interval \
      http://homes.gersteinlab.org/people/lh372/VAT/gencode7.fa
 
-echo "Retrieving miRNA annotation sets"
-wget -nc \
-     http://homes.gersteinlab.org/people/lh372/VAT/gencode3b.miRNA.interval \
-     http://homes.gersteinlab.org/people/lh372/VAT/gencode3b.miRNA.fa \
-     http://homes.gersteinlab.org/people/lh372/VAT/gencode3c.miRNA.interval \
-     http://homes.gersteinlab.org/people/lh372/VAT/gencode3c.miRNA.fa \
-     http://homes.gersteinlab.org/people/lh372/VAT/gencode4.miRNA.interval \
-     http://homes.gersteinlab.org/people/lh372/VAT/gencode4.miRNA.fa \
-     http://homes.gersteinlab.org/people/lh372/VAT/gencode5.miRNA.interval \
-     http://homes.gersteinlab.org/people/lh372/VAT/gencode5.miRNA.fa \
-     http://homes.gersteinlab.org/people/lh372/VAT/gencode6.miRNA.interval \
-     http://homes.gersteinlab.org/people/lh372/VAT/gencode6.miRNA.fa \
-     http://homes.gersteinlab.org/people/lh372/VAT/gencode7.miRNA.interval \
-     http://homes.gersteinlab.org/people/lh372/VAT/gencode7.miRNA.fa
+#echo "Retrieving miRNA annotation sets"
+#wget -nc \
+#     http://homes.gersteinlab.org/people/lh372/VAT/gencode3b.miRNA.interval \
+#     http://homes.gersteinlab.org/people/lh372/VAT/gencode3b.miRNA.fa \
+#     http://homes.gersteinlab.org/people/lh372/VAT/gencode3c.miRNA.interval \
+#     http://homes.gersteinlab.org/people/lh372/VAT/gencode3c.miRNA.fa \
+#     http://homes.gersteinlab.org/people/lh372/VAT/gencode4.miRNA.interval \
+#     http://homes.gersteinlab.org/people/lh372/VAT/gencode4.miRNA.fa \
+#     http://homes.gersteinlab.org/people/lh372/VAT/gencode5.miRNA.interval \
+#     http://homes.gersteinlab.org/people/lh372/VAT/gencode5.miRNA.fa \
+#     http://homes.gersteinlab.org/people/lh372/VAT/gencode6.miRNA.interval \
+#     http://homes.gersteinlab.org/people/lh372/VAT/gencode6.miRNA.fa \
+#     http://homes.gersteinlab.org/people/lh372/VAT/gencode7.miRNA.interval \
+#     http://homes.gersteinlab.org/people/lh372/VAT/gencode7.miRNA.fa

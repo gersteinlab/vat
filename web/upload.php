@@ -45,6 +45,10 @@ $poids_max = ini_get('post_max_size') + 0;
         <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
         <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
         <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+        <script>!window.jQuery && document.write('<script src="js/jquery-1.4.4.min.js"><\/script>')</script>
+        <script src="js/bootstrap-tabs.js"></script>
  
     </head>
     <body>
@@ -88,58 +92,106 @@ $poids_max = ini_get('post_max_size') + 0;
                     </ul>
                 </div>
                 <div class="span12">
-                    <form action="process.php" method="POST" enctype="multipart/form-data">
-                        <fieldset>
-                            <legend>Input VCF file</legend>
-                            <div class="clearfix">
-                                <label for="upFile">VCF File Upload</label>
-                                <div class="input">
-                                    <input class="input-file" type="file" name="upFile" />
-                                </div>
-                            </div><!-- /clearfix -->
-                            <div class="clearfix">
-                                <label for="variantType">Variant type</label>
-                                <div class="input">
-	                                <select name="variantType">
-							            <option value="snpMapper" selected="selected">SNPs</option>
-							            <option value="indelMapper">Indels</option>
-							            <option value="svMapper">SVs</option>
-							        </select>
-                                </div>
-                            </div><!-- /clearfix -->
-                            <div class="clearfix">
-                                <label for="annotationFile">Annotation file</label>
-                                <div class="input">
-	                                <select name="annotationFile">
-							            <option value="gencode3b">GENCODE (version 3b; hg18)</option>
-							            <option value="gencode3c">GENCODE (version 3c; hg19)</option>
-							            <option value="gencode4">GENCODE (version 4; hg19)</option>
-							            <option value="gencode5">GENCODE (version 5; hg19)</option>
-							            <option value="gencode6">GENCODE (version 6; hg19)</option>
-							            <option value="gencode7">GENCODE (version 7; hg19)</option>
-							        </select>
-                                </div>
-                            </div><!-- /clearfix -->
-                            <div class="clearfix">
-                                <label for="process">Process file</label>
-                                <div class="input">
-                                    <ul class="inputs-list">
-                                        <li>
-                                            <label>
-                                                <input type="checkbox" name="process" value="yes" />
-				                                <span>Process uploaded VCF file after uploading</span>
-				                            </label>
-				                        </li>
-				                    </ul>
-                                </div>
-                            </div><!-- /clearfix -->
-                            <div class="actions">
-                                <input type="submit" class="btn primary" value="Submit" />&nbsp;<input type="reset" class="btn" value="Reset" />
-                            </div>
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
+                	<ul class="tabs" data-tabs="tabs">
+                        <li class="active"><a href="#raw">Raw VCF</a></li>
+                        <li><a href="#data">Processed data set</a></li>
+                    </ul>
+                
+                	<div class="pill-content">
+                		<div class="active" id="raw">
+                            <form action="process.php" method="POST" enctype="multipart/form-data">
+                                <fieldset>
+                                    <legend>Input VCF file</legend>
+                                    <div class="clearfix">
+                                        <label for="upFile">VCF File Upload</label>
+                                        <div class="input">
+                                            <input class="input-file" type="file" name="upFile" />
+                                        </div>
+                                    </div><!-- /clearfix -->
+                                    <div class="clearfix">
+                                        <label for="variantType">Variant type</label>
+                                        <div class="input">
+        	                                <select name="variantType">
+        							            <option value="snpMapper" selected="selected">SNPs</option>
+        							            <option value="indelMapper">Indels</option>
+        							            <option value="svMapper">SVs</option>
+        							        </select>
+                                        </div>
+                                    </div><!-- /clearfix -->
+                                    <div class="clearfix">
+                                        <label for="annotationFile">Annotation file</label>
+                                        <div class="input">
+        	                                <select name="annotationFile">
+        							            <option value="gencode3b">GENCODE (version 3b; hg18)</option>
+        							            <option value="gencode3c">GENCODE (version 3c; hg19)</option>
+        							            <option value="gencode4">GENCODE (version 4; hg19)</option>
+        							            <option value="gencode5">GENCODE (version 5; hg19)</option>
+        							            <option value="gencode6">GENCODE (version 6; hg19)</option>
+        							            <option value="gencode7">GENCODE (version 7; hg19)</option>
+        							        </select>
+                                        </div>
+                                    </div><!-- /clearfix -->
+                                    <div class="clearfix">
+                                        <label for="process">Process file</label>
+                                        <div class="input">
+                                            <ul class="inputs-list">
+                                                <li>
+                                                    <label>
+                                                        <input type="checkbox" name="process" value="yes" />
+        				                                <span>Process uploaded VCF file after uploading</span>
+        				                            </label>
+        				                        </li>
+        				                    </ul>
+                                        </div>
+                                    </div><!-- /clearfix -->
+                                    <div class="actions">
+                                        <input type="submit" class="btn primary" value="Submit" />&nbsp;<input type="reset" class="btn" value="Reset" />
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div><!-- /raw -->
+                        <div id="data">
+                        	<form action="process.php" method="POST" enctype="multipart/form-data">
+                                <fieldset>
+                                    <legend>Processed data set</legend>
+                                    <div class="clearfix">
+                                        <label for="upFile">Data set upload</label>
+                                        <div class="input">
+                                            <input class="input-file" type="file" name="upFile" />
+                                        </div>
+                                    </div><!-- /clearfix -->
+                                    <div class="clearfix">
+                                        <label for="variantType">Variant type</label>
+                                        <div class="input">
+        	                                <select name="variantType">
+        							            <option value="snpMapper" selected="selected">SNPs</option>
+        							            <option value="indelMapper">Indels</option>
+        							            <option value="svMapper">SVs</option>
+        							        </select>
+                                        </div>
+                                    </div><!-- /clearfix -->
+                                    <div class="clearfix">
+                                        <label for="annotationFile">Annotation file</label>
+                                        <div class="input">
+        	                                <select name="annotationFile">
+        							            <option value="gencode3b">GENCODE (version 3b; hg18)</option>
+        							            <option value="gencode3c">GENCODE (version 3c; hg19)</option>
+        							            <option value="gencode4">GENCODE (version 4; hg19)</option>
+        							            <option value="gencode5">GENCODE (version 5; hg19)</option>
+        							            <option value="gencode6">GENCODE (version 6; hg19)</option>
+        							            <option value="gencode7">GENCODE (version 7; hg19)</option>
+        							        </select>
+                                        </div>
+                                    </div><!-- /clearfix -->
+                                    <div class="actions">
+                                        <input type="submit" class="btn primary" value="Submit" />&nbsp;<input type="reset" class="btn" value="Reset" />
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div><!-- /pill-content -->
+                </div><!-- /span12 -->
+            </div><!-- /row -->
         
             <footer>
                 <p>&copy; Gerstein Lab 2011</p>
