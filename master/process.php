@@ -82,7 +82,7 @@ if ( ! empty($_POST))
     $upload_success = handle_upload($working_dir);
     if ($upload_success == FALSE)
     {
-        array_push("Upload unsuccessful");
+        array_push($fatal_error, "Upload unsuccessful");
     }
     
     $title           = $_POST['title'];

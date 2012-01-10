@@ -81,7 +81,7 @@ if ( ! file_exists(CONFIG_FILE_PATH))
     die('Config file vat.conf not found in web root');
 }
 
-putenv("VAT_CONFIG_FILE=$vat_config_path");
+putenv("VAT_CONFIG_FILE=" . CONFIG_FILE_PATH);
 $vat_config = config_parse(CONFIG_FILE_PATH);
 
 ?>

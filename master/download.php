@@ -42,7 +42,7 @@ $vat_config['VAT_ANNOTATION_URL'] = 'https://s3.amazonaws.com/vat-annotation';
     <body>
         <div class="topbar">
             <div class="fill">
-                <div class="container-fluid">
+                <div class="container">
                     <a class="brand" href="index.php">VAT</a>
                     <ul class="nav">
                         <li><a href="index.php">Home</a></li>

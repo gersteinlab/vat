@@ -976,7 +976,7 @@ $ tar -pczvf ALL.2of4intersection.20100804.chr22.tar.gz \
    ALL.2of4intersection.20100804.chr22.vcf.gz \
    ALL.2of4intersection.20100804.chr22.vcf.gz.tbi
 </pre>
-					<p>Open the upload page of your VAT installation in your web browser and click on the “Processed data set” tab for the upload form for uploading processed data sets. Choose your .tar.gz archive using the file input box and click Submit. Once the file has been processed, click View Results.</p>
+					<p>Open the upload page of your VAT installation in your web browser and click on the "Processed data set" tab for the upload form for uploading processed data sets. Choose your .tar.gz archive using the file input box and click Submit. Once the file has been processed, click View Results.</p>
                 </section>
             </div><!-- /content -->
             
