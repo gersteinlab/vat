@@ -112,7 +112,7 @@ require_once 'lib/init.php';
                         </tbody>
                     </table>
                     <div class="well">
-                        <a href="#" class="btn primary">View results &raquo;</a>
+                        <a href="summary.php?dataSet=vat.5&setId=5&annotationSet=gencode3b&type=coding" class="btn primary">View results &raquo;</a>
                     </div>
                      
                    
@@ -136,7 +136,7 @@ require_once 'lib/init.php';
                         </tbody>
                     </table>
                     <div class="well">
-                        <a href="#" class="btn primary">View results &raquo;</a>&nbsp;<a href="#" class="btn">Detailed workflow &raquo;</a>
+                        <a href="summary.php?dataSet=vat.4&setId=4&annotationSet=gencode3b&type=coding" class="btn primary">View results &raquo;</a>&nbsp;<a href="workflow.php" class="btn">Detailed workflow &raquo;</a>
                     </div>
             	</div>
             </div>

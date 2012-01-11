@@ -5,6 +5,8 @@
  * @author David Z. Chen
  */
 
+ini_set('max_execution_time', 0);
+
 /*
  * Make sure we have cluster mode turned on
  */
@@ -30,6 +32,8 @@ if ($vat_config['AWS_USE_S3'] == FALSE)
 {
     die("S3 support must be enabled");
 }
+
+ini_set('')
 
 /*
  * Connect to MySQL

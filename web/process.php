@@ -389,7 +389,7 @@ else
             <div class="span16">
 				<h2><font color="red">Errors found</font></h2>
 				<ul>
-    <? foreach ($fatal_errors as $error): ?>
+    <? foreach ($fatal_error as $error): ?>
 					<li><? echo $error; ?></li>
 	<? endforeach; ?>
 				</ul>

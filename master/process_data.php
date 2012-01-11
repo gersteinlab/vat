@@ -19,7 +19,9 @@ $cfio = new CFIO();
 */
 function handle_upload($working_dir)
 {
-    global $fatal_error, $vat_config, $uploaded_file;
+    global $fatal_error;
+    global $vat_config;
+    global $uploaded_file;
 
     $file_name = sanitize_file_name($_FILES['upFile']['name']);
 
@@ -45,27 +47,37 @@ function decompress_files($working_dir)
         return FALSE;
     }
     
-    $cmd = "tar zxvf " . $working_dir . "/" . $uploaded_file;
-    
+    $cmd = "tar -zxvf " . $working_dir . "/" . $uploaded_file . " -C " . $working_dir;
     exec($cmd, $output, $retval);
-    if ($retval != 0) 
+    
+    if ($retval != 0)
     {
         array_push($fatal_error, "Error extracting archive: " . $output);
         return FALSE;
     }
     
-    $basename = basename($uploaded_file);
+    $basename = basename($uploaded_file, '.tar.gz');
+   
+    if ( ! file_exists($working_dir . '/' . $basename . '.raw.vcf'))
+    {
+        $fh = fopen($working_dir . '/' . $basename . '.raw.vcf', 'w');
+        if ($fh === FALSE) {
+            array_push($fatal_error, "Cannot touch raw VCF file");
+            return FALSE;
+        }
+        fclose($fh);
+    }
     
-    if ( ! file_exists($working_dir . '/' . $basename . '.vcf')) 
+    if ( ! file_exists($working_dir . '/' . $basename . '.vcf'))
     {
-        array_push($fatal_error, "VCF file not found in archive");
-        return FALSE;
+        $fh = fopen($working_dir . '/' . $basename . '.vcf', 'w');
+        if ($fh === FALSE) {
+            array_push($fatal_error, "Cannot touch VCF file");
+            return FALSE;
+        }
+        fclose($fh);
     }
-    if ( ! file_exists($working_dir . '/' . $basename . '.raw.vcf')) 
-    {
-        array_push($fatal_error, "Raw file not found in archive");
-        return FALSE;
-    }
+    
     if ( ! file_exists($working_dir . '/' . $basename . '.sampleSummary.txt'))
     {
         array_push($fatal_error, "Sample summary file not found in archive");
@@ -76,12 +88,12 @@ function decompress_files($working_dir)
         array_push($fatal_error, "Gene summary file not found in archive");
         return FALSE;
     }
-    if ( ! file_exists($working_dir . '/' . $basename . '.gz'))
+    if ( ! file_exists($working_dir . '/' . $basename . '.vcf.gz'))
     {
         array_push($fatal_error, "Gzipped VCF file not found in archive");
         return FALSE;
     }
-    if ( ! file_exists($working_dir . '/' . $basename . '.gz.tbi'))
+    if ( ! file_exists($working_dir . '/' . $basename . '.vcf.gz.tbi'))
     {
         array_push($fatal_error, "Tabix indexed file not found in archive");
         return FALSE;
@@ -99,8 +111,9 @@ function decompress_files($working_dir)
 function rename_files($working_dir, $set_id)
 {
     global $fatal_error;
+    global $uploaded_file;
     
-    $basename = basename($uploaded_file);
+    $basename = basename($uploaded_file, '.tar.gz');
     
     $files = array(
         $working_dir . '/' . $basename . '.raw.vcf' => $working_dir . '/vat.' . $set_id . '.raw.vcf',
@@ -131,6 +144,7 @@ $program         = NULL;
 $process         = TRUE;
 $set_id          = -1;
 $uploaded_file   = NULL;
+$model           = NULL;
 
 /*
 * Display error if max file size set by web server configuration has been
@@ -150,7 +164,7 @@ if ( ! empty($_POST))
     $upload_success = handle_upload($working_dir);
     if ($upload_success == FALSE)
     {
-        array_push("Upload unsuccessful");
+        array_push($fatal_error, "Upload unsuccessful");
     }
     
     $title           = $_POST['title'];
@@ -258,7 +272,7 @@ if (empty($fatal_error))
             <div class="span16">
 				<h2><font color="red">Errors found</font></h2>
 				<ul>
-    <? foreach ($fatal_errors as $error): ?>
+    <? foreach ($fatal_error as $error): ?>
 					<li><? echo $error; ?></li>
 	<? endforeach; ?>
 				</ul>
@@ -289,7 +303,12 @@ if (empty($fatal_error))
 	    <?
 	    die();
 	}
+
+	assert($model != NULL);
+	$model->set('status', SET_STATUS_COMPLETE);
+    $model->save();
 	?>
+			<hr />
 			<script type="text/javascript" charset="utf-8">
             document.getElementById("proc-0-throbber").style.visibility = "hidden";
             document.getElementById("proc-0-done-label").style.visibility = "visible";

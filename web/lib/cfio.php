@@ -337,6 +337,12 @@ class CFIO {
             $object_name = sprintf("%d/vat.%d.vcf", $set_id, $set_id);
             $this->_s3->batch()->create_object($bucket, $object_name, array('fileUpload' => $file_name));
             
+            $response = $this->_s3->batch()->send();
+            if ($response->areOK() === FALSE)
+            {
+                throw new Exception("push_data to bucket " . $bucket . " unsuccessful");
+            }
+            
             // bgzip
             $file_name = sprintf("%s/vat.%d.vcf.gz", $this->_working_dir, $set_id);
             if ( ! file_exists($file_name)) 
@@ -354,6 +360,12 @@ class CFIO {
             }
             $object_name = sprintf("%d/vat.%d.vcf.gz.tbi", $set_id, $set_id);
             $this->_s3->batch()->create_object($bucket, $object_name, array('fileUpload' => $file_name));
+            
+            $response = $this->_s3->batch()->send();
+            if ($response->areOK() === FALSE)
+            {
+                throw new Exception("push_data to bucket " . $bucket . " unsuccessful");
+            }
             
             // geneSummary
             $file_name = sprintf("%s/vat.%d.geneSummary.txt", $this->_working_dir, $set_id);
@@ -373,6 +385,12 @@ class CFIO {
             $object_name = sprintf("%d/vat.%d.sampleSummary.txt", $set_id, $set_id);
             $this->_s3->batch()->create_object($bucket, $object_name, array('fileUpload' => $file_name));
             
+            $response = $this->_s3->batch()->send();
+            if ($response->areOK() === FALSE)
+            {
+                throw new Exception("push_data to bucket " . $bucket . " unsuccessful");
+            }
+            
             // gene subsets and images
             $dir_name = sprintf("%s/vat.%d", $this->_working_dir, $set_id);
             if ( ! file_exists($dir_name)) 
@@ -380,6 +398,8 @@ class CFIO {
                 throw new Exception("Directory " . $dir_name . "expected but does not exist");
             }
             $it = new RecursiveDirectoryIterator($dir_name);
+            
+            $n = 0;
             foreach ($it as $file) 
             {
                 $parts = explode(DIRECTORY_SEPARATOR, $file);
@@ -393,6 +413,16 @@ class CFIO {
                 
                 $object_name = sprintf("%d/vat.%d/%s", $set_id, $set_id, $basename);
                 $this->_s3->batch()->create_object($bucket, $object_name, array('fileUpload' => $file));
+                $n++;
+                
+                if ($n == 10) {
+                    $response = $this->_s3->batch()->send();
+                    if ($response->areOK() === FALSE)
+                    {
+                        throw new Exception("push_data to bucket " . $bucket . " unsuccessful");
+                    }
+                    $n = 0;                    
+                }
             }
             
             $response = $this->_s3->batch()->send();
