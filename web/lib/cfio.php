@@ -255,7 +255,7 @@ class CFIO {
         } 
         else 
         {
-            $src_file = sprintf("%s/%d/vat.%d/%s.vcf", $vat_config['VAT_DATA_DIR'], $use_set_id, $use_set_id, $gene_id);
+            $src_file = sprintf("%s/%d/vat.%d/%s.vcf", $vat_config['WEB_DATA_DIR'], $use_set_id, $use_set_id, $gene_id);
             $dst_file = sprintf("%s/vat.%d/%s.vcf", $this->_working_dir, $use_set_id, $gene_id);
             
             if (copy($src_file, $dst_file) === FALSE) 
@@ -570,7 +570,7 @@ class CFIO {
         else 
         {
             $src_file = sprintf("%s/%s", $this->_working_dir, $filename);
-            $dst_file = sprintf("%s/%d/%s", $vat_config['WEB_DATA_RAW_DIR'], $this->_set_id, $filename);
+            $dst_file = sprintf("%s/%s", $vat_config['WEB_DATA_RAW_DIR'], $filename);
             
             if (copy($src_file, $dst_file) === FALSE) 
             {

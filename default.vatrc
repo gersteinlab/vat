@@ -26,7 +26,7 @@ WEB_DATA_WORKING_DIR /var/www/html/data/working
 WEB_DATA_RAW_DIR /var/www/html/data/raw
 
 // URL to preprocessed files
-WEB_DATA_URL https://s3.amazonaws.com/vat-data
+WEB_DATA_URL https://localhost/data/sets
 
 
 // =============================================================================
@@ -37,24 +37,24 @@ WEB_DATA_URL https://s3.amazonaws.com/vat-data
 // Use true to activate S3, false to deactivate. Note that if S3 support is
 // active, you will need to enter your AWS account infomation for the VAT web
 // components in web/lib/aws/config.inc.php
-AWS_USE_S3 true
+AWS_USE_S3 false
 
 // S3 access key ID
-AWS_ACCESS_KEY_ID AKIAJD23VJ42GZJWR5YQ
+AWS_ACCESS_KEY_ID accesskey
 
 // S3 secret access key
-AWS_SECRET_ACCESS_KEY 0xLFwrcOP3XVtORtkjUSNPZFtS5ZGlwXDQPeEPpv
+AWS_SECRET_ACCESS_KEY secretaccesskey
 
 // S3 hostname
 AWS_S3_HOSTNAME s3.amazonaws.com
 
 // The name of the S3 bucket for processed data sets. If S3 support is enabled,  
 // this bucket is used instead of WEB_DATA_DIR
-AWS_S3_DATA_BUCKET vat-data
+AWS_S3_DATA_BUCKET data-bucket
 
 // The name of the S3 bucket for raw VCF input files. If S3 support is enabled,
 // this bucket is used instead of WEB_DATA_RAW_DIR 
-AWS_S3_RAW_BUCKET vat-raw
+AWS_S3_RAW_BUCKET raw-bucket
 
 // =============================================================================
 // Set only if setting up as master node in master/worker configuration
@@ -62,12 +62,12 @@ AWS_S3_RAW_BUCKET vat-raw
 
 // Set to true if we are using the master/worker cluster configuration, false
 // if we are running single-node only
-CLUSTER true
+CLUSTER false
 
 // IP address and URL of master node. Used by worker nodes and client-side code 
 // to access the master's API
-MASTER_ADDRESS 107.20.183.198
-MASTER_URL vat.gersteinlab.org
+MASTER_ADDRESS 0.0.0.0
+MASTER_URL master.url
 
 // ----------------------------------------------------------------------------
 // Used by master only:
@@ -75,6 +75,6 @@ MASTER_URL vat.gersteinlab.org
 
 // MySQL configuration
 MASTER_MYSQL_HOST localhost
-MASTER_MYSQL_USER root
-MASTER_MYSQL_PASS public!@
-MASTER_MYSQL_DB vat
+MASTER_MYSQL_USER user
+MASTER_MYSQL_PASS pass
+MASTER_MYSQL_DB dbname
