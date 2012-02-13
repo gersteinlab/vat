@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/lib
+#AM_CPPFLAGS = -I$(top_srcdir)/lib
 
 noinst_LIBRARIES = libvat.a
 libvat_a_SOURCES = \

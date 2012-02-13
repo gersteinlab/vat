@@ -15,6 +15,8 @@
 
 @SET_MAKE@
 
+#AM_CPPFLAGS = -I$(top_srcdir)/lib
+
 
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
@@ -612,7 +614,6 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CPPFLAGS = -I$(top_srcdir)/lib
 noinst_LIBRARIES = libvat.a
 libvat_a_SOURCES = \
 	vcf.c vcf.h \
