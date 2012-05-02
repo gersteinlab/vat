@@ -67,7 +67,7 @@ require_once 'lib/init.php';
             <div class="hero-unit">
                 <h1>Variant Annotation Tool</h1>
                 <p>A computational framework to functionally annotate variants in personal genomes using a cloud-computing environment.</p>
-                <p><a class="btn primary large" href="download.php">Latest version 1.1.0 &raquo;</a></p>
+                <p><a class="btn primary large" href="download.php">Latest version 2.0.1 &raquo;</a></p>
             </div>
         
             <div class="row">

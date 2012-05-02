@@ -86,7 +86,6 @@ $vat_config['VAT_ANNOTATION_URL'] = 'https://s3.amazonaws.com/vat-annotation';
 						The following are optional for the VAT pipeline but required for some additional functionality: 
 					</p>
 					<ul>
-						<li><strong><a href="http://aws.amazon.com/developertools/1648" target="_blank">libs3</a></strong> - a Amazon S3 library for C, required for S3-backed storage for the VAT Web Application</li>
 						<li><strong><a href="http://vcftools.sourceforge.net/index.html" target="_blank">VCF Tools</a></strong> - VCF tools consists of a suite of useful modules to manipulate VCF files.</li>
 					</ul>
 					
@@ -102,7 +101,7 @@ $vat_config['VAT_ANNOTATION_URL'] = 'https://s3.amazonaws.com/vat-annotation';
 								A tarball of the source code of the Variant Annotation Tool may be download here.
 							</p>
 							<div class="well">
-								<a class="btn primary" href="<? echo $vat_config['VAT_RELEASES_URL']; ?>/vat-1.0.0.tar.gz">Download vat-1.0.0.tar.gz &raquo;</a>
+								<a class="btn primary" href="<? echo $vat_config['VAT_RELEASES_URL']; ?>/vat-2.0.1.tar.gz">Download vat-2.0.1.tar.gz &raquo;</a>
 							</div>
 						</div>
 						<div class="span8">

@@ -149,7 +149,8 @@ $poids_max = ini_get('post_max_size') + 0;
 									            <option value="gencode4">GENCODE (version 4; hg19)</option>
 									            <option value="gencode5">GENCODE (version 5; hg19)</option>
 									            <option value="gencode6">GENCODE (version 6; hg19)</option>
-									            <option value="gencode7">GENCODE (version 7; hg19)</option>
+                                                <option value="gencode7">GENCODE (version 7; hg19)</option>
+                                                <option value="TAIR10">Arabidopsis</option>
 									        </select>
 		                                </div>
 		                            </div><!-- /clearfix -->
@@ -214,6 +215,7 @@ $poids_max = ini_get('post_max_size') + 0;
                                                 <option value="gencode5">GENCODE (version 5; hg19)</option>
                                                 <option value="gencode6">GENCODE (version 6; hg19)</option>
                                                 <option value="gencode7">GENCODE (version 7; hg19)</option>
+                                                <option value="TAIR10">Arabidopsis</option>
                                             </select>
                                         </div>
                                     </div><!-- /clearfix -->
