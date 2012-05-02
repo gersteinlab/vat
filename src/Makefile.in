@@ -86,8 +86,7 @@ libvat_a_AR = $(AR) $(ARFLAGS)
 am__DEPENDENCIES_1 =
 libvat_a_DEPENDENCIES = $(top_srcdir)/lib/libgnu.a \
 	$(am__DEPENDENCIES_1)
-am_libvat_a_OBJECTS = vcf.$(OBJEXT) util.$(OBJEXT) shutil.$(OBJEXT) \
-	cfio.$(OBJEXT) md5.$(OBJEXT) growbuffer.$(OBJEXT) s3.$(OBJEXT)
+am_libvat_a_OBJECTS = vcf.$(OBJEXT) util.$(OBJEXT)
 libvat_a_OBJECTS = $(am_libvat_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
@@ -483,7 +482,6 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
-PHPUNIT = @PHPUNIT@
 PRAGMA_COLUMNS = @PRAGMA_COLUMNS@
 PRAGMA_SYSTEM_HEADER = @PRAGMA_SYSTEM_HEADER@
 PTRDIFF_T_SUFFIX = @PTRDIFF_T_SUFFIX@
@@ -617,12 +615,7 @@ top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libvat.a
 libvat_a_SOURCES = \
 	vcf.c vcf.h \
-	util.c util.h \
-	shutil.c shutil.h \
-	cfio.c cfio.h \
-	md5.c md5.h \
-	growbuffer.c growbuffer.h \
-	s3.c s3.h
+	util.c util.h 
 
 libvat_a_LIBADD = $(top_srcdir)/lib/libgnu.a $(LIBINTL)
 gencode2interval_SOURCES = gencode2interval.c
@@ -765,15 +758,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cfio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gencode2interval.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/genericMapper.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/growbuffer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/indelMapper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/interval2sequences.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/md5.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shutil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/snpMapper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/svMapper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@

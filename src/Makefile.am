@@ -3,12 +3,7 @@
 noinst_LIBRARIES = libvat.a
 libvat_a_SOURCES = \
 	vcf.c vcf.h \
-	util.c util.h \
-	shutil.c shutil.h \
-	cfio.c cfio.h \
-	md5.c md5.h \
-	growbuffer.c growbuffer.h \
-	s3.c s3.h
+	util.c util.h 
 libvat_a_LIBADD = $(top_srcdir)/lib/libgnu.a $(LIBINTL)
 
 bin_PROGRAMS = \
@@ -55,4 +50,4 @@ vcfModifyHeader_SOURCES = vcfModifyHeader.c
 vcfModifyHeader_LDADD = libvat.a -lbios -lm
 
 vatson_SOURCES = vatson.c
-vatson_LDADD = libvat.a -lbios -lm -ls3
+vatson_LDADD = libvat.a -lbios -lm

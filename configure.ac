@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([vat], [2.0.0], [lukas.habegger@yale.edu])
+AC_INIT([vat], [2.0.1], [lukas.habegger@yale.edu])
 AC_CONFIG_SRCDIR([src/vcf.c])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADER([config.h])
@@ -17,11 +17,11 @@ AC_PROG_RANLIB
 AC_CHECK_PROG([TABIX], [tabix], yes, no)
 AC_CHECK_PROG([BGZIP], [bgzip], yes, no)
 AC_CHECK_PROG([TWOBITTOFA], [twoBitToFa], yes, no)
-AC_CHECK_PROG([PHPUNIT], [phpunit], yes, no)
-if test -z "$PHPUNIT"; then
-    AC_MSG_WARN([PHPUnit not found - PHP testsuite not active])
-fi
-AM_CONDITIONAL([USE_PHPUNIT], [test -n "$PHPUNIT"])
+#AC_CHECK_PROG([PHPUNIT], [phpunit], yes, no)
+#if test -z "$PHPUNIT"; then
+#    AC_MSG_WARN([PHPUnit not found - PHP testsuite not active])
+#fi
+#AM_CONDITIONAL([USE_PHPUNIT], [test -n "$PHPUNIT"])
 
 AC_ARG_ENABLE([master], 
     [AS_HELP_STRING([--enable-master], [Enable master-worker cluster setup (default is no)])], 
@@ -40,7 +40,6 @@ AC_CHECK_LIB([gslcblas], [cblas_dgemm], [], [AC_MSG_ERROR([Cannot find cblas lib
 AC_CHECK_LIB([gsl], [gsl_ran_hypergeometric_pdf], [], [AC_MSG_ERROR([Cannot find gsl library])])
 AC_CHECK_LIB([bios], [needMem], [], [AC_MSG_ERROR([Cannot find bios library])])
 AC_CHECK_LIB([gd], [gdImageCreate], [], [AC_MSG_ERROR([Cannot find gd library])])
-AC_CHECK_LIB([s3], [S3_initialize], [], [AC_MSG_ERROR([Cannot find libs3])])
 
 # Checks for header files.
 AC_HEADER_STDC
