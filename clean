@@ -2,22 +2,19 @@
 
 make distclean
 
-echo cleaning root
 rm -rf aclocal.m4 \
        autom4te.cache \
+       Makefile \
+       Makefile.in \
        autoscan.log \
-       config.guess \
-       config.h.in~ \
-       config.log \
-       config.status \
-       config.sub \
+       config.* \
        configure \
+       compile \
        configure.scan \
        depcomp \
        install-sh \
        libtool \
        ltmain.sh \
-       missing \
-       `find . -name Makefile.in`
+       missing
 
 
