@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT([vat], [2.1.0], [lukas.habegger@yale.edu])
+AC_INIT([vat], [2.1.1], [lukas.habegger@yale.edu])
 AC_CONFIG_SRCDIR([src/vcf.c])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADER([config.h])

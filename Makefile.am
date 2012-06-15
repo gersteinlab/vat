@@ -1,6 +1,6 @@
 EXTRA_DIST = 
 CLEANFILES =
-ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
+ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
 AM_MAKEFLAGS = --no-print-directory
 
 AM_CPPFLAGS = \
@@ -8,7 +8,6 @@ AM_CPPFLAGS = \
 	-I${top_srcdir}/src
 
 AM_CFLAGS = ${my_CFLAGS} -g
-
 
 PC_SED = \
 	$(AM_V_GEN)$(MKDIR_P) $(dir $@) && $(SED) \
@@ -76,7 +75,7 @@ clean-local:
 # pkg-config
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = src/vat.pc
-EXTRA_DIST += src/vat.pc.in
+EXTRA_DIST += web master scripts src/vat.pc.in
 CLEANFILES += src/vat.pc web/vat.conf
 
 install-data-hook:
