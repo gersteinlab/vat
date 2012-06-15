@@ -9,7 +9,6 @@ AM_CPPFLAGS = \
 
 AM_CFLAGS = ${my_CFLAGS} -g
 
-AM_LDFLAGS = -lbios -lm src/libvat.a
 
 PC_SED = \
 	$(AM_V_GEN)$(MKDIR_P) $(dir $@) && $(SED) \
@@ -43,10 +42,11 @@ bin_PROGRAMS = \
 	src/vcfModifyHeader \
 	src/vatson
 
-src_vcf2images_LDADD = -lgd -lpng -lz -lfreetype
+LDADD = -lbios -lm src/libvat.a
+src_vcf2images_LDADD = -lbios -lm src/libvat.a -lgd -lpng -lz -lfreetype
 
 # Web
-all-local: web master
+all-local: web
 
 web:
 	@echo '  GEN    web/vat.conf'
