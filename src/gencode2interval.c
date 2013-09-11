@@ -166,6 +166,7 @@ int main (int argc, char *argv[])
   gtfEntries = arrayCreate (10000,GtfEntry);
   ls = ls_createFromFile ("-");
   while (line = ls_nextLine (ls)) {
+    if (line[0] == '#') continue;
     w = wordIterCreate (line,"\t",0);
     currGtfEntry = arrayp (gtfEntries,arrayMax (gtfEntries),GtfEntry);
     currGtfEntry->chromosome = hlr_strdup (wordNext (w));
