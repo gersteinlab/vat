@@ -15,7 +15,6 @@
  * Amazon Web Services Key. Found in the AWS Security Credentials. You can also pass this value as the first
  * parameter to a service constructor.
  */
-//define('AWS_KEY', 'AKIAJD23VJ42GZJWR5YQ');
 define('AWS_KEY', $vat_config['AWS_ACCESS_KEY_ID']);
 
 /**
